@@ -33,10 +33,25 @@
  *      the exact case.
  */
 
+/*
+    I:hours are the input
+    O:string value based on conditions met
+    C: n/a
+    E: n/a
+
+*/
+
 function greeter(hour) {
     // YOUR CODE BELOW HERE //
-    
-    
+     if (hour >= 0 && hour <= 11) { // if hour between 0-11
+        console.log('Good Morning!') //log good morning
+     } else if (hour >= 12 && hour <= 16) { //else if hours between 12-16
+        console.log('Good Afternoon!') //log afternoon
+     } else if (hour >= 17 && hour <= 21){ // else if hours between 12-21
+        console.log('Good Evening!') //log evening
+     } else { //else
+        console.log('Good Night!') //log night
+     }
     
     
     // YOUR CODE ABOVE HERE //
