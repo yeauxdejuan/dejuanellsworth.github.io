@@ -14,7 +14,9 @@ function printArrayValues(array) {
   // YOUR CODE BELOW HERE //
   
   
-  
+  for (let i = 0; i <array.length; i++){ // for loop initialized at zero; loops until the end of input array; loops forward
+    console.log(array[i]); //log values of input array
+  }
   
   // YOUR CODE ABOVE HERE //
 }
@@ -26,7 +28,9 @@ function printArrayValues(array) {
 function printArrayValuesInReverse(array) {
   // YOUR CODE BELOW HERE //
   
-  
+  for (let i = array.length -1; i >= 0 ; i--){ // loop initialized at the end of the array, loops until 0th index, loops backwards
+    console.log(array[i]);// log values of input array
+  }
   
   
   // YOUR CODE ABOVE HERE //
@@ -38,7 +42,7 @@ function printArrayValuesInReverse(array) {
 function getObjectKeys(object) {
   // YOUR CODE BELOW HERE //
   
-  
+  return Object.keys(object)// use Object.keys() function to pull key values of input object
   
   
   // YOUR CODE ABOVE HERE //
@@ -50,10 +54,11 @@ function getObjectKeys(object) {
  */
 function printObjectKeys(object) {
   // YOUR CODE BELOW HERE //
-  
-  
-  
-  
+  let keys = Object.keys(object)
+  for (let i = 0; i <keys.length; i++){
+    console.log(keys[i]);
+  }
+    
   // YOUR CODE ABOVE HERE //
 }
 
@@ -63,7 +68,7 @@ function printObjectKeys(object) {
 function getObjectValues(object) {
   // YOUR CODE BELOW HERE //
   
-  
+  return Object.values(object) //return Object.value to return an array of object values
   
   
   // YOUR CODE ABOVE HERE //
@@ -76,8 +81,10 @@ function getObjectValues(object) {
 function printObjectValues(object) {
   // YOUR CODE BELOW HERE //
   
-  
-  
+  let values = Object.values(object)
+  for (let i = 0; i <values.length; i++){
+    console.log(values[i]);
+  }
   
   // YOUR CODE ABOVE HERE //
 }
@@ -88,7 +95,7 @@ function printObjectValues(object) {
 function getObjectLength(object) {
   // YOUR CODE BELOW HERE //
   
-  
+  return Object.keys(object).length // use Object.keys to return array keys, then return the length of the array to return number of key/value pairs
   
   
   // YOUR CODE ABOVE HERE //
@@ -101,7 +108,10 @@ function getObjectLength(object) {
 function printObjectValuesInReverse(object) {
   // YOUR CODE BELOW HERE //
   
-  
+  let values = Object.values(object) //values is initialized with the value of an array hlding object values
+  for (let i = values.length - 1; i >= 0; i--){ //iterate of array in reverse
+    console.log(values[i]); //log array in reverse
+  }
   
   
   // YOUR CODE ABOVE HERE //
