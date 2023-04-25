@@ -30,9 +30,8 @@ function isArray(value) {
  */
 function isObject(value) {
     // YOUR CODE BELOW HERE //
-    let obj = {}
     
-    return value instanceof obj ? true : false
+    return typeof value == 'object' ? true : false
     
     // YOUR CODE ABOVE HERE //
 }
