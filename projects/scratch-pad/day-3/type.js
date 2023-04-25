@@ -31,7 +31,16 @@ function isArray(value) {
 function isObject(value) {
     // YOUR CODE BELOW HERE //
     
-    return typeof value == 'object' ? true : false
+    /*
+    I: function takes paramater of any data type
+    O:  if true when value is {},return true: else: false 
+    C:
+    E: data type outside of obj's
+    
+    */
+        //if value isn't null and values constructors value strick= "Object" name 
+    return value != null && value.constructor.name === 'Object'
+
     
     // YOUR CODE ABOVE HERE //
 }
@@ -45,7 +54,9 @@ function isObject(value) {
 function isCollection(value) {
     // YOUR CODE BELOW HERE //
     
-    
+        return value.constructor.name === 'Object' && value.constructor.name === 'Array' && value != undefined
+         
+        
     
     
     // YOUR CODE ABOVE HERE //
@@ -73,7 +84,7 @@ function isCollection(value) {
 function typeOf(value) {
     // YOUR CODE BELOW HERE //
     
-    
+    return typeof value 
     
     
     // YOUR CODE ABOVE HERE //
