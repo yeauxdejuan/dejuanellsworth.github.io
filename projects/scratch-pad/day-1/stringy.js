@@ -162,10 +162,10 @@ function join(stringOne, stringTwo) {
 function longest(stringOne, stringTwo) {
     // YOUR CODE BELOW HERE //
 
-    if (stringOne.length > stringTwo.length){
-        return stringOne
-    } else {
-        return stringTwo
+    if (stringOne.length > stringTwo.length){// if the length of string one is has more length than string two, 
+        return stringOne// log stringOne
+    } else {// else
+        return stringTwo // log string two
     }
 
 
@@ -183,9 +183,9 @@ function longest(stringOne, stringTwo) {
 function sortAscending(stringOne, stringTwo) {
     // YOUR CODE BELOW HERE //
 
-   return stringTwo.localeCompare(stringOne)
-
-    // YOUR CODE ABOVE HERE //
+   return stringTwo.localeCompare(stringOne) //use localeCompare to return 1 if string ome is shorter, return -1 if string one is longer and return 0 if equal
+   
+   // YOUR CODE ABOVE HERE //
 }
 
 
@@ -198,7 +198,7 @@ function sortAscending(stringOne, stringTwo) {
  */
 function sortDescending(stringOne, stringTwo) {
     // YOUR CODE BELOW HERE //
-    //
+    //use lacaleCompare to return 1 if string one is longer, return -1 one if string one is shorter and return 0 if even
     return stringOne.localeCompare(stringTwo)
 
 
