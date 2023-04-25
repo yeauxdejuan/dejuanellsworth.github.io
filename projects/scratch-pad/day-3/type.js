@@ -14,9 +14,8 @@
  */
 function isArray(value) {
     // YOUR CODE BELOW HERE //
-    
-    
-    
+   
+    return Array.isArray(value) //use Array.isArray to return array value since typeof function is limited to object value
     
     // YOUR CODE ABOVE HERE //
 }
@@ -31,9 +30,9 @@ function isArray(value) {
  */
 function isObject(value) {
     // YOUR CODE BELOW HERE //
+    let obj = {}
     
-    
-    
+    return value instanceof obj ? true : false
     
     // YOUR CODE ABOVE HERE //
 }
