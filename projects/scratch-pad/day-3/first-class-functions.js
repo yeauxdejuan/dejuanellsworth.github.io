@@ -47,9 +47,7 @@ function createLessThanFilter(base) {
 function createStartsWithFilter(startsWith) {
     // YOUR CODE BELOW HERE //
     
-    return function (inputVal){
-        return inputVal.substring(0, startsWith.length) === startsWith
-    }
+    return function (input) { return input.toLowerCase().startsWith(startsWith.toLowerCase()) ;}
         
     
     // YOUR CODE ABOVE HERE //
@@ -63,7 +61,8 @@ function createStartsWithFilter(startsWith) {
 function createEndsWithFilter(endsWith) {
     // YOUR CODE BELOW HERE //
     
-    
+    //the function returns the input value to lowercase, and using the endsWith( funciton) toLowerCase to assess if the input value ends With the endsWith value
+    return function (input) { return input.toLowerCase().endsWith(endsWith.toLowerCase()) ;}
     
     
     // YOUR CODE ABOVE HERE //
@@ -78,6 +77,12 @@ function createEndsWithFilter(endsWith) {
  */
 function modifyStrings(strings, modify) {
     // YOUR CODE BELOW HERE //
+    //
+
+    for (let i = 0; i < strings.length; i++){
+        
+            return strings
+        }
     
     
     
