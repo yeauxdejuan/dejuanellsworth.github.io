@@ -78,14 +78,12 @@ function createEndsWithFilter(endsWith) {
 function modifyStrings(strings, modify) {
     // YOUR CODE BELOW HERE //
     
-    let arr = []
-    for (let i = 0; i < strings.length; i++){
-       arr.push(modify(strings[i]))
-       
-        // arr.push(strings[i])
-        // modify(arr)
+    let arr = [] // arr value to hold modified strings
+    for (let i = 0; i < strings.length; i++){//iterate ove the length of strings
+       arr.push(modify(strings[i])) // push values of strings[i] into arr array inside of the modify function
+    
     }
-    return arr
+    return arr //return arr
     
    
 
