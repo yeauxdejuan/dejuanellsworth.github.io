@@ -48,9 +48,9 @@ function createStartsWithFilter(startsWith) {
     // YOUR CODE BELOW HERE //
     
     return function (inputVal){
-        return inputVal.charAt(0).toLowerCase() === startsWith
+        return inputVal.substring(0, startsWith.length) === startsWith
     }
-    
+        
     
     // YOUR CODE ABOVE HERE //
 }
