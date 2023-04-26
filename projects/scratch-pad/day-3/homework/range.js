@@ -23,10 +23,20 @@
  */
 function range(start, end) {
     // YOUR CODE GOES BELOW HERE //
-    
-    
-    
-    
+    let arr = [] // arr val to hold array literal
+    if (start < end ){ // if start is less than end
+        for (let i = start; i <=end; i++ ){ //iterate forward and 
+        arr.push(i)//push the values into the arr array
+        } 
+    }else if ( start > end ){ // else if the start > end,
+        for (let j = start; j >= end; j--){ //iterate backwards
+            arr.push(j)// push values into array
+        }
+    }
+       return arr
+
+
+       //var arr - if (start > end for(var i start; i > end -1; i--) arr.push(i); Jelse if (start < end) for(var nun-start; nun arr.push(hun); end 11 )
     // YOUR CODE GOES ABOVE HERE //
 }
 
