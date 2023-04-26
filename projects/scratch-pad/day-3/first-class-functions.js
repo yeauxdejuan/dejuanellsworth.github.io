@@ -14,7 +14,9 @@
 function createGreaterThanFilter(base) {
     // YOUR CODE BELOW HERE //
     
-    
+    return function (inputVal){ //return a function that takes input param, 
+        return inputVal > base // input function returns input value greater than base value
+    }
     
     
     // YOUR CODE ABOVE HERE //
@@ -27,7 +29,10 @@ function createGreaterThanFilter(base) {
  */
 function createLessThanFilter(base) {
     // YOUR CODE BELOW HERE //
-    
+
+    return function (inputVal){ // return a function with input param 
+        return inputVal < base // that returns the input value < base value 
+    }
     
     
     
@@ -42,7 +47,9 @@ function createLessThanFilter(base) {
 function createStartsWithFilter(startsWith) {
     // YOUR CODE BELOW HERE //
     
-    
+    return function (inputVal){
+        return inputVal.charAt(0).toLowerCase() === startsWith
+    }
     
     
     // YOUR CODE ABOVE HERE //
@@ -90,7 +97,12 @@ function modifyStrings(strings, modify) {
 function allStringsPass(strings, test) {
     // YOUR CODE BELOW HERE //
     
-    
+    for (let i = 0; i < strings.length; i++) {// loop over the length of a string
+        if (!test(strings[i])) { // on iteration, if the test value doesnt exist
+          return false; //return false
+        }
+      }
+      return true; //return true 
     
     
     // YOUR CODE ABOVE HERE //
