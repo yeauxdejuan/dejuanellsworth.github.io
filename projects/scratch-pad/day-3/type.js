@@ -54,8 +54,13 @@ function isObject(value) {
 function isCollection(value) {
     // YOUR CODE BELOW HERE //
     
-        return value.constructor.name === 'Object' && value.constructor.name === 'Array' && value != undefined
-         
+    if (Array.isArray(value)){ // if Array.isArray returns an array
+        return true// return true
+      } else if (value != null && value.constructor.name === "Object"){ // if value != null and value is an object based on constructors name value
+        return true// return true
+      } else {// else
+        return false //return false
+      }      
         
     
     
@@ -81,11 +86,24 @@ function isCollection(value) {
  *    typeOf("javascript") -> "string"
  *    typeOf([1,2,3]) -> "array"
  */ 
+
+
 function typeOf(value) {
-    // YOUR CODE BELOW HERE //
-    
-    return typeof value 
-    
+
+  /* assign dataType to hold the value of input data type when invoked with the Object.prototype.toString.call
+      OUTPUT => [object 'type of data type']
+      Object.prototype.toString.call(new Boolean(true)) => [object boolean]
+      the objective to is exctract 'boolean' from that return value at the 'space'+1 and ']' using substring and indexOf functions 
+
+  */
+  let dataType = Object.prototype.toString.call(value) 
+
+  let typeofData = 
+    dataType.substring(
+    dataType.indexOf(' ') + 1,
+    dataType.indexOf(']'))
+
+    return typeofData.toLowerCase()
     
     // YOUR CODE ABOVE HERE //
 }
