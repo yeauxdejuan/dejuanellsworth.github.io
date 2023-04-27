@@ -55,9 +55,8 @@ function makeContactList() {
 
             },
 
-        addContact: function(contact) { //addContact func to push contact into contacs array
-                return contacts.push(contact)
-        },
+        addContact: contact => contacts.push(contact), //addContact func to push contact into contacs array
+        
 
         findContact: function (fullName) {
             for (let i = 0; i < contacts.length; i++){//iterte over contacts array
