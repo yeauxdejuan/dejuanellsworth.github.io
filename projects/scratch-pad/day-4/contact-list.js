@@ -35,10 +35,10 @@
 
 // YOUR CODE GOES BELOW HERE //
 function makeContact(id, nameFirst, nameLast) {
-    return {
-        id: id,
-        nameFirst: nameFirst,
-        nameLast: nameLast
+    return {// return obj
+        id: id,// id key with value of id input value(param)
+        nameFirst: nameFirst, //nameFirst key with nameFirst input value(param)
+        nameLast: nameLast //lastName key with nameLast input value(param)
     };
 } 
 
@@ -47,7 +47,7 @@ function makeContactList() {
     /*
      * You need something here to hold contacts. See length api for a hint:
      */
-    var contacts = []
+    var contacts = [] // contacts = array literal to apply array methods
     return {
         // we implemented the length api for you //
         length: function() {
@@ -55,14 +55,14 @@ function makeContactList() {
 
             },
 
-        addContact: function(contact) {
+        addContact: function(contact) { //addContact func to push contact into contacs array
                 return contacts.push(contact)
         },
 
         findContact: function (fullName) {
-            for (let i = 0; i < contacts.length; i++){
-                if (fullName === contacts[i]['nameFirst'] + ' ' + contacts[i]['nameLast']){
-                    return contacts[i]
+            for (let i = 0; i < contacts.length; i++){//iterte over contacts array
+                if (fullName === contacts[i]['nameFirst'] + ' ' + contacts[i]['nameLast']){ // on iteration, if nameFirst and nameLast strick= fullName input
+                    return contacts[i]// return iterable values
                 } else {
                     return undefined 
                 }
@@ -70,17 +70,19 @@ function makeContactList() {
         },
 
         removeContact: function(contact) {
-            for (let i = 0; i < contact.length; i++){
-                if (contact[i] === contact){
-                    return contact.splice(1)
+            for (let i = 0; i < contacts.length; i++){
+                if (contacts[i] === contact){ // on iteration, if inout value matches contact list
+                    return contacts.splice(i, 1) //remove contact at its index
                 }
             }
         },
 
-        printAllContactNames: function(contact){
+        printAllContactNames: function(){
             for (let i = 0; i < contacts.length; i++){
-                let fullName = contacts[i]['nameFirst'] + ' ' + contacts[i]['nameLast']
-                return fullName
+               let fullName = contacts[i]['nameFirst'] + ' ' + contacts[i]['nameLast']
+                return fullName +'\n' //returns contacts full name with '\n' line break after each value except last value 
+
+                
             }
             
         }
