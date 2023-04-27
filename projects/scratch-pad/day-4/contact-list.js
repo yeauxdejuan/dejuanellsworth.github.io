@@ -79,8 +79,11 @@ function makeContactList() {
 
         printAllContactNames: function(){
             for (let i = 0; i < contacts.length; i++){
-               let fullName = contacts[i]['nameFirst'] + ' ' + contacts[i]['nameLast']
-                return fullName +'\n' //returns contacts full name with '\n' line break after each value except last value 
+              // let fullName = 
+              if( contacts[i]['nameFirst'] + ' ' + contacts[i]['nameLast']){
+                return contacts[i]['nameFirst'] + ' ' + contacts[i]['nameLast'] + '\n'
+              }
+               // return fullName +'\n' //returns contacts full name with '\n' line break after each value except last value 
 
                 
             }
