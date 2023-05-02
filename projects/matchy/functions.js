@@ -13,18 +13,54 @@
 // Step 1 - Search ///////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
-
+// func with 2 params 
+function search(arr, string){
+    // iterate over input array
+    for (let i = 0; i < arr.length; i++){
+        //if key of name strick= string 
+        if (arr[i].name === string){
+            //return value at its index
+            return arr[i]
+        } 
+    } // else return null
+        return null
+}
 
 //////////////////////////////////////////////////////////////////////
 // Step 2 - Replace //////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
+// func to replace with 3 params
+function replace(animals, name, replacement){
+    //iterare over animals array
+    for (let i = 0; i < animals.length; i++ ){
+        // if key of name has a value of input name
+        if (animals[i].name === name){
+            //return the placement Object at that values index
+            return animals[i] = replacement
+        } 
+    }
+};
 
 
 //////////////////////////////////////////////////////////////////////
 // Step 3 - Remove ///////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
+// remove func with 2 params
+function remove(animals, name){
+    //iterate over animals 
+    for (let i = 0; i < animals.length; i++){
+        //if animal name exist
+        if(animals[i].name === name){
+            delete animals[i]
+        } else {
+            return animals[i]
+        }
+
+    }
+    
+}
 
 
 //////////////////////////////////////////////////////////////////////
