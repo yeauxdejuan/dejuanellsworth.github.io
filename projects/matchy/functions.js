@@ -54,20 +54,24 @@ function remove(animals, name){
         //if animal name exist
         if(animals[i].name === name){
             delete animals[i]
-        } else {
-            return animals[i]
-        }
-
+        } 
     }
     
-}
+    }
 
 
 //////////////////////////////////////////////////////////////////////
 // Step 4 - Add ///////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
+function add(animals, animal){
 
+    for (let key in animal){
+        if (key.name.length > 1 ){
+            return true
+        }
+    }
+}
 
 /**
  * You did it! You're all done with Matchy!
