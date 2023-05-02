@@ -104,13 +104,19 @@ var animals = [];
 animals.push(animal);
 
 //log animals
-consolelog(animals);
+console.log(animals);
 
 //assign duck to var data
 var duck = { species: 'duck', name: 'Jerome', noises: ['quack', 'honk', 'sneeze', 'woosh'] }
 
 //push duck to animals
 animals.push(duck);
+
+//create two more animal objects and push them to animals array
+var cow = {species: 'cow', name: 'chic', noises: ['moo', 'cry']};
+var snake = {species: 'snake', name: 'slither', noises: ['hiss', 'cry']};
+animals.push(cow);
+animals.push(snake);
 
 //////////////////////////////////////////////////////////////////////
 // Step 7 - Making Friends ///////////////////////////////////////////
