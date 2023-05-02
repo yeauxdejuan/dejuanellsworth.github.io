@@ -68,7 +68,15 @@ function remove(animals, name){
 function add(animals, animal){
     //check to see if input obj has a key of 'name' with a length > 0
     //check to see if input obj has a key of 'species' with a length > 0
-    if(Object.keys(animal.name).length > 0 && Object.keys(animal.species).length > 0 && Object.keys(animal)){}
+    //check if .name dupes exist in an array
+
+    //let dupes evaluate to a function that uses .find() with arr param to return names if names exist 
+    let dupes = animals.find((arr) => arr.name === animal.name);
+
+    if((!dupes) && animal.name.length > 0 && animal.species.length > 0 ){
+        //push animal object into animal array
+         animals.push(animal)
+    }
 
 
     //return animals
