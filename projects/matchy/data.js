@@ -121,16 +121,20 @@ animals.push(snake);
 //////////////////////////////////////////////////////////////////////
 // Step 7 - Making Friends ///////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
-// arr will hold an array for list of friends 
 
+
+// arr will hold an array for list of friends 
 var friends = [];
 
+//funct to 
 function getRandom(arr){
      return Math.random(arr)
 };
 
-friends.push(animal['name'])
+//friends.push(animal['name'])
 animal['friends'] = friends
+
+//freinds.push(getRandom(animal['name']))
 
 
 /**

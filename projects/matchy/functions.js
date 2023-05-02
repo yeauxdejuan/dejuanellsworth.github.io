@@ -24,7 +24,7 @@ function search(arr, string){
         } 
     } // else return null
         return null
-}
+};
 
 //////////////////////////////////////////////////////////////////////
 // Step 2 - Replace //////////////////////////////////////////////////
@@ -53,25 +53,26 @@ function remove(animals, name){
     for (let i = 0; i < animals.length; i++){
         //if animal name exist
         if(animals[i].name === name){
-            delete animals[i]
+            //use splice to remove value at its index
+             animals.splice(i, 1)
         } 
     }
-    
-    }
+};
 
 
 //////////////////////////////////////////////////////////////////////
 // Step 4 - Add ///////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
+//function add that takes 2 params
 function add(animals, animal){
+    //check to see if input obj has a key of 'name' with a length > 0
+    //check to see if input obj has a key of 'species' with a length > 0
+    if(Object.keys(animal.name).length > 0 && Object.keys(animal.species).length > 0 && Object.keys(animal)){}
 
-    for (let key in animal){
-        if (key.name.length > 1 ){
-            return true
-        }
-    }
-}
+
+    //return animals
+};
 
 /**
  * You did it! You're all done with Matchy!
