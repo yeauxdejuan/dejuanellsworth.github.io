@@ -3,7 +3,8 @@
 //////////////////////////////////////////////////////////////////////
 
 function objectValues(object) {
-
+    //use Object.values prototype to access values of an obj
+    return Object.values(object);
 } 
 
 //////////////////////////////////////////////////////////////////////
@@ -11,7 +12,9 @@ function objectValues(object) {
 //////////////////////////////////////////////////////////////////////
 
 function keysToString(object) {
-
+    //use Object.keys prototype to access an obj keys, 
+    //use join() array function to return them as strings with a space
+       return Object.keys(object).join(' ')
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -19,7 +22,13 @@ function keysToString(object) {
 //////////////////////////////////////////////////////////////////////
 
 function valuesToString(object) {
-    
+    // use Object.values() to return array of obj vals
+    var values = Object.values(object)
+    //console.log(values)
+      
+       values.splice(1, 1)
+      
+    return values.join(' ')
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -27,7 +36,14 @@ function valuesToString(object) {
 //////////////////////////////////////////////////////////////////////
 
 function arrayOrObject(collection) {
-    
+    // if Array.isArray returns an 'array'
+    if (Array.isArray(collection)){ 
+        return 'array'
+        // if collection is an object
+      } else if (collection.constructor.name === "Object"){ 
+        return 'object' 
+      }   
+        
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -36,6 +52,8 @@ function arrayOrObject(collection) {
 
 function capitalizeWord(string) {
     
+    return string.charAt(0).toUpperCase() + string.slice(1);
+
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -43,7 +61,14 @@ function capitalizeWord(string) {
 //////////////////////////////////////////////////////////////////////
 
 function capitalizeAllWords(string) {
-    
+    //strings = string string.split at the space 
+   let strings = string.split(' ')
+   //loop start: 0;  stop: strings.length; update: i++
+    for (let i = 0; i < strings.length; i++){
+        // values in strings at 0th index to upper case 
+     strings[i] = strings[i].charAt(0).toUpperCase() + strings[i].slice(1);
+}
+     return strings.join(' ')
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -52,6 +77,9 @@ function capitalizeAllWords(string) {
 
 function welcomeMessage(object) {
 
+    if (Object.keys(object.name)){
+        return 
+    }
 }
 
 //////////////////////////////////////////////////////////////////////
