@@ -77,10 +77,16 @@ function capitalizeAllWords(string) {
 
 function welcomeMessage(object) {
 
-    if (Object.keys(object.name)){
-        return 
+    for (let keys in object){
+        if(keys === 'name'){
+            return 'Welcome ' + object[keys].charAt(0).toUpperCase() + object[keys].slice(1) + '!'
+        }
     }
+
+
+
 }
+
 
 //////////////////////////////////////////////////////////////////////
 // Function 8 - Profile Info /////////////////////////////////////////
