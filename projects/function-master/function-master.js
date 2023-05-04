@@ -22,14 +22,18 @@ function keysToString(object) {
 //////////////////////////////////////////////////////////////////////
 
 function valuesToString(object) {
-    // use Object.values() to return array of obj vals
     var values = Object.values(object)
-    //console.log(values)
-      
-       values.splice(1, 1)
-      
-    return values.join(' ')
+    var arr = []
+    for (let i = 0; i < values.length; i++){
+      if(typeof values[i] === 'string'){
+         arr.push(values[i])
+        
+      }
+    
+    } 
+  return arr.join(' ')
 }
+
 
 //////////////////////////////////////////////////////////////////////
 // Function 4 - Array or Object //////////////////////////////////////
@@ -93,8 +97,23 @@ function welcomeMessage(object) {
 //////////////////////////////////////////////////////////////////////
 
 function profileInfo(object) {
-
-}
+    // for in loop to access keys and values of input object
+    for (let keys in object){
+        // value var to hold value of object values
+        var value = object[keys]
+        //if keys strick= name
+        if (keys === 'name'){
+            //name var to hold value of key property with it's 1st letter caplitalized 
+            var name = value.charAt(0).toUpperCase() + value.slice(1) 
+            //else if keys strick= species
+            } else if (keys === 'species'){
+                //name var to hold value of key property with it's 1st letter caplitalized 
+                var species = value.charAt(0).toUpperCase() + value.slice(1)
+        // return name + is a + species     
+        return `${name} is a ${species}`
+       }
+     }
+   }
 
 //////////////////////////////////////////////////////////////////////
 // Function 9 - Maybe Noises /////////////////////////////////////////
