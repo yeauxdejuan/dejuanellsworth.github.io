@@ -27,9 +27,7 @@ function valuesToString(object) {
     for (let i = 0; i < values.length; i++){
       if(typeof values[i] === 'string'){
          arr.push(values[i])
-        
       }
-    
     } 
   return arr.join(' ')
 }
@@ -47,7 +45,6 @@ function arrayOrObject(collection) {
       } else if (collection.constructor.name === "Object"){ 
         return 'object' 
       }   
-        
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -55,9 +52,8 @@ function arrayOrObject(collection) {
 //////////////////////////////////////////////////////////////////////
 
 function capitalizeWord(string) {
-    
+    //return string at 0th index to upper case and slice to remiaining chars back to it 
     return string.charAt(0).toUpperCase() + string.slice(1);
-
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -80,18 +76,17 @@ function capitalizeAllWords(string) {
 //////////////////////////////////////////////////////////////////////
 
 function welcomeMessage(object) {
-
+    // for of loop over input obj
     for (let keys in object){
+        //if obj has a name key
         if(keys === 'name'){
-            return 'Welcome ' + object[keys].charAt(0).toUpperCase() + object[keys].slice(1) + '!'
+        // assign value with upper case to upperVal var
+            let upperVal = object[keys].charAt(0).toUpperCase() + object[keys].slice(1);
+            //return 'welcome upperVal!'
+            return `Welcome ${upperVal}!`
         }
     }
-
-
-
 }
-
-
 //////////////////////////////////////////////////////////////////////
 // Function 8 - Profile Info /////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -107,8 +102,8 @@ function profileInfo(object) {
             var name = value.charAt(0).toUpperCase() + value.slice(1) 
             //else if keys strick= species
             } else if (keys === 'species'){
-                //name var to hold value of key property with it's 1st letter caplitalized 
-                var species = value.charAt(0).toUpperCase() + value.slice(1)
+            //name var to hold value of key property with it's 1st letter caplitalized 
+            var species = value.charAt(0).toUpperCase() + value.slice(1)
         // return name + is a + species     
         return `${name} is a ${species}`
        }
@@ -121,6 +116,24 @@ function profileInfo(object) {
 
 function maybeNoises(object) {
 
+    //loop over input obj
+    for (var keys in object){
+        //if object has a noises array
+        if(keys === 'noises'){
+            // values house our values of the input obj
+            let values = object[keys];
+            // assess if input object key of noises has an array as a value 
+            if(Array.isArray(values) ){
+                //assess if that array has a length greater 0
+                if (values.length > 0){
+                    // return values joined with space 
+                    return values.join(' ')
+                }
+            }
+        }
+    }
+    // return 'there are no noises' otherwise 
+    return 'there are no noises'
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -128,7 +141,15 @@ function maybeNoises(object) {
 //////////////////////////////////////////////////////////////////////
 
 function hasWord(string, word) {
-
+    // if a string includes an input word 
+    if(string.includes(word)){
+        //return true 
+        return true
+        //else
+    } else {
+        // return false
+        return false
+    }
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -137,6 +158,16 @@ function hasWord(string, word) {
 
 function addFriend (name, object) {
 
+        // loop over input obj
+        for (let keys in object){
+            // if obj has a friends key
+            if (keys === 'friends'){
+                // push name into its array 
+                object[keys].push(name)
+            }
+        }
+        // return input object with name added to friends array
+        return object
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -144,15 +175,60 @@ function addFriend (name, object) {
 //////////////////////////////////////////////////////////////////////
 
 function isFriend(name, object) {
-
+    //iterate over input object
+    for (let keys in object){
+        // if keys strick= 'friends'
+        if (keys === 'friends'){
+            // values house the values friends 
+            let values = object[keys];
+            // loop over values array
+            for (let i = 0; i < values.length; i++){
+                // if vlaues[i] strick= name
+                if(values[i] === name){
+                    //return true 
+                    return true  
+                }
+            }
+            
+        }
+    }// else return false
+    return false
 }
 
 //////////////////////////////////////////////////////////////////////
 // Function 13 - Non-Friends /////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
-function nonFriends(name, array) {
-
+function nonFriends(name, arr){
+    var nameArr = [];
+    var notFriends = [];
+    var current = null;
+    //iterate over input array
+    for(var i = 0; i < arr.length; i++){
+      //if name key strick= input name
+        if(arr[i].name === name ){
+          // reassign current to true values
+            current = arr[i];
+        }else{
+          //else push name key values into name arr
+            nameArr.push(arr[i].name);
+        }
+    }
+    // input values results to null
+    if(current === null){
+      //return name
+        return nameArr;
+    }
+    //iterate over resulting names
+    for(var i=0; i<nameArr.length; i++){
+      //if current values of friends in the name array 
+        if(current.friends.indexOf(nameArr[i]) == -1){
+          //push values into not friends arr
+            notFriends.push(nameArr[i]);
+        }
+    }
+  //return notFriends
+    return notFriends;
 }
 
 //////////////////////////////////////////////////////////////////////
