@@ -207,7 +207,7 @@ function nonFriends(name, arr){
     for(var i = 0; i < arr.length; i++){
       //if name key strick= input name
         if(arr[i].name === name ){
-          // reassign current to true values
+          // reassign current to name values
             current = arr[i];
         }else{
           //else push name key values into name arr
@@ -220,7 +220,7 @@ function nonFriends(name, arr){
         return nameArr;
     }
     //iterate over resulting names
-    for(var i=0; i<nameArr.length; i++){
+    for(var i = 0; i < nameArr.length; i++){
       //if current values of friends in the name array 
         if(current.friends.indexOf(nameArr[i]) == -1){
           //push values into not friends arr
@@ -235,8 +235,19 @@ function nonFriends(name, arr){
 // Function 14 - Update Object ///////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
+
 function updateObject(object, key, value) {
 
+    // iterate over input object and validate key, if key exist, modify its value with input value, else add key and value 
+
+    if(object.hasOwnProperty(key)){
+      object[key] = value 
+    } else if(!object.hasOwnProperty(key)){
+      object[key] = value
+    }
+
+    // return object
+    return object
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -245,6 +256,20 @@ function updateObject(object, key, value) {
 
 function removeProperties(object, array) {
 
+    //given an input object and an array of strings, remove object keys that match string values of input array
+
+    //iterate over input array to gain access to values
+    for (let i = 0; i < array.length; i++){
+        // if array values exist as object keys
+     if(object.hasOwnProperty(array[i])){
+        object.hasOwnProperty(array[i]) = null
+     }
+     
+    }
+       return object
+
+
+
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -252,9 +277,30 @@ function removeProperties(object, array) {
 //////////////////////////////////////////////////////////////////////
 
 function dedup(array) {
+    if (array.length > 0) {
+        var result = [];
 
+        array.forEach(function (elem) {
+            if (result.indexOf(elem) === -1) {
+                result.push(elem);
+            }
+        });
+
+        return result;
+    }
 }
 
+
+
+    // let arr = []
+    // for (let i = 0; i < array.length; i++){
+    //     if(array[i].includes(array[i])){
+    //         delete array[i]
+    //     } else {
+    //         return arr.push(array[i])
+    //     }
+    // }
+   
 //////////////////////////////////////////////////////////////////////
 // DON'T REMOVE THIS CODE ////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
