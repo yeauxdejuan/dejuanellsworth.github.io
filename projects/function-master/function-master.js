@@ -255,21 +255,13 @@ function updateObject(object, key, value) {
 //////////////////////////////////////////////////////////////////////
 
 function removeProperties(object, array) {
-
     //given an input object and an array of strings, remove object keys that match string values of input array
-
     //iterate over input array to gain access to values
     for (let i = 0; i < array.length; i++){
         // if array values exist as object keys
-     if(object.hasOwnProperty(array[i])){
-       delete  object.hasOwnProperty(array[i]) 
-     }
-     
+       delete  object[array[i]]
     }
        return object
-
-
-
 }
 
 //////////////////////////////////////////////////////////////////////
