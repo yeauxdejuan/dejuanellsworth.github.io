@@ -262,7 +262,7 @@ function removeProperties(object, array) {
     for (let i = 0; i < array.length; i++){
         // if array values exist as object keys
      if(object.hasOwnProperty(array[i])){
-        object.hasOwnProperty(array[i]) = null
+       delete  object.hasOwnProperty(array[i]) 
      }
      
     }
