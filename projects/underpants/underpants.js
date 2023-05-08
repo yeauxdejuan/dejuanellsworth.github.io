@@ -21,7 +21,7 @@ var _ = {};
 *   _.identity({a: "b"}) === {a: "b"}
 */
 
-_.identity = function (value){
+_.identity = (value) => {
     return value
 }
 
@@ -47,7 +47,7 @@ _.identity = function (value){
 * _.typeOf([1,2,3]) -> "array"
 */
 
-_.typeOf = function typeOf(value) {
+_.typeOf =  (value) => {
 
     /* assign dataType to hold the value of input data type when invoked with the Object.prototype.toString.call
         OUTPUT => [object 'type of data type']
@@ -82,14 +82,14 @@ _.typeOf = function typeOf(value) {
 *   _.first(["a", "b", "c"], 1) -> "a"
 *   _.first(["a", "b", "c"], 2) -> ["a", "b"]
 */
-_.first = function (array, number){
-    if (!Array.isArray(array)){
+_.first =  (array, number) => {
+    if (!Array.isArray(array) || number < 0){
         return []
-    } else if((!number) && number === NaN ){
+    } else if((!number) || number === NaN){
         return array[0]
-    } else {
-        return
-    }
+    } 
+    
+    return array 
 }
 
 
@@ -111,6 +111,17 @@ _.first = function (array, number){
 *   _.last(["a", "b", "c"], 2) -> ["b", "c"]
 */
 
+_.last = (array, number) => {
+
+    if (!Array.isArray(array) || number < 0){
+        return []
+    } else if((!number) || number === NaN){
+        return array[array.length - 1]
+    } 
+
+    return array
+
+}
 
 /** _.indexOf
 * Arguments:
@@ -127,7 +138,19 @@ _.first = function (array, number){
 *   _.indexOf(["a","b","c"], "c") -> 2
 *   _.indexOf(["a","b","c"], "d") -> -1
 */
+//Return the position of the first occurrence of an item in an array, or -1 if the item is not included in the array. 
+//If the array is large and already in sort order, pass true for isSorted to use binary search.
 
+_.indexOf = (array, value) => {
+    //if anarray exist
+    if(array){
+        //return the the index of the input value 
+        return array.indexOf(value)
+    } else {
+        //else return -1
+        return - 1
+    }
+}
 
 /** _.contains
 * Arguments:
@@ -143,6 +166,19 @@ _.first = function (array, number){
 * Examples:
 *   _.contains([1,"two", 3.14], "two") -> true
 */
+
+
+
+_.contains = (array, value) => {
+    for(let i = 0; i < array.length; i++){
+         if(array[i] === value){ 
+           return true 
+        } else if(array[i] !== value ){
+           return  false 
+        }    
+    }
+   
+}
 
 
 /** _.each
