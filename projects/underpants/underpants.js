@@ -21,7 +21,11 @@ var _ = {};
 *   _.identity({a: "b"}) === {a: "b"}
 */
 
-const identity = (args) => args
+_.identity = function (value){
+    return value
+}
+
+
 
 /** _.typeOf
 * Arguments:
@@ -43,6 +47,23 @@ const identity = (args) => args
 * _.typeOf([1,2,3]) -> "array"
 */
 
+_.typeOf = function typeOf(value) {
+
+    /* assign dataType to hold the value of input data type when invoked with the Object.prototype.toString.call
+        OUTPUT => [object 'type of data type']
+        Object.prototype.toString.call(new Boolean(true)) => [object boolean]
+        the objective to is exctract 'boolean' from that return value at the 'space'+1 and ']' using substring and indexOf functions 
+  
+    */
+    let dataType = Object.prototype.toString.call(value) 
+  
+    let typeofData = 
+      dataType.substring(
+      dataType.indexOf(' ') + 1,
+      dataType.indexOf(']'))
+  
+      return typeofData.toLowerCase()
+      }
 
 /** _.first
 * Arguments:
@@ -61,6 +82,15 @@ const identity = (args) => args
 *   _.first(["a", "b", "c"], 1) -> "a"
 *   _.first(["a", "b", "c"], 2) -> ["a", "b"]
 */
+_.first = function (array, number){
+    if (!Array.isArray(array)){
+        return []
+    } else if((!number) && number === NaN ){
+        return array[0]
+    } else {
+        return
+    }
+}
 
 
 /** _.last
