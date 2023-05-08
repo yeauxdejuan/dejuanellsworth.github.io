@@ -21,8 +21,10 @@ var _ = {};
 *   _.identity({a: "b"}) === {a: "b"}
 */
 
+// func 
 _.identity = (value) => {
-    return value
+    //return value
+    return value;
 }
 
 
@@ -47,7 +49,7 @@ _.identity = (value) => {
 * _.typeOf([1,2,3]) -> "array"
 */
 
-_.typeOf =  (value) => {
+_.typeOf = (value) => {
 
     /* assign dataType to hold the value of input data type when invoked with the Object.prototype.toString.call
         OUTPUT => [object 'type of data type']
@@ -63,7 +65,7 @@ _.typeOf =  (value) => {
       dataType.indexOf(']'))
   
       return typeofData.toLowerCase()
-      }
+      };
 
 /** _.first
 * Arguments:
@@ -83,13 +85,21 @@ _.typeOf =  (value) => {
 *   _.first(["a", "b", "c"], 2) -> ["a", "b"]
 */
 _.first =  (array, number) => {
+    //if array is an array || number is < 0
     if (!Array.isArray(array) || number < 0){
-        return []
+        //return []
+         return []
+    // else if number doesnt exist || number === NaN
     } else if((!number) || number === NaN){
         return array[0]
     } 
-    
-    return array 
+    //if number exist
+    if (number){
+        //splice the array with the input value of number
+        array.splice(number)
+    }
+    // return array
+    return array
 }
 
 
@@ -113,14 +123,24 @@ _.first =  (array, number) => {
 
 _.last = (array, number) => {
 
+    if (number > array.length){
+        return array
+    }
+    
     if (!Array.isArray(array) || number < 0){
+
         return []
-    } else if((!number) || number === NaN){
+        } else if((!number) || number === NaN){
         return array[array.length - 1]
-    } 
 
-    return array
-
+        } else if(number){
+            
+        return array.splice(1,number)
+        } 
+       
+   
+     
+     
 }
 
 /** _.indexOf
@@ -170,13 +190,16 @@ _.indexOf = (array, value) => {
 
 
 _.contains = (array, value) => {
-    for(let i = 0; i < array.length; i++){
-         if(array[i] === value){ 
+   
+   
+         if(_.indexOf(array) === value){ 
            return true 
-        } else if(array[i] !== value ){
+        } 
+        
            return  false 
-        }    
-    }
+          
+        
+    
    
 }
 
@@ -196,7 +219,19 @@ _.contains = (array, value) => {
 *   _.each(["a","b","c"], function(e,i,a){ console.log(e)});
 *      -> should log "a" "b" "c" to the console
 */
+_.each = (collection, func) => {
 
+        if(Array.isArray(collection)){
+            for(let i = 0; i < collection.length; i++){
+               func(collection[i], i, collection)
+            } 
+        } else {
+            for(let key in collection){
+                func(collection[key], key, collection)
+            }
+            
+        }
+    }
 
 /** _.unique
 * Arguments:
@@ -208,6 +243,11 @@ _.contains = (array, value) => {
 *   _.unique([1,2,2,4,5,6,5,2]) -> [1,2,4,5,6]
 */
 
+_.unique = array => {
+    for(let i = 0; i < array.length; i++){
+        i
+    }
+}
 
 /** _.filter
 * Arguments:
