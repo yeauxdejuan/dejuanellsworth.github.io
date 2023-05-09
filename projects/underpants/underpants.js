@@ -191,15 +191,7 @@ _.indexOf = (array, value) => {
 
 _.contains = (array, value) => {
    
-   
-         if(_.indexOf(array) === value){ 
-           return true 
-        } 
-        
-           return  false 
-          
-        
-    
+  return _.indexOf(array, value) !== -1 ? true  : false     
    
 }
 
@@ -243,11 +235,18 @@ _.each = (collection, func) => {
 *   _.unique([1,2,2,4,5,6,5,2]) -> [1,2,4,5,6]
 */
 
-_.unique = array => {
-    for(let i = 0; i < array.length; i++){
-        i
-    }
+_.unique = (array) => {
+    
+    var uniqueArr = [...new Set(array)]
+
+        return uniqueArr
+
 }
+
+
+// let arr = []
+//    return  array.reduce((accum, currentValue) => {  if(accum[currentValue]) {  accum[currentValue] = 1   } else {delete accum[currentValue]}return accum}, [])}; 
+      
 
 /** _.filter
 * Arguments:
