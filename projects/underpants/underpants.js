@@ -236,16 +236,15 @@ _.each = (collection, func) => {
 */
 
 _.unique = (array) => {
-    
-    var uniqueArr = [...new Set(array)]
+    // create var to hold value of an array, that spreads in a new collection of the input value
+    var uniqueArray = [...new Set(array)]
 
-        return uniqueArr
+        return uniqueArray
 
 }
 
 
-// let arr = []
-//    return  array.reduce((accum, currentValue) => {  if(accum[currentValue]) {  accum[currentValue] = 1   } else {delete accum[currentValue]}return accum}, [])}; 
+
       
 
 /** _.filter
@@ -263,6 +262,21 @@ _.unique = (array) => {
 * Extra Credit:
 *   use _.each in your implementation
 */
+
+
+_.filter = (array, func) => {
+   
+let arr = []
+  
+if(func(array, func) === true ){
+     _.unique(array)
+}
+
+return arr
+
+}
+
+
 
 
 /** _.reject
