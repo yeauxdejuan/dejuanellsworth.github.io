@@ -246,6 +246,58 @@ _.filter = (array, func) => {
         }
         module.exports.reject = reject
     
-    
-    
+    /**
+     * parition: 
+     * @param {*} array 
+     * @param {*} func 
+     * @returns 
+     */
+        _.partition = (array, func) => {
+            let truthy = [];//array to hold true values
+            let falsey = [];//array to hold false values
+        
+            // iterate over input array
+            for(let i = 0; i < array.length; i++){
+                //if the func of array values resolves to true 
+                if(func(array[i], i, array)){
+                    // push true values into truthy
+                    truthy.push(array[i])
+                 } else {
+                    //push false values into falsey 
+                    falsey.push(array[i])
+                }
+             }  // return truthy and falsey arrays within an array
+                return [truthy, falsey]
+        }
+        module.exports.partition = partition;    
+        
+        /**
+         * map: validate collection, push values into new collection
+         * @param {*} collection: collection input used to at func call back 
+         * @param {*} func: applied to collection to return truthy values 
+         * @returns return value of func call on array && obejct in new array
+         */
+        
+        _.map = (collection, func) => {
+            //array to hold return value of array and object values
+            let newArray = []
+            //if collection is an array
+            if(Array.isArray(collection)){
+                //iterate over collection
+                for (let i = 0; i < collection.length; i++){
+                    //push value func call of array values, index, and collection 
+                   newArray.push(func(collection[i], i, collection))
+                    } 
+                    // else if collection is an object
+                    } else if(collection.constructor.name === 'Object'){
+        
+                        // loop over collection
+                        for( let keys in collection ){
+                        //push collection values, keys, and collection into newArray
+                         newArray.push(func(collection[keys], keys, collection))
+                    }
+            }
+            //return newArray
+            return newArray
+        }
     

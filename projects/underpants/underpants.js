@@ -335,18 +335,21 @@ _.reject = (array, func) => {
 */
 
 _.partition = (array, func) => {
-    let truthy = [];
-    let falsey = [];
+    let truthy = [];//array to hold true values
+    let falsey = [];//array to hold false values
+
+    // iterate over input array
     for(let i = 0; i < array.length; i++){
-
+        //if the func of array values resolves to true 
         if(func(array[i], i, array)){
+            // push true values into truthy
             truthy.push(array[i])
-        } else {
-
-             falsey.push(array[i])
+         } else {
+            //push false values into falsey 
+            falsey.push(array[i])
         }
-    }
-    return [truthy , falsey]
+     }  // return truthy and falsey arrays within an array
+        return [truthy, falsey]
 }
 
 
@@ -368,6 +371,28 @@ _.partition = (array, func) => {
 *   _.map([1,2,3,4], function(e){return e * 2}) -> [2,4,6,8]
 */
 
+_.map = (collection, func) => {
+    //array to hold return value of array and object values
+    let newArray = []
+    //if collection is an array
+    if(Array.isArray(collection)){
+        //iterate over collection
+        for (let i = 0; i < collection.length; i++){
+            //push value func call of array values, index, and collection 
+           newArray.push(func(collection[i], i, collection))
+            } 
+            // else if collection is an object
+            } else if(collection.constructor.name === 'Object'){
+
+                // loop over collection
+                for( let keys in collection ){
+                //push collection values, keys, and collection into newArray
+                 newArray.push(func(collection[keys], keys, collection))
+            }
+    }
+    //return newArray
+    return newArray
+}
 
 /** _.pluck
 * Arguments:
@@ -379,6 +404,13 @@ _.partition = (array, func) => {
 * Examples:
 *   _.pluck([{a: "one"}, {a: "two"}], "a") -> ["one", "two"]
 */
+
+_.pluck = (array, property) => {
+
+    _.map(array)
+
+
+}
 
 
 /** _.every
