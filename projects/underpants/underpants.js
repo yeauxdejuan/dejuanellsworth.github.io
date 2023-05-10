@@ -122,25 +122,24 @@ _.first =  (array, number) => {
 */
 
 _.last = (array, number) => {
-
+    // if number is greater than arrays length
     if (number > array.length){
+        //return array
         return array
     }
-    
+     //if array is an array || number is < 0
     if (!Array.isArray(array) || number < 0){
-
+        //return []
         return []
+        // else if number doesnt exist or number value is NaN
         } else if((!number) || number === NaN){
+            // return last value in array
         return array[array.length - 1]
 
         } else if(number){
-            
+            //else return array at the inout number
         return array.splice(1,number)
-        } 
-       
-   
-     
-     
+        }      
 }
 
 /** _.indexOf
@@ -268,11 +267,16 @@ _.filter = (array, func) => {
    
 let arr = []
   
-if(func(array, func) === true ){
-     _.unique(array)
-}
+
+    if(func((element, index, array))) {
+
+       
+  
+    }
+  
 
 return arr
+
 
 }
 
