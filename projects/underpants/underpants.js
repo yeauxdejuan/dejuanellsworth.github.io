@@ -265,19 +265,18 @@ _.unique = (array) => {
 
 _.filter = (array, func) => {
    
-let arr = []
-  
-
-    if(func((element, index, array))) {
-
-       
-  
+let arr = [];
+        // for loop access to values in an array
+        for(let i = 0; i < array.length; i++){
+            //if a func call the element, index, and array returns true
+            if(func(array[i], i, array )){
+                //push those valis into new array
+                arr.push(array[i])
+        }
     }
   
-
+//return new array
 return arr
-
-
 }
 
 
@@ -408,6 +407,32 @@ return arr
 * Examples:
 *   _.reduce([1,2,3], function(previousSum, currentValue, currentIndex){ return previousSum + currentValue }, 0) -> 6
 */
+
+_.reduce = (array, func, seed) => {
+    let result;
+    ///validate seed
+    if(seed === undefined){
+        //assign 0th value of array
+        result = array[0]
+        for (let i = 0; i < array.length; i++){
+            result = func(result, array[i], i, array)
+        }
+    } else {
+        result = seed
+        for (let j = 0; j < array.length; j++){
+            result = func(result, array[j], j, array)
+        }
+
+    }
+
+    return result 
+
+}
+
+
+
+
+
 
 
 /** _.extend

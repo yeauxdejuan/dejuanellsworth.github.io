@@ -160,3 +160,26 @@ _.unique = (array) => {
 
     }
 module.exports.unique = unique;
+
+
+/**
+ * filter: designed to compare an array and function and return values of func call
+ * @param {*} array: input array iterated over 
+ * @param {*} func: func call acted on array elements, index,
+ * @returns 
+ */
+
+_.filter = (array, func) => {
+   
+ 
+     // for loop access to values in an array
+    for(let i = 0; i < array.length; i++){
+        //if a func call the element, index, and array returns true
+        if(func(array[i], i, array )){
+        
+             return [...array[i]]
+            }
+        }
+      
+    }
+    
