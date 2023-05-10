@@ -182,4 +182,70 @@ _.filter = (array, func) => {
         }
       
     }
+    module.exports.filter = filter;
+
+    /**
+     * 
+     * @param {*} array 
+     * @param {*} func 
+     * @param {*} seed 
+     * @returns 
+     */
+
+    _.reduce = function(array, func, seed){
+        // let array = [1, 2, 3, 4];
+        /*
+        let func = function(accumulator, current){ // accumulator = 1  current = 2
+        // code to accumulate value
+        return accumulator + current; // 1 + 3
+        }   
+         */
+        // let seed;
+        let result;
+        // determine if seed was not passed in
+        if (seed === undefined){
+            // use first element of array as seed
+            result = array[0]; // result = 1
+            for (let i = 1; i < array.length; i++){ 
+                // reassign result to func invocation
+                result = func(result, array[i], i, array);
+                
+            }
+        } else { // else it was
+            result = seed; // result = 0
+            for (let i = 0; i < array.length; i++){ // 
+                // reassign result to func invocation
+                result = func(result, array[i], i, array);
+            }
+        }
+        return result;
+      }
+      module.exports.reduce = reduce;
+/**
+ * 
+ * @param {*} array 
+ * @param {*} func 
+ * @returns 
+ */
+
+
+      _.reject = (array, func) => {
+   
+        let arr = [];
+                // for loop access to values in an array
+                for(let i = 0; i < array.length; i++){
+                    //if a func call the element, index, and array returns true
+                    if(!func(array[i], i, array )){
+                        //push those valis into new array
+                        arr.push(array[i])
+                }
+            }
+          
+        //return new array
+        return arr
+        }
+        module.exports.reject = reject
+    
+    
+    
     

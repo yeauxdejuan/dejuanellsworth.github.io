@@ -296,6 +296,25 @@ return arr
 */
 
 
+_.reject = (array, func) => {
+   
+    let arr = [];
+            // for loop access to values in an array
+            for(let i = 0; i < array.length; i++){
+                //if a func call the element, index, and array returns true
+                if(!func(array[i], i, array )){
+                    //push those valis into new array
+                    arr.push(array[i])
+            }
+        }
+      
+    //return new array
+    return arr
+    }
+
+
+
+
 /** _.partition
 * Arguments:
 *   1) An array
@@ -314,6 +333,23 @@ return arr
 *   }); -> [[2,4],[1,3,5]]
 }
 */
+
+_.partition = (array, func) => {
+    let truthy = [];
+    let falsey = [];
+    for(let i = 0; i < array.length; i++){
+
+        if(func(array[i], i, array)){
+            truthy.push(array[i])
+        } else {
+
+             falsey.push(array[i])
+        }
+    }
+    return [truthy , falsey]
+}
+
+
 
 
 /** _.map
@@ -408,25 +444,33 @@ return arr
 *   _.reduce([1,2,3], function(previousSum, currentValue, currentIndex){ return previousSum + currentValue }, 0) -> 6
 */
 
-_.reduce = (array, func, seed) => {
-    let result;
-    ///validate seed
-    if(seed === undefined){
-        //assign 0th value of array
-        result = array[0]
-        for (let i = 0; i < array.length; i++){
-            result = func(result, array[i], i, array)
-        }
-    } else {
-        result = seed
-        for (let j = 0; j < array.length; j++){
-            result = func(result, array[j], j, array)
-        }
-
-    }
-
-    return result 
-
+_.reduce = function(array, func, seed){
+  // let array = [1, 2, 3, 4];
+  /*
+  let func = function(accumulator, current){ // accumulator = 1  current = 2
+  // code to accumulate value
+  return accumulator + current; // 1 + 3
+  }   
+   */
+  // let seed;
+  let result;
+  // determine if seed was not passed in
+  if (seed === undefined){
+      // use first element of array as seed
+      result = array[0]; // result = 1
+      for (let i = 1; i < array.length; i++){ 
+          // reassign result to func invocation
+          result = func(result, array[i], i, array);
+          
+      }
+  } else { // else it was
+      result = seed; // result = 0
+      for (let i = 0; i < array.length; i++){ // 
+          // reassign result to func invocation
+          result = func(result, array[i], i, array);
+      }
+  }
+  return result;
 }
 
 
