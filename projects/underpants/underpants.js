@@ -444,15 +444,11 @@ _.pluck = (array, property) => {
 
 _.every = (collection, func) => {
 
-    //need more time to process what's happening here
     let check = func || _.identity;
 
     if (collection.length === 0) {
         return true;
-    }
-
-    // check if any are falsy
-
+    }    
     return _.reduce(collection,  (prev, next) => {
         if (!prev) {
             return false;
@@ -486,19 +482,57 @@ _.every = (collection, func) => {
 
 _.some = function(collection, func) { 
 
-        
-    
-    return !_.reduce(collection, (things) => {
-            if (!func){
-                return !things
-            } else {
-                return !func(things)
-            }
-    })
-        
-     
+    //init result to an array literal
+     let result = [];
+    //create counter
+     let count = 0;
+    //false counter
+     let falseCount = 0;
+     //create a boolean flag
+     let resultCheck = true;
+  
+     if (!func) {
+       for (let k = 0; k < collection.length; k++) {
+         if (collection[k] == true) {
+           return true;
+         } else {
+           return false;
+         }
+       }
+     }
+  
+     //use a conditional to sort collection into objects and arrays 
+     if (Array.isArray(collection) === true) { //if collection is an array
+         //create a for loop to iterate through the array
+         for (let i = 0; i < collection.length; i++) {
+           //if col. is array, call func with the element, index, and the col. Push the result into result
+           result.push(func(collection[i], i, collection));
+           //add to count
+           count += 1;
+           console.log(count)
+         }
+     //else if it is an object
+     } else { 
+       //create a for in loop to iterate through the object
+       for (let key in collection) {
+       //if col. is object, call func with the value, it's key, and the col.
+           result.push(func(collection[key], key, collection));
+           count += 1;
+       }
+     }
+  
+     for (let j = 0; j < result.length; j++) {
+       if (result[j] === false) {
+         falseCount += 1;
+       }
+  
+       if (falseCount === result.length) {
+         resultCheck = false;
+       }
+  }
+       return resultCheck;
    
-}
+  }
 
 
 /** _.reduce
