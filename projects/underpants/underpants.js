@@ -484,27 +484,21 @@ _.every = (collection, func) => {
 *   _.some([1,2,3], function(e){return e % 2 === 0}) -> true
 */
 
-_.some = (collection, func) => {
+_.some = function(collection, func) { 
 
-    //need more time to process what's happening here
-    let check = func || _.identity;
-
-    if (!collection.length) {
-        return true;
-    }
-
-    // check if any are falsy
-
-    return _.reduce(collection,  (prev, next) => {
-        if (!prev) {
-            return false;
-        } else {
-            return check(next) ? true : false;
-        }
-    }, true);
-};
-
-
+        
+    
+    return !_.reduce(collection, (things) => {
+            if (!func){
+                return !things
+            } else {
+                return !func(things)
+            }
+    })
+        
+     
+   
+}
 
 
 /** _.reduce
