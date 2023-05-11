@@ -406,10 +406,18 @@ _.map = (collection, func) => {
 */
 
 _.pluck = (array, property) => {
+    // array to hold return values
+    let arr = []
+        //iterate over unput array
+        for(let i = 0; i < array.length; i++){  
 
-    _.map(array)
+            let obj = array[i]
 
-
+            //push the result of _.map func into new array
+            arr.push((obj[property]))
+        }
+        //return arr
+        return arr
 }
 
 
@@ -434,6 +442,26 @@ _.pluck = (array, property) => {
 *   _.every([1,2,3], function(e){return e % 2 === 0}) -> false
 */
 
+_.every = (collection, func) => {
+
+    //need more time to process what's happening here
+    let check = func || _.identity;
+
+    if (collection.length === 0) {
+        return true;
+    }
+
+    // check if any are falsy
+
+    return _.reduce(collection,  (prev, next) => {
+        if (!prev) {
+            return false;
+        } else {
+            return check(next) ? true : false;
+        }
+    }, true);
+};
+
 
 /** _.some
 * Arguments:
@@ -455,6 +483,28 @@ _.pluck = (array, property) => {
 *   _.some([1,3,5], function(e){return e % 2 === 0}) -> false
 *   _.some([1,2,3], function(e){return e % 2 === 0}) -> true
 */
+
+_.some = (collection, func) => {
+
+    //need more time to process what's happening here
+    let check = func || _.identity;
+
+    if (!collection.length) {
+        return true;
+    }
+
+    // check if any are falsy
+
+    return _.reduce(collection,  (prev, next) => {
+        if (!prev) {
+            return false;
+        } else {
+            return check(next) ? true : false;
+        }
+    }, true);
+};
+
+
 
 
 /** _.reduce
@@ -525,6 +575,14 @@ _.reduce = function(array, func, seed){
 *   _.extend(data, {b:"two"}); -> data now equals {a:"one",b:"two"}
 *   _.extend(data, {a:"two"}); -> data now equals {a:"two"}
 */
+
+_.extend = function(obj) {
+    _.each(arguments, function(extendObj) {
+        for (var key in extendObj)
+            obj[key] = extendObj[key];
+    });
+    return obj;
+};
 
 //////////////////////////////////////////////////////////////////////
 // DON'T REMOVE THIS CODE ////////////////////////////////////////////

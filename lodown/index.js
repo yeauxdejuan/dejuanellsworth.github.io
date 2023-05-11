@@ -300,4 +300,54 @@ _.filter = (array, func) => {
             //return newArray
             return newArray
         }
+        module.exports.map = map;
+
+/**
+ * pluck: design to iterate over an araray of objects 
+ * @param {*} array 
+ * @param {*} property 
+ * @returns 
+ */
+_.pluck = (array, property) => {
+    // array to hold return values
+    let arr = []
+        //iterate over unput array
+        for(let i = 0; i < array.length; i++){  
+
+            let obj = array[i]
+
+            //push the result of _.map func into new array
+            arr.push((obj[property]))
+        }
+        //return arr
+        return arr
+}   
+module.exports.pluck = pluck;
+
+/**
+ * every:
+ * @param {*} collection 
+ * @param {*} func 
+ * @returns 
+ */
+
+_.every = (collection, func) => {
+
     
+    let check = func || _.identity;
+
+    if (collection.length === 0) {
+        return true;
+    }
+
+    // 
+
+    return _.reduce(collection,  (prev, next) => {
+        if (!prev) {
+            return false;
+        } else {
+            return check(next) ? true : false;
+        }
+    }, true);
+};
+module.exports.every = every;
