@@ -44,13 +44,8 @@ var femaleCount = (array) => {
 
 var oldestCustomer = (array) => {
 
-// _.filter(array, (customer) => {
-//     let arr = []
-//     if(Math.min(customer.age))
-// })
-let i = array.indexOf(Math.max(...array.age));
-    
-return i
+
+return 
 };
 
 var youngestCustomer;
