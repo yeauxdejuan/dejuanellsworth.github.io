@@ -396,14 +396,7 @@ module.exports.every = every;
 
 
 _.reduce = function(array, func, seed){
-    // let array = [1, 2, 3, 4];
-    /*
-    let func = function(accumulator, current){ // accumulator = 1  current = 2
-    // code to accumulate value
-    return accumulator + current; // 1 + 3
-    }   
-     */
-    // let seed;
+   
     let result;
     // determine if seed was not passed in
     if (seed === undefined){
