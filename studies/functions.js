@@ -1,40 +1,35 @@
 /*
 
+//                                                      F U N C T I O N
 
-Functions are one of the fundamental building blocks in JavaScript. 
-A function in JavaScript is similar to a procedure—a set of statements that performs a task or calculates a value, but for a procedure to qualify as a function, 
-it should take some input and return an output where there is some obvious relationship between the input and the output. To use a function, you must define it 
-somewhere in the scope from which you wish to call it.
+Functions are like encapsulated tools we can use to perform a task or calculate a value. The task being perfomred or value being calculated is 
+from the input paramater being modified in some form, and lastly ending the return statement including the modidied results of the input.
+To access the functionality of a function, outside of its scope call/invoke the function by using its keyword with parenthesis, with a value 
+representing the the parameters called arguements.
 
+Function parameters are enclosed in parenthesis and separeted by commas after the function keyword.
+Curly brackets house the statement the outlines the functions' purpose  (see example)
 
+Function examples:
 
-Function declarations
-A function definition (also called a function declaration, or function statement) consists of the function keyword, followed by:
+function declartion:
 
-The name of the function.
-A list of parameters to the function, enclosed in parentheses and separated by commas.
-The JavaScript statements that define the function, enclosed in curly brackets, 
-For example, the following code defines a simple function named square:
+function whatsInThere(array){  <= parent func declare with <array> parameter <= global scope 
+    return array.forEach((item){ <= returns child func with an <item> parameter 
+        return item; <= returns elements of an array
+    }); <= closure of inner function
+}; <= ending of outer function
 
+console.log(whatsInThere(['string', 9, true, [1, 2]], {key: value}, NaN])); <= console log with func invokation if whatsInThere function 
 
-Parameters are essentially passed to functions by value — so if the code within the body of a function assigns a completely new value to a parameter that was passed to the function, 
-the change is not reflected globally or in the code which called that function.
+function expression:
 
+let whatsInthere2 = (array) => { 
+    return array.forEach((items) =>{
+        return items;
+    });
+};
 
-
-Function scope
-Variables defined inside a function cannot be accessed from anywhere outside the function, 
-because the variable is defined only in the scope of the function. However, a function can access all variables and functions defined inside the scope in which it is defined.
-
-In other words, a function defined in the global scope can access all variables defined in the global scope.
- A function defined inside another function can also access all variables defined in its parent function, and any other variables to which the parent function has access.
-
- Calling the function actually performs the specified actions with the indicated parameters. For example, if you define the function square, you could call it as follows:
-
-
-
-
-
-
+console.log(whatsInThere2(['string', 9, true, [1, 2]], {key: value}, NaN])); <= console log with func invokation if whatsInThere2 function
 
  */
