@@ -12,17 +12,19 @@ Curly brackets house the statement the outlines the functions' purpose  (see exa
 
 Function examples:
 
-function declartion:
+//function declartion:
 
+    let testArray = ['string', 9, true, [1, 2]], {key: value}, NaN];
+    
 function whatsInThere(array){  <= parent func declare with <array> parameter <= global scope 
     return array.forEach((item){ <= returns child func with an <item> parameter 
         return item; <= returns elements of an array
     }); <= closure of inner function
 }; <= ending of outer function
 
-console.log(whatsInThere(['string', 9, true, [1, 2]], {key: value}, NaN])); <= console log with func invokation if whatsInThere function 
+console.log(whatsInThere(testArray)); <= console log with func invokation if whatsInThere function 
 
-function expression:
+//function expression:
 
 let whatsInthere2 = (array) => { 
     return array.forEach((items) =>{
@@ -30,6 +32,6 @@ let whatsInthere2 = (array) => {
     });
 };
 
-console.log(whatsInThere2(['string', 9, true, [1, 2]], {key: value}, NaN])); <= console log with func invokation if whatsInThere2 function
+console.log(whatsInThere2(testArray)); <= console log with func invokation if whatsInThere2 function
 
  */
