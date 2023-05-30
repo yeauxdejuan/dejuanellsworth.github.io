@@ -22,6 +22,12 @@ string.concat() => joins two or more strings together
 string.charAt() => returns a character at a specified index
 
 string.split() => returns a new array with specified divider 
+
+string.includes() => returns a specified sequence in a string 
+
+string,reverse() => returns a string in reverse
+
+
  
 
 
