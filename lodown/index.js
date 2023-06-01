@@ -41,10 +41,10 @@ _.typeOf = (value) => {
       module.exports.typeOf = typeOf;
 
 /**
- * first: validates array status, checks if number exists or greater than array length 
+ * first: validates array status, checks if number exists or greater than 0 or NaN, if number exist splice array at <number>
  * @param {*} array : to hold input array for comparision 
  * @param {*} number: values to return from array
- * @returns returns the first element of an array or object
+ * @returns returns the first <number> of elements of an array
  */
       _.first =  (array, number) => {
         //if array is an array || number is < 0
@@ -67,10 +67,10 @@ _.typeOf = (value) => {
     module.exports.first = first;
 
 /**
- * last: validates array status, checks if number exists or greater than array length
+ * last: validates array status, checks if number exists or greater than 0 or NaN, if number exist splice array at <number>
  * @param {*} array : to hold input array for comparision 
- * @param {*} number: values to return from array
- * @returns last <number>'s from array
+ * @param {*} number: values to return from end of arrayarray
+ * @returns returns last <number>'s from input array
  */
 
      _.last = (array, number) => {
@@ -96,10 +96,10 @@ _.typeOf = (value) => {
     module.exports.last = last;
 
 /**
- * _.indexOf: desigend to validate if <input> is an array, 
+ * _.indexOf: desigend to validate if <value> is in array (===) 
  * @param {*} array: input array 
- * @param {*} value: position on array to return from <input>
- * @returns return  <value> 
+ * @param {*} value: possible element in array to return 
+ * @returns return index of element at first occurence from <array> or -1 if value not found
  */
 
     _.indexOf = (array, value) => {
@@ -115,10 +115,10 @@ _.typeOf = (value) => {
     module.exports.indexOf = indexOf;
 
 /**
- * _.conatins: design to validate if <value> exist in <array>
- * @param {*} array: input array to be assessed
+ * _.conatins: design to validate if <value> exist in <array> or not
+ * @param {*} array: array of elements
  * @param {*} value: value being used for comparison from <array>
- * @returns <value> from <array>
+ * @returns returns true if value exist in array, false otherwise
  */
 
     _.contains = (array, value) => {
@@ -150,9 +150,9 @@ _.each = (collection, func) => {
 module.exports.each = each;
 
 /**
- * unique: designed to return a copy of input array
- * @param {*} array : input array to be copied
- * @returns new array thats a copy of input array
+ * unique: designed to return a copy of non duplicated elements from <array>
+ * @param {*} array : input array assessed for dups
+ * @returns new array that's a copy of input array without dups
  */
 _.unique = (array) => {
     // create var to hold value of an array, that spreads in a new collection of the input value
@@ -165,9 +165,9 @@ module.exports.unique = unique;
 
 
 /**
- * filter: designed to compare an array and function and return values of func call
+ * filter: designed to iterate over <array> and identify if the <func> call of values, index, array are true
  * @param {*} array: input array iterated over 
- * @param {*} func: func call acted on array elements, index,
+ * @param {*} func: callback function applied to each value of array
  * @returns : new array of truthy values from calback
  */
 
@@ -187,10 +187,10 @@ _.filter = (array, func) => {
     module.exports.filter = filter;
 
 /**
- * _.reject: designed to iterate over input array and apply a callback function
+ * _.reject: designed to iterate over input array and apply a callback function to determine if values meet a condition
  * @param {*} array : input array to be iterated over
  * @param {*} func  : callback function applied to array elements 
- * @returns : new array of truthy values from callback
+ * @returns : new array of falsey values from callback
  */
 
 
@@ -214,10 +214,10 @@ _.filter = (array, func) => {
 
 
  /**
- * _.parition: designed to iterate over input array and applies a callback function  to each element, key, and input array
+ * _.parition: designed to iterate over input array and applies a callback function to each element to assess if condition is met or not
  * @param {*} array : input array
  * @param {*} func : callback applied to array elemts 
- * @returns array of nested arrays of true and false values 
+ * @returns returns twos arrays, one of truthy values and one of falsey values from input array
  */
         _.partition = (array, func) => {
             let truthy = [];//array to hold true values
@@ -239,10 +239,10 @@ _.filter = (array, func) => {
         module.exports.partition = partition;    
         
  /**
- * map: validate collection, push values into new collection
- * @param {*} collection: collection input used to at func call back 
-  * @param {*} func: applied to collection to return truthy values 
- * @returns return value of func call on array && obejct in new array
+ * _.map: validate if collection is array or object, iterate over collection and push values into new collection
+ * @param {*} collection: Array or object iterated over 
+  * @param {*} func: applied to collection, elements, and index.  
+ * @returns return value of func call on a collection to a new array
  */
         
         _.map = (collection, func) => {
@@ -271,10 +271,10 @@ _.filter = (array, func) => {
 
 
 /**
- * pluck: design to iterate over an araray of objects 
+ * pluck: design to iterate over an array of objects and to extract specified <property> values 
  * @param {*} array : holding array of objects 
- * @param {*} property : item pused into to new array
- * @returns new array of object properties
+ * @param {*} property : values from properties pushed into to new array
+ * @returns new array of object values from <property> input 
  */
 _.pluck = (array, property) => {
     // array to hold return values
@@ -294,10 +294,11 @@ module.exports.pluck = pluck;
 
 
 /**
- * _.every: Designed to iterate over an array or object and return true or false based on callback
+ * _.every: Designed to iterate over a collection, test all elements and will return false when an 
+ * element doesnt meet condition and true when all elements meets a condition 
  * @param {*} collection : object or an array
  * @param {*} func : called on input collection 
- * @returns boolean
+ * @returns True, if every element in a collection meets condition and false otherwise
  */
 
 _.every = (collection, func) => {
@@ -322,10 +323,11 @@ module.exports.every = every;
 
 
 /**
- * _.some: Design to iterate over an array or an object and apply a callback function to the elemts which are true 
+ * _.some: Design to iterate over a collection and verifies if at least one of the values in a collection meets condition 
  * @param {*} collection: an array or object
  * @param {*} func: applied to elements of true conditions 
- * @returns true or false 
+ * @returns Returns true if one of the elements of the array meets a condition(stopping iteration) and returns false 
+ * when no elements meets condition 
  */
 
 
@@ -387,11 +389,12 @@ module.exports.every = every;
 
 
  /**
-  * _.reduce: design to iterate over an input array, implement seed value if no initializer, and apply a callback func to the result, elemets, index and the array
+  * _.reduce: design to iterate over an input array, implement seed value if no seed exist, and apply a callback 
+  * func to the result, elemets, index and the array
   * @param {*} array: collection to iterated over and callback applied to elementd
   * @param {*} func: called on each elements of input array
   * @param {*} seed: used to initialize values to be returned 
-  * @returns : results from callback are returned 
+  * @returns : accumulates a single return values to return  
   */
 
 
@@ -422,9 +425,9 @@ _.reduce = function(array, func, seed){
   
 
   /**
-   * _.extend: designed to copy properties from object to object 
+   * _.extend: designed to copy key/value pairs from one object to another or multiple into a single object
    * @param {*} obj :input object(s) to copy properties to
-   * @returns returns the result of passing object properties 
+   * @returns returns the result of passing object properties from one or multiple objects to a single object   
    */
   
   _.extend = function(obj) {

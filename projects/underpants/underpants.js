@@ -382,14 +382,14 @@ _.map = (collection, func) => {
            newArray.push(func(collection[i], i, collection))
             } 
             // else if collection is an object
-            } else if(collection.constructor.name === 'Object'){
+           } else {//if(collection.constructor.name === 'Object'){
 
                 // loop over collection
                 for( let keys in collection ){
                 //push collection values, keys, and collection into newArray
                  newArray.push(func(collection[keys], keys, collection))
             }
-    }
+   }
     //return newArray
     return newArray
 }
