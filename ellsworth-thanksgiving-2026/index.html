@@ -36,7 +36,7 @@
     .eyebrow:before{width:20px;height:23px;background:url('assets/autumn-leaf.svg') center/contain no-repeat}.section-pad{border-bottom:1px solid var(--line)}.developer-credit{text-align:center;margin:24px 0 0!important;font-size:11px!important;line-height:1.8}.developer-credit a{text-underline-offset:3px}.hero p,.games-bg .section-lead{color:#fae4ce}
     button:disabled{cursor:default;opacity:.65;transform:none!important}.dish-person ul{list-style:none;padding:0;margin:0}.dish-person li+li{margin-top:6px}.dish-person small{display:block;color:#706057}.dish-capacity{display:inline-block;font-size:11px;font-weight:700;color:#795039;background:#f5e4cc;border-radius:30px;padding:3px 9px;margin-top:5px}.dish-row>div{min-width:0;overflow-wrap:anywhere}.dish-row .btn{white-space:normal}.dish-note{overflow-wrap:anywhere}
     .property-mosaic{grid-template-rows:repeat(4,130px)}.property-mosaic button:first-child{grid-row:span 4}.property-mosaic button:last-child{grid-column:2}.property-mosaic button:focus-visible{outline:3px solid var(--rust);outline-offset:3px}.lightbox-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px}.lightbox-caption{text-align:center}.lightbox img{touch-action:pan-y}
-    .tiktok-cards{display:block;min-width:0}.tik-card{max-width:440px;margin:auto}.tik-card iframe{display:block;width:100%;height:580px;max-height:72vh}.tik-controls{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;padding:18px}.tik-status{padding:0 20px;font-size:12px;color:#706057}.tik-fallback{padding:0 20px 20px;font-size:12px}.tik-fallback summary{cursor:pointer;text-decoration:underline}.tik-fallback button{margin-top:8px}.tik-head{flex-wrap:wrap}
+    .tiktok-cards{display:block;min-width:0}.tik-card{max-width:440px;margin:auto}.tik-card iframe{display:block;width:100%;height:580px;max-height:72vh}.tik-controls{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;padding:18px}.tik-status{padding:0 20px;font-size:12px;color:#706057}.tik-head{flex-wrap:wrap}
     .modal-backdrop{background:#392318bd}.modal.lightbox{background:#453026}.helper{font-size:12px}.section-lead,.helper,.modal p{color:#706057}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:3px}.toast{max-width:min(340px,calc(100vw - 32px));right:16px}.small-form>*{max-width:100%}
     @media(max-width:760px){.property-mosaic{grid-template-rows:repeat(4,100px)}}
     @media(max-width:490px){.dish-row{grid-template-columns:minmax(0,1fr) auto}.property-mosaic{grid-template-rows:repeat(4,85px)}.tik-card iframe{height:530px}.hero-leaf{left:0}.hero h1{font-size:clamp(45px,13vw,54px)}}
@@ -49,7 +49,7 @@
   <header class="site-header"><div class="shell nav">
     <a href="#home" class="brand" aria-label="Ellsworth Family Thanksgiving home"><span class="brandmark"><span class="leaf-mark" aria-hidden="true"></span></span><span>Ellsworth <i style="font-weight:400">Family.</i></span></a>
     <button class="mobile-menu" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
-    <nav class="nav-links" id="navLinks" aria-label="Main navigation"><a class="nav-link" href="#stay">The house</a><a class="nav-link" href="#rsvp">RSVP</a><a class="nav-link" href="#weekend">Weekend</a><a class="nav-link" href="#menu">The menu</a><a class="nav-link" href="#memories">Memories</a><a class="nav-link" href="#games">Games</a><a class="nav-link" href="#tiktoks">TikToks</a></nav>
+    <nav class="nav-links" id="navLinks" aria-label="Main navigation"><a class="nav-link" href="#stay">The house</a><a class="nav-link" href="#rsvp">RSVP</a><a class="nav-link" href="#weekend">Plans</a><a class="nav-link" href="#menu">The menu</a><a class="nav-link" href="#memories">Memories</a><a class="nav-link" href="#games">Games</a><a class="nav-link" href="#tiktoks">TikToks</a><a class="nav-link" href="#nfl-games">NFL Games</a></nav>
     <a class="btn nav-cta" href="#menu">Sign up for a dish <span aria-hidden="true">↗</span></a>
   </div></header>
   <main>
@@ -71,16 +71,17 @@
     <div class="member-strip" id="memberStrip" hidden><div class="shell member-strip-inner"><span><span class="leaf-mark" aria-hidden="true"></span> You’re connected to the Ellsworth Family board. Changes are saved for everyone.</span><button type="button" class="member-leave" id="leaveFamilyBtn">Disconnect this device</button></div></div>
     <section class="section-pad" id="stay"><div class="shell stay-grid">
       <div class="stay-copy"><div class="eyebrow">01 / Where we're staying</div><h2 class="h2">The Ellsworth holiday home, <em>all together.</em></h2><p class="section-lead stay-blurb">Meet <strong>Friscoville Mansion</strong>, a restored Greek Revival home in Arabi, Louisiana. The Airbnb listing describes a private upstairs unit with a balcony, updated kitchen and room to relax together.</p><div class="amenity-list"><div class="amenity"><b>⌂</b> 3 bedrooms</div><div class="amenity"><b>◷</b> 2 bathrooms</div><div class="amenity"><b>✦</b> Full kitchen</div><div class="amenity"><b>↗</b> Private balcony</div></div><a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.airbnb.com/rooms/961414748638377724">Open Airbnb listing <span aria-hidden="true">↗</span></a></div>
-      <div class="property-mosaic" aria-label="Airbnb listing photo gallery">
-        <button data-house-photo="0" aria-label="Open Airbnb photo 1"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/49249a86-b758-46af-aae5-5055801dc322.jpeg?im_w=720" alt="Holiday home — Airbnb listing photograph 1"></button>
-        <button data-house-photo="1" aria-label="Open Airbnb photo 2"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/3ce4088a-8b4d-4bec-90a3-e5e38256338b.jpeg?im_w=720" alt="Holiday home — Airbnb listing photograph 2"></button>
-        <button data-house-photo="2" aria-label="Open Airbnb photo 3"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/4911d8e7-a039-4d62-b2c7-c0c3abe2ed26.jpeg?im_w=720" alt="Holiday home — Airbnb listing photograph 3"></button>
-        <button data-house-photo="3" aria-label="Open Airbnb photo 4"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/37ddd49a-3544-4cc4-b765-52c10b390627.jpeg?im_w=720" alt="Holiday home — Airbnb listing photograph 4"></button>
-        <button data-house-photo="4" aria-label="Open Airbnb photo 5"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/26bd235d-7aea-4727-9a6f-300cd2fd75da.jpeg?im_w=720" alt="Holiday home — Airbnb listing photograph 5"></button>
+      <div class="property-mosaic" aria-label="Exterior and main living-area photographs">
+        <button type="button" data-house-photo="0" aria-label="Open Airbnb photo 1: Exterior image 1"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/be6bdd9c-c350-4f04-9f27-8736cf82b2f1.jpeg?im_w=720" alt="Exterior image 1 — Airbnb listing"></button>
+        <button type="button" data-house-photo="1" aria-label="Open Airbnb photo 2: Living area image 1"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/49249a86-b758-46af-aae5-5055801dc322.jpeg?im_w=720" alt="Living area image 1 — Airbnb listing"></button>
+        <button type="button" data-house-photo="2" aria-label="Open Airbnb photo 3: Living area image 2"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/37ddd49a-3544-4cc4-b765-52c10b390627.jpeg?im_w=720" alt="Living area image 2 — Airbnb listing"></button>
+        <button type="button" data-house-photo="3" aria-label="Open Airbnb photo 4: Living area image 3"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/759fb2ae-5af5-44ec-884e-9fae73b0da5a.jpeg?im_w=720" alt="Living area image 3 — Airbnb listing"></button>
+        <button type="button" data-house-photo="4" aria-label="Open Airbnb photo 5: Patio image 1"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/d1804239-eb93-456f-9433-da8fd87afda1.jpeg?im_w=720" alt="Patio image 1 — Airbnb listing"></button>
       </div>
+      <details class="property-gallery-more" id="houseMorePhotos"><summary>View 3 more outdoor photos ↗</summary><div class="property-thumb-grid"><button type="button" data-house-photo="5" aria-label="Open Airbnb photo 6: Patio image 2"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/822f62e2-7fa8-4a21-a067-23c882680cf2.jpeg?im_w=720" alt="Patio image 2 — Airbnb listing"></button><button type="button" data-house-photo="6" aria-label="Open Airbnb photo 7: Patio image 3"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/dbfd180c-1c60-4a63-8346-45e5993ed5e9.jpeg?im_w=720" alt="Patio image 3 — Airbnb listing"></button><button type="button" data-house-photo="7" aria-label="Open Airbnb photo 8: Backyard image 4"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/4d2e7c93-0880-4f50-8dc3-caaf3609909f.jpeg?im_w=720" alt="Backyard image 4 — Airbnb listing"></button></div></details>
     </div></section>
     <section class="section-pad planning-bg" id="rsvp"><div class="shell"><div class="section-head"><div><div class="eyebrow">Save your place</div><h2 class="h2">Who's <em>coming over?</em></h2><p class="section-lead">Let the family know who's joining, how many plates to count, and when to expect you. All arrival and departure times are Central.</p></div><div class="feature-actions"><button class="btn small" id="editRsvpBtn">+ Add my RSVP</button><button class="btn ghost small" id="refreshPlanningBtn">↻ Refresh plans</button></div></div><div id="rsvpSummary" class="rsvp-summary" aria-live="polite"></div><p id="rsvpStatus" class="helper" role="status"></p><div id="rsvpList" class="rsvp-list"></div><p class="helper">One RSVP per browser account. Include yourself in your household count; coordinate with relatives so each guest is counted once.</p></div></section>
-    <section class="section-pad weekend-bg" id="weekend"><div class="shell"><div class="section-head"><div><div class="eyebrow">Make a little room for everything</div><h2 class="h2">Our <em>weekend together.</em></h2><p class="section-lead">Dinner, family game night, outings, and a little football. Plans can stay flexible until we're ready to set a time.</p></div><button class="btn small" id="addScheduleBtn">+ Add a plan</button></div><div class="schedule-toolbar"><label for="scheduleFilter">Show <select id="scheduleFilter"><option value="all">All plans</option><option value="family">Family plans</option><option value="football">NFL football</option></select></label><span class="helper">All times Central (America/Chicago)</span></div><p id="scheduleStatus" class="helper" role="status"></p><div id="scheduleList" class="schedule-list"></div><p class="helper">NFL holiday slate + the Saints' Sunday game. Kickoffs checked October 21, 2026; subject to change. <a href="https://www.nfl.com/schedules/2026/by-week/week-12" target="_blank" rel="noopener noreferrer">See the full NFL schedule ↗</a></p></div></section>
+    <section class="section-pad weekend-bg" id="weekend"><div class="shell"><div class="section-head"><div><div class="eyebrow">Around the family table</div><h2 class="h2">Family <em>plans.</em></h2><p class="section-lead">Dinner, family game night, and outings. Add the details when we're ready to set a time.</p></div><button class="btn small" id="addScheduleBtn">+ Add a plan</button></div><p class="helper">All times Central (America/Chicago)</p><p id="scheduleStatus" class="helper" role="status"></p><div id="scheduleList" class="schedule-list"></div></div></section>
     <section class="section-pad menu-bg" id="menu"><div class="shell"><div class="section-head"><div><div class="eyebrow">02 / Everybody brings something</div><h2 class="h2">What's on <em>the menu?</em></h2><p class="section-lead">Every Ellsworth favorite belongs on the table. Claim a dish, add your name, or contribute something new so everyone knows what’s covered.</p></div><div><span id="modeChip" class="mode-chip">Preview mode · saved on this device</span></div></div>
       <div class="menu-board"><div class="board-head"><div><h3>The Ellsworth Family potluck</h3><p>Choose something to cook, bring, or contribute.</p></div><div class="board-actions"><span id="menuProgress" class="progress-chip">0 dishes claimed</span><button id="addDishBtn" class="btn small">+ Add a dish</button></div></div><div id="dishBoard" aria-live="polite"></div><div class="menu-foot"><span id="menuFootnote">Sign-ups in this preview are stored only on your device. Set up shared mode to sync the whole family.</span><button class="btn ghost small" id="refreshMenuBtn">↻ Refresh</button></div></div>
     </div></section>
@@ -89,7 +90,8 @@
       <div class="memory-frame" id="memoryFrame"><div class="memory-empty" id="memoryEmpty"><div class="empty-symbol"><span class="leaf-mark" aria-hidden="true"></span></div><h3>The Ellsworth family album.</h3><p>No photos yet. Add a few family favorites to create an automatic slideshow here.</p><label class="btn small file-picker" for="photoUpload" tabindex="0" role="button">Choose photos <span aria-hidden="true">↗</span></label></div><div class="carousel-bottom" id="memoryControls" style="display:none"><span class="slide-count" id="slideCount">1 / 1</span><div class="controls"><button class="icon-btn" id="photoPrev" aria-label="Previous family photo">←</button><button class="icon-btn" id="photoPause" aria-label="Pause slideshow">Ⅱ</button><button class="icon-btn" id="photoNext" aria-label="Next family photo">→</button></div></div></div>
     </div></section>
     <section class="section-pad games-bg" id="games"><div class="shell"><div class="eyebrow">04 / After we eat</div><h2 class="h2">Let the <em>games begin.</em></h2><p class="section-lead">Vote for the games you'd love to play. One vote per game from each browser account; choose as many favorites as you like.</p><label class="game-sort-label" for="gameSort">Show games <select id="gameSort"><option value="popular">Most popular first</option><option value="original">Original order</option></select></label><p id="gameVoteStatus" class="helper" role="status"></p><div class="games-grid" id="gamesGrid"></div><div class="game-add"><button class="btn light small" id="addGameBtn">+ Suggest a game</button><span style="font-size:12px;color:#f0d9c3">Games are suggestions until the family confirms the lineup.</span></div></div></section>
-    <section class="section-pad" id="tiktoks"><div class="shell tiktok-layout"><div><div class="eyebrow">05 / Send it to the group chat</div><h2 class="h2">TikTok made <em>us do it.</em></h2><p class="section-lead">The funniest clip in the Ellsworth group chat? A recipe or family challenge? Add TikToks here to bring them to the whole family.</p><form id="tikForm" class="small-form"><input id="tikUrl" type="url" placeholder="Paste a full TikTok video URL" aria-label="TikTok video URL" required><button class="btn" type="submit">Add video ↗</button></form><p class="helper">Use a full link containing <strong>/video/</strong> and a video number. TikTok's player requires internet and may be blocked by browser privacy settings. Videos play only when you choose Play. Next unlocks when the current clip ends. If the player is blocked, choose manual navigation.</p></div><div id="tiktokGrid" class="tiktok-cards" aria-live="polite"></div></div></section>
+    <section class="section-pad" id="tiktoks"><div class="shell tiktok-layout"><div><div class="eyebrow">05 / Send it to the group chat</div><h2 class="h2">TikTok made <em>us do it.</em></h2><p class="section-lead">The funniest clip in the Ellsworth group chat? A recipe or family challenge? Add TikToks here to bring them to the whole family.</p><form id="tikForm" class="small-form"><input id="tikUrl" type="url" placeholder="Paste a full TikTok video URL" aria-label="TikTok video URL" required><button class="btn" type="submit">Add video ↗</button></form><p class="helper">Use a full link containing <strong>/video/</strong> and a video number. TikTok's player requires internet and may be blocked by browser privacy settings. Videos play only when you choose Play. Use Next to skip to another clip at any time.</p></div><div id="tiktokGrid" class="tiktok-cards" aria-live="polite"></div></div></section>
+    <section class="section-pad weekend-bg" id="nfl-games"><div class="shell"><div class="eyebrow">Thanksgiving Thursday · November 26</div><h2 class="h2">NFL <em>Games.</em></h2><p class="section-lead">The Thanksgiving Day lineup. All kickoff times are Central.</p><div id="nflGamesList" class="schedule-list"></div><p class="helper">Kickoffs checked October 21, 2026; subject to change. <a href="https://www.nfl.com/news/thanksgiving-2026-nfl-schedule-release" target="_blank" rel="noopener noreferrer">Official NFL schedule ↗</a></p></div></section>
   </main>
   <footer class="footer"><div class="shell"><div class="footer-grid"><div><h2>The Ellsworth Family.<br><em>See you at the table.</em></h2><p>New Orleans area · Thanksgiving 2026 · The Ellsworth tradition.</p></div><a class="btn light" href="#home">Back to top ↑</a></div><div class="footer-bottom"><span>Made for the Ellsworth Family, with love. &nbsp;<span class="leaf-mark" aria-hidden="true"></span></span><span>Property photos from <a href="https://www.airbnb.com/rooms/961414748638377724" target="_blank" rel="noopener noreferrer">the Friscoville Mansion Airbnb listing</a>.</span></div><p class="developer-credit">Built by <a href="https://github.com/yeauxdejuan" target="_blank" rel="noopener noreferrer">De’Juan Ellsworth</a> · Family Developer/Engineer</p></div></footer>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -114,13 +116,42 @@ const FAMILY_CONFIG = {
   eventId: 'ellsworth-thanksgiving-2026',
   photoBucket: 'ellsworth-family-photos'
 };
-const AIRBNB_PHOTOS = [
-  '49249a86-b758-46af-aae5-5055801dc322',
-  '3ce4088a-8b4d-4bec-90a3-e5e38256338b',
-  '4911d8e7-a039-4d62-b2c7-c0c3abe2ed26',
-  '37ddd49a-3544-4cc4-b765-52c10b390627',
-  '26bd235d-7aea-4727-9a6f-300cd2fd75da'
-].map(id=>`https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/${id}.jpeg?im_w=1440`);
+// Exterior, patio, backyard and main living area only; labels from Airbnb's photo tour.
+const AIRBNB_PHOTO_DETAILS = [
+  {
+    "id": "be6bdd9c-c350-4f04-9f27-8736cf82b2f1",
+    "label": "Exterior image 1"
+  },
+  {
+    "id": "49249a86-b758-46af-aae5-5055801dc322",
+    "label": "Living area image 1"
+  },
+  {
+    "id": "37ddd49a-3544-4cc4-b765-52c10b390627",
+    "label": "Living area image 2"
+  },
+  {
+    "id": "759fb2ae-5af5-44ec-884e-9fae73b0da5a",
+    "label": "Living area image 3"
+  },
+  {
+    "id": "d1804239-eb93-456f-9433-da8fd87afda1",
+    "label": "Patio image 1"
+  },
+  {
+    "id": "822f62e2-7fa8-4a21-a067-23c882680cf2",
+    "label": "Patio image 2"
+  },
+  {
+    "id": "dbfd180c-1c60-4a63-8346-45e5993ed5e9",
+    "label": "Patio image 3"
+  },
+  {
+    "id": "4d2e7c93-0880-4f50-8dc3-caaf3609909f",
+    "label": "Backyard image 4"
+  }
+];
+const AIRBNB_PHOTOS = AIRBNB_PHOTO_DETAILS.map(photo=>`https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/${photo.id}.jpeg?im_w=1440`);
 // To publish family photos for everyone, place image links here.
 const SHARED_FAMILY_PHOTOS = [
   // {url: 'https://your-image-host.com/family-photo.jpg', caption: 'Thanksgiving memories'}
@@ -144,13 +175,11 @@ const STARTER_DISHES = [
   {id:'plates',label:'Plates, cups & utensils',category:'Drinks & extras'}
 ];
 const STARTER_GAMES = [
- {name:'Spades',desc:'Partners, trash talk, and bragging rights.',icon:'♠'},
- {name:'UNO',desc:'Friendships will be tested. Draw four.',icon:'◈'},
- {name:'Dominoes',desc:'Bring your best slam to the table.',icon:'⚄'},
- {name:'Family Feud',desc:'Survey says… who knows the family best?',icon:'✦'},
- {name:'Charades',desc:'No words, just hilarious acting.',icon:'◌'},
- {name:'Name That Tune',desc:'From old-school soul to modern hits.',icon:'♫'}
+ {id:'builtin-spades',name:'Spades',desc:'Partners, trash talk, and bragging rights.',icon:'♠'},
+ {id:'builtin-uno',name:'UNO',desc:'Friendships will be tested. Draw four.',icon:'◈'},
+ {id:'builtin-name-that-tune',name:'Name That Tune',desc:'From old-school soul to modern hits.',icon:'♫'}
 ];
+function gameInLineup(game){return !['charades','family feud','family fued','dominoes'].includes(String(game.name||'').trim().toLowerCase().replace(/\s+/g,' '));}
 const $=selector=>document.querySelector(selector);
 const safeParse=(s,fallback)=>{try{let value=JSON.parse(s);return value??fallback;}catch{return fallback;}};
 const load=(key,fallback)=>{try{return safeParse(localStorage.getItem('thanksgiving26_'+key),fallback);}catch{return fallback;}};
@@ -161,7 +190,7 @@ const configured=Boolean(FAMILY_CONFIG.url.trim()&&FAMILY_CONFIG.publishableKey.
 const sb=configured && window.supabase?.createClient ? window.supabase.createClient(FAMILY_CONFIG.url.trim(),FAMILY_CONFIG.publishableKey.trim()) : null;
 let isShared=false, memberUserId=null;
 let familyFeatures=null;
-let menuItems=load('menu',[]),games=load('games',STARTER_GAMES),tiktoks=load('tiktoks',DEFAULT_TIKTOKS);
+let menuItems=load('menu',[]),games=load('games',STARTER_GAMES).filter(gameInLineup),tiktoks=load('tiktoks',DEFAULT_TIKTOKS);
 let photos=[...SHARED_FAMILY_PHOTOS],slideIndex=0,playing=!window.matchMedia('(prefers-reduced-motion: reduce)').matches,slideTimer=null;
 if(configured){menuItems=[];games=[...STARTER_GAMES];tiktoks=[...DEFAULT_TIKTOKS];}
 const toast=$('#toast');let toastTimer;
@@ -227,8 +256,8 @@ let houseIndex=0,houseTrigger=null,houseTouchStart=null;
 function showHousePhoto(index){
   houseIndex=(index+AIRBNB_PHOTOS.length)%AIRBNB_PHOTOS.length;
   $('#lightboxImage').src=AIRBNB_PHOTOS[houseIndex];
-  $('#lightboxImage').alt=`Holiday home — Airbnb listing photograph ${houseIndex+1} of ${AIRBNB_PHOTOS.length}`;
-  $('#housePhotoCaption').textContent=`${houseIndex+1} / ${AIRBNB_PHOTOS.length} · Photo from the original Airbnb listing`;
+  $('#lightboxImage').alt=`${AIRBNB_PHOTO_DETAILS[houseIndex].label} — Airbnb listing photo ${houseIndex+1} of ${AIRBNB_PHOTOS.length}`;
+  $('#housePhotoCaption').textContent=`${houseIndex+1} / ${AIRBNB_PHOTOS.length} · ${AIRBNB_PHOTO_DETAILS[houseIndex].label} · Airbnb listing`;
 }
 function closeLightbox(){
   if(!$('#lightboxBackdrop').classList.contains('show'))return;
@@ -466,13 +495,13 @@ $('#addPhotoUrlBtn').addEventListener('click',()=>{
 function renderGames(){if(familyFeatures){familyFeatures.renderGames();return;}$('#gamesGrid').innerHTML=games.map((g,i)=>`<article class="game-card" data-num="${String(i+1).padStart(2,'0')}"><span class="game-icon" aria-hidden="true">${esc(g.icon||'✦')}</span><h3>${esc(g.name)}</h3><p>${esc(g.desc)}</p></article>`).join('');}
 async function refreshGames(){if(!isShared)return;const requestedUser=memberUserId;try{
   const {data,error}=await sb.from('thanksgiving_games').select('id,name,description,icon').eq('event_id',FAMILY_CONFIG.eventId).order('created_at',{ascending:true});
-  if(error)throw error;if(!isShared||requestedUser!==memberUserId)return;games=[...STARTER_GAMES,...data.map(g=>({id:g.id,name:g.name,desc:g.description,icon:g.icon||'✦'}))];renderGames();
+  if(error)throw error;if(!isShared||requestedUser!==memberUserId)return;games=[...STARTER_GAMES,...data.map(g=>({id:g.id,name:g.name,desc:g.description,icon:g.icon||'✦'}))].filter(gameInLineup);renderGames();
 }catch(error){console.error(error);notify('Could not refresh the family games.');}}
 $('#addGameBtn').addEventListener('click',()=>{
   if(!assertFamilyAccess())return;
   openModal(`<h3 id="modalTitle">Suggest an Ellsworth family game</h3><p>What's a game we absolutely need to play?</p><form id="gameForm"><div class="form-field"><label for="gameName">Game name</label><input id="gameName" required maxlength="70" placeholder="e.g., Taboo"></div><div class="form-field"><label for="gameDesc">Why should we play it?</label><input id="gameDesc" maxlength="160" placeholder="A little friendly family competition"></div><div class="modal-actions"><button class="btn" type="submit">Add suggestion</button></div></form>`);
   $('#gameForm').addEventListener('submit',async event=>{
-    event.preventDefault();const name=$('#gameName').value.trim(),desc=$('#gameDesc').value.trim()||'An Ellsworth family game suggestion.';if(!name)return;
+    event.preventDefault();const name=$('#gameName').value.trim(),desc=$('#gameDesc').value.trim()||'An Ellsworth family game suggestion.';if(!name)return;if(!gameInLineup({name})){notify('Please suggest a different game for this lineup.');return;}
     if(isShared){const {error}=await sb.from('thanksgiving_games').insert({event_id:FAMILY_CONFIG.eventId,name,description:desc,icon:'✦'});if(error){console.error(error);notify('Could not save that game.');return;}await refreshGames();}
     else{games.push({id:uid(),name,desc,icon:'✦'});save('games',games);renderGames();}
     closeModal();notify('Ellsworth game suggestion saved!');
@@ -487,35 +516,29 @@ function parseTikTok(url){
     return match?{id:match[2],url:`https://www.tiktok.com/@${match[1]}/video/${match[2]}`}:null;
   }catch{return null;}
 }
-let tikPlaylist=[],tikState={id:null,index:0,ended:false,manual:false,hasPlayed:false};
+let tikPlaylist=[],tikState={id:null,index:0,error:''};
 function updateTikControls(){
   const next=$('#tikNext');if(!next)return;
-  next.disabled=!tikState.ended&&!tikState.manual;
-  next.textContent=tikState.index>=tikPlaylist.length-1?'Back to first video':'Next video →';
+  next.disabled=false;
+  next.textContent=tikPlaylist.length===1?'Reload video':tikState.index>=tikPlaylist.length-1?'Back to first video':'Next video →';
   $('#tikPosition').textContent=`Family favorite ${tikState.index+1} / ${tikPlaylist.length}`;
-  $('#tikStatus').textContent=tikState.manual?'Manual navigation is on. Completion cannot be verified in this mode.':tikState.ended?'This video has finished. The next video is ready.':'Press Play inside the video. Next unlocks when this video ends.';
+  $('#tikStatus').textContent=tikState.error||'Press Play inside the video, or choose Next to skip.';
 }
 function renderTiktoks(force=false){
   const valid=[...new Map(tiktoks.map(parseTikTok).filter(Boolean).map(v=>[v.id,v])).values()];
   tikPlaylist=valid;
   if(!valid.length){
-    tikState={id:null,index:0,ended:false,manual:false,hasPlayed:false};
+    tikState={id:null,index:0,error:''};
     $('#tiktokGrid').innerHTML='<div class="tik-empty"><div><span aria-hidden="true">♫</span><strong>Bring the Ellsworth group chat here.</strong><span>Add a full TikTok video link to start the family playlist.</span></div></div>';return;
   }
-  // Polling and appended clips must never replace a currently playing iframe.
+  // Polling and appended clips preserve the current iframe.
   const current=valid.findIndex(v=>v.id===tikState.id);
   if(!force&&current>=0&&$('#tikNext')){tikState.index=current;updateTikControls();return;}
   const index=current>=0?current:Math.min(tikState.index,valid.length-1),video=valid[index];
-  tikState={id:video.id,index,ended:false,manual:false,hasPlayed:false};
-  // Replacing the entire frame removes the previous browsing context and its audio.
-  $('#tiktokGrid').innerHTML=`<article class="tik-card"><div class="tik-head"><span id="tikPosition"></span><a href="${esc(video.url)}" target="_blank" rel="noopener noreferrer">Open TikTok ↗</a></div><div id="tikPlayerSlot"><iframe id="tikPlayer" title="Family TikTok video ${index+1}" loading="lazy" allow="fullscreen; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" src="https://www.tiktok.com/player/v1/${video.id}?autoplay=0&loop=0&controls=1&play_button=1"></iframe></div><p class="tik-status" id="tikStatus" role="status"></p><div class="tik-controls"><button class="btn secondary small" id="tikNext" disabled>Next video →</button></div><details class="tik-fallback"><summary>Video blocked or Next hasn’t unlocked?</summary><p>TikTok may be unavailable, or its playback events may be blocked. You can switch to manual navigation and open the clip on TikTok. Manual mode cannot verify that a video has finished.</p><button type="button" class="btn ghost small" id="tikManual">Use manual navigation</button></details></article>`;
-  $('#tikManual').addEventListener('click',()=>{
-    // Unload the embed before enabling a path to another clip.
-    $('#tikPlayerSlot').innerHTML='<p class="tik-status">Player closed for manual navigation. Use Open TikTok above to watch this clip.</p>';
-    tikState.manual=true;updateTikControls();
-  });
+  tikState={id:video.id,index,error:''};
+  // Replacing the frame removes the previous browsing context and its audio.
+  $('#tiktokGrid').innerHTML=`<article class="tik-card"><div class="tik-head"><span id="tikPosition"></span><a href="${esc(video.url)}" target="_blank" rel="noopener noreferrer">Open TikTok ↗</a></div><div id="tikPlayerSlot"><iframe id="tikPlayer" title="Family TikTok video ${index+1}" loading="lazy" allow="fullscreen; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" src="https://www.tiktok.com/player/v1/${video.id}?autoplay=0&loop=0&controls=1&play_button=1"></iframe></div><p class="tik-status" id="tikStatus" role="status"></p><div class="tik-controls"><button class="btn secondary small" id="tikNext">Next video →</button></div></article>`;
   $('#tikNext').addEventListener('click',()=>{
-    if(!tikState.ended&&!tikState.manual)return;
     const next=(tikState.index+1)%tikPlaylist.length;
     tikState.id=tikPlaylist[next].id;renderTiktoks(true);$('#tikPlayer')?.focus({preventScroll:true});
   });
@@ -526,12 +549,8 @@ window.addEventListener('message',event=>{
   if(!frame||event.origin!=='https://www.tiktok.com'||event.source!==frame.contentWindow)return;
   const message=event.data;
   if(!message||typeof message!=='object'||message['x-tiktok-player']!==true)return;
-  if(message.type==='onStateChange'){
-    if(message.value===1)tikState.hasPlayed=true;
-    if(message.value===0&&tikState.hasPlayed){tikState.ended=true;updateTikControls();}
-  }
   if(message.type==='onPlayerError'||message.type==='onError'){
-    $('#tikStatus').textContent='TikTok could not play this clip. Open TikTok or choose manual navigation below.';
+    tikState.error='This clip is unavailable. Open it on TikTok or skip to the next video.';updateTikControls();
   }
 });
 // Avoid background audio. This never sends a play command.

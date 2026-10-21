@@ -1,4 +1,21 @@
-# Family planning validation record
+# Lineup and media update validation record
+
+Validated October 21, 2026. This presentation/interaction update has no new schema migration and does not apply SQL or merge/deploy the page.
+
+| Check | Result | Scope |
+| --- | --- | --- |
+| Browser integration suite | **181 checks passed** | Chromium with mocked Supabase/Auth/Storage and TikTok; existing family-planning, menu, upload, slideshow and access tests included |
+| NFL placement and scope | Passed | Last main section is NFL Games; exactly three Thursday games in Central time; no football in editable family plans |
+| Game lineup and vote identity | Passed | Spades, UNO and Name That Tune retain original vote keys; Charades, Family Feud and Dominoes absent, including cached local previews |
+| TikTok navigation | Passed | Skip before playback, immediate subsequent skips, wrapping, single-frame replacement, autoplay disabled, current-origin/source validation, error feedback and player retention on refresh; blocked/unlocked panel absent |
+| Property gallery | Passed | Eight selected URLs/thumbnails only; source room labels, expanded outdoor thumbnails, keyboard wrap, touch/swipe, modal focus and Escape |
+| Real photo asset checks | **8/8 thumbnail and full-size URLs HTTP 200** | Published 720px/1440px variants from the original listing; downloaded thumbnails visually reviewed; only exterior, patio, backyard and living area retained |
+| Responsive/visual review | Passed | Automated overflow checks at 375, 430, 768, 1024 and 1440px; real listing-photo gallery and final NFL section reviewed at desktop/mobile widths |
+| Syntax/whitespace | Passed | Inline script, feature script, browser runner and `git diff --check` |
+
+The database schema is unchanged, so the database suite was not repeated for this UI update; the prior real-Postgres results are recorded below. Real TikTok playback and physical mobile/TV devices remain outside this automated verification. The earlier family-planning migration is still required for installations that have not installed those shared features.
+
+## Prior family planning validation record
 
 Validated October 21, 2026. This PR does not apply `20261021175039_family_planning.sql` to production, merge the PR, or deploy the page.
 

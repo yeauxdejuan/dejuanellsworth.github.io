@@ -2,7 +2,7 @@
 // Classic script: initialized after the existing board has defined its shared state.
 function initFamilyFeatures(){
   const eventId=FAMILY_CONFIG.eventId,localUser='preview-device';
-  const builtinKeys=['builtin-spades','builtin-uno','builtin-dominoes','builtin-family-feud','builtin-charades','builtin-name-that-tune'];
+  const builtinKeys={Spades:'builtin-spades',UNO:'builtin-uno','Name That Tune':'builtin-name-that-tune'};
   const seeds=[
     {id:'00000000-2026-4000-8000-000000000001',title:'Thanksgiving dinner',day:'2026-11-26',kind:'dinner',is_seed:true,start_time:null,note:'Time to be confirmed by the family.'},
     {id:'00000000-2026-4000-8000-000000000002',title:'Family game night',day:'2026-11-26',kind:'games',is_seed:true,start_time:null,note:'We’ll add the time and game lineup later.'}
@@ -10,12 +10,9 @@ function initFamilyFeatures(){
   // Verified 2026-10-21 against NFL.com. Stored Central wall times, not viewer-local times.
   const nflSource='https://www.nfl.com/news/thanksgiving-2026-nfl-schedule-release';
   const football=[
-    {id:'nfl-packers-rams',day:'2026-11-25',start_time:'19:00',title:'Green Bay Packers at Los Angeles Rams',network:'Netflix',source:nflSource},
     {id:'nfl-bears-lions',day:'2026-11-26',start_time:'12:00',title:'Chicago Bears at Detroit Lions',network:'CBS / Paramount+',source:nflSource},
     {id:'nfl-eagles-cowboys',day:'2026-11-26',start_time:'15:30',title:'Philadelphia Eagles at Dallas Cowboys',network:'FOX',source:nflSource},
-    {id:'nfl-chiefs-bills',day:'2026-11-26',start_time:'19:20',title:'Kansas City Chiefs at Buffalo Bills',network:'NBC / Peacock',source:nflSource},
-    {id:'nfl-broncos-steelers',day:'2026-11-27',start_time:'14:00',title:'Denver Broncos at Pittsburgh Steelers',network:'Prime Video',source:nflSource},
-    {id:'nfl-saints-bengals',day:'2026-11-29',start_time:'12:00',title:'New Orleans Saints at Cincinnati Bengals',network:'CBS',source:'https://www.nfl.com/schedules/2026/by-week/week-12'}
+    {id:'nfl-chiefs-bills',day:'2026-11-26',start_time:'19:20',title:'Kansas City Chiefs at Buffalo Bills',network:'NBC / Peacock',source:nflSource}
   ].map(p=>({...p,kind:'football'}));
   const config={
     rsvps:{table:'thanksgiving_rsvps',columns:'event_id,user_id,household_name,response,adults,children,arrival_date,arrival_time,departure_date,departure_time,note'},
@@ -98,14 +95,17 @@ function initFamilyFeatures(){
     $('#removeRsvp')?.addEventListener('click',()=>{if(!guard('rsvps'))return;submitForm(form,()=>isShared?changed(sb.from(config.rsvps.table).delete().eq('event_id',eventId).eq('user_id',who()).select('user_id')):saveLocal('rsvps',state.rsvps.filter(r=>r.user_id!==who())),'rsvps','Your RSVP has been removed.');});
   }
   function renderSchedule(){
-    const filter=$('#scheduleFilter').value,plans=(!configured||isShared)?state.plans:seeds;
-    const entries=[...(filter==='football'?[]:plans),...(filter==='family'?[]:football)].sort((a,b)=>a.day.localeCompare(b.day)||(a.start_time||'99').localeCompare(b.start_time||'99'));
+    const plans=(!configured||isShared)?state.plans:seeds;
+    const entries=plans.slice().sort((a,b)=>a.day.localeCompare(b.day)||(a.start_time||'99').localeCompare(b.start_time||'99'));
     $('#scheduleStatus').textContent=showStatus('plans','the shared family schedule');
     $('#addScheduleBtn').disabled=configured&&isShared&&!ready.plans;
     $('#scheduleList').innerHTML=[...new Set(entries.map(e=>e.day))].map(day=>`<section class="schedule-day"><h3>${esc(dateText(day))}</h3>${entries.filter(p=>p.day===day).map(p=>{
-      const canEdit=p.kind!=='football'&&editable('plans')&&(p.is_seed||p.created_by===who());
-      return `<article class="schedule-entry ${p.kind==='football'?'football':''}" data-plan-id="${esc(p.id)}"><div class="schedule-time">${p.start_time?esc(clock(p.start_time))+(p.end_time?' – '+esc(clock(p.end_time)):'')+' CT':'Time to be confirmed'}</div><div><span class="response-chip">${p.kind==='football'?'NFL football':p.kind==='games'?'Family games':p.kind==='dinner'?'At the table':p.kind==='outing'?'Outing':'Family plan'}</span><h4>${esc(p.title)}</h4>${p.location?`<p>${esc(p.location)}</p>`:''}${p.note?`<p>${esc(p.note)}</p>`:''}${p.network?`<p>${esc(p.network)}</p><a href="${p.source}" target="_blank" rel="noopener noreferrer">Official NFL schedule ↗</a>`:''}</div>${canEdit?`<button type="button" class="btn ghost small" data-edit-plan="${esc(p.id)}">Edit plan</button>`:''}</article>`;
+      const canEdit=editable('plans')&&(p.is_seed||p.created_by===who());
+      return `<article class="schedule-entry" data-plan-id="${esc(p.id)}"><div class="schedule-time">${p.start_time?esc(clock(p.start_time))+(p.end_time?' – '+esc(clock(p.end_time)):'')+' CT':'Time to be confirmed'}</div><div><span class="response-chip">${p.kind==='games'?'Family games':p.kind==='dinner'?'At the table':p.kind==='outing'?'Outing':'Family plan'}</span><h4>${esc(p.title)}</h4>${p.location?`<p>${esc(p.location)}</p>`:''}${p.note?`<p>${esc(p.note)}</p>`:''}</div>${canEdit?`<button type="button" class="btn ghost small" data-edit-plan="${esc(p.id)}">Edit plan</button>`:''}</article>`;
     }).join('')}</section>`).join('')||'<p class="feature-empty">No plans yet. Add something for the family to look forward to.</p>';
+  }
+  function renderFootball(){
+    $('#nflGamesList').innerHTML=football.map(p=>`<article class="schedule-entry football" data-plan-id="${p.id}"><div class="schedule-time">${esc(clock(p.start_time))} CT</div><div><h3>${esc(p.title)}</h3><p>${esc(p.network)}</p></div></article>`).join('');
   }
   function openPlan(id){
     if(!guard('plans'))return;
@@ -123,10 +123,10 @@ function initFamilyFeatures(){
     });
     $('#removePlan')?.addEventListener('click',()=>{if(!guard('plans'))return;submitForm(form,()=>isShared?changed(sb.from(config.plans.table).delete().eq('event_id',eventId).eq('id',own.id).select('id')):saveLocal('plans',state.plans.filter(p=>p.id!==own.id)),'plans','The plan has been removed.');});
   }
-  function gameKey(g){return g.id||builtinKeys[STARTER_GAMES.findIndex(s=>s.name===g.name)];}
+  function gameKey(g){return g.id||builtinKeys[g.name];}
   function renderGames(){
     const rows=(!configured||isShared)?state.votes:[];
-    const list=games.map((g,i)=>({...g,key:gameKey(g),order:i,count:rows.filter(v=>v.game_key===gameKey(g)).length}));
+    const list=games.filter(gameInLineup).map((g,i)=>({...g,key:gameKey(g),order:i,count:rows.filter(v=>v.game_key===gameKey(g)).length}));
     if($('#gameSort').value==='popular')list.sort((a,b)=>b.count-a.count||a.order-b.order);
     $('#gameVoteStatus').textContent=showStatus('votes','the family’s game votes');
     $('#gamesGrid').innerHTML=list.map((g,i)=>{
@@ -195,10 +195,10 @@ function initFamilyFeatures(){
     document.body.style.overflow='';if(document.fullscreenElement===$('#tvSlideshow'))document.exitFullscreen?.().catch(()=>{});
     (tvTrigger?.isConnected?tvTrigger:$('#startTv'))?.focus({preventScroll:true});tvWasFullscreen=false;
   }
-  function render(){renderRsvps();renderSchedule();renderGames();renderPhoto();}
+  function render(){renderRsvps();renderSchedule();renderFootball();renderGames();renderPhoto();}
   $('#editRsvpBtn').addEventListener('click',openRsvp);$('#addScheduleBtn').addEventListener('click',()=>openPlan());
   $('#scheduleList').addEventListener('click',e=>{const button=e.target.closest('[data-edit-plan]');if(button)openPlan(button.dataset.editPlan);});
-  $('#scheduleFilter').addEventListener('change',renderSchedule);$('#gameSort').addEventListener('change',renderGames);
+  $('#gameSort').addEventListener('change',renderGames);
   $('#refreshPlanningBtn').addEventListener('click',()=>{if(assertFamilyAccess())refresh();});
   $('#gamesGrid').addEventListener('click',e=>{const button=e.target.closest('[data-vote]');if(button)vote(button.dataset.vote);});
   extra.addEventListener('click',e=>{const button=e.target.closest('[data-react]');if(button)react(button.dataset.react);});
