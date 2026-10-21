@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import {createServer} from 'node:http';
 import {readFile,mkdir} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
 import {chromium} from 'playwright-core';
 const root=new URL('../',import.meta.url);
 const svg='<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800"><rect width="1200" height="800" fill="#d6a34a"/><path d="M0 600 600 100 1200 600" fill="#b65a32"/></svg>';
@@ -58,10 +59,13 @@ const url=`http://127.0.0.1:${server.address().port}`;
 let browser;
 const errors=[];
 async function newPage(width=1440,options={}){
- const {localPreview=false,...contextOptions}=options;
+ const {localPreview=false,staleFeatureCache=false,...contextOptions}=options;
  const context=await browser.newContext({viewport:{width,height:1000},...contextOptions});
  await context.route('**/*',async route=>{
   const u=route.request().url();if(localPreview&&u===url+'/'){const html=(await readFile(new URL('index.html',root),'utf8')).replace(/url: 'https:\/\/[^']+\.supabase.co'/,"url: ''");return route.fulfill({contentType:'text/html',body:html});}
+  // The previous release attached a listener to the now-removed Family Plans button.
+  // A returning browser may still have that response cached at the unversioned URL.
+  if(staleFeatureCache&&u===url+'/assets/family-features.js')return route.fulfill({contentType:'application/javascript',body:"function initFamilyFeatures(){document.querySelector('#addScheduleBtn').addEventListener('click',()=>{});}"});
   if(u.startsWith(url)||u.startsWith('data:'))return route.continue();
   if(u.includes('/supabase.min.js'))return route.fulfill({contentType:'application/javascript',body:stub});
   if(u.startsWith('https://a0.muscache.com')||u.startsWith('https://example.test'))return route.fulfill({contentType:'image/svg+xml',body:svg});
@@ -72,6 +76,29 @@ async function newPage(width=1440,options={}){
 }
 async function join(p){await p.locator('#familyPortal').waitFor({state:'visible'});await p.fill('#familyCode','synthetic-test-code-only-2026');await p.click('#joinFamilyBtn');await p.waitForFunction(()=>isShared&&menuReady);}
 async function signup(p,name,dish='mac'){await p.locator(`[data-dish-id="${dish}"]`).click();await p.fill('#claimName',name);await p.fill('#claimNote','Synthetic test note');await p.locator('#claimForm button[type=submit]').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});}
+async function checkFeatureAssetVersions(p){
+ for(const [path,selector,attribute] of [['assets/family-features.js','script[src*="family-features.js"]','src'],['assets/family-features.css','link[href*="family-features.css"]','href']]){
+  const hash=createHash('sha256').update(await readFile(new URL(path,root))).digest('hex').slice(0,12);
+  const assetUrl=new URL(await p.locator(selector).getAttribute(attribute),url);
+  check(assetUrl.searchParams.get('v')===hash,`${path} URL matches its content so releases bypass stale cached assets`);
+ }
+}
+async function checkRsvpRefreshWithCachedAssets(width){
+ const p=await newPage(width,{staleFeatureCache:true,hasTouch:width<500,isMobile:width<500});
+ await join(p);await p.waitForFunction(()=>!document.querySelector('#editRsvpBtn').disabled);
+ await p.click('#editRsvpBtn');await p.fill('#rsvpName',`Returning household ${width}`);await p.fill('#rsvpAdults','2');await p.fill('#rsvpChildren','1');await p.fill('#rsvpArrival','2026-11-25');await p.fill('#rsvpArrivalTime','18:30');await p.locator('#rsvpForm button[type=submit]').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});
+ const ownUser=await p.evaluate(()=>memberUserId);
+ for(let attempt=0;attempt<2;attempt++){
+  await p.reload();await p.waitForFunction(()=>isShared&&familyFeatures&&document.querySelector('#editRsvpBtn').textContent==='Edit my RSVP');
+  check(await p.evaluate(()=>memberUserId)===ownUser,'Refresh restores the same family account');
+  check((await p.locator('#rsvpList').innerText()).includes(`Returning household ${width}`),`Saved RSVP remains visible after refresh ${attempt+1} at ${width}px`);
+  check((await p.locator('#rsvpSummary').innerText()).includes('3\nconfirmed guests'),'Refreshed RSVP retains household counts');
+  check((await p.locator('#rsvpList').innerText()).includes('6:30 PM CT'),'Refreshed RSVP retains arrival details');
+  await p.click('#refreshRsvpsBtn');await p.click('#editRsvpBtn');check(await p.inputValue('#rsvpName')===`Returning household ${width}`,'Refreshed RSVP can still be edited');await p.click('#modalClose');
+ }
+ check(tables.thanksgiving_rsvps.filter(r=>r.user_id===ownUser).length===1,'Refreshing never creates a duplicate RSVP');
+ await p.click('#editRsvpBtn');await p.click('#removeRsvp');await p.locator('#modalBackdrop').waitFor({state:'hidden'});await p.context().close();
+}
 async function checkRequestedLayout(p){
  check(await p.locator('#nfl-games').evaluate(el=>el===document.querySelector('main').lastElementChild),'NFL Games is the final app section');
  check((await p.locator('#nfl-games h2').innerText()).trim()==='NFL Games.','Football heading is NFL Games');
@@ -166,8 +193,9 @@ async function checkLocalPlanning(){
 }
 try{
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+ await checkRsvpRefreshWithCachedAssets(375);await checkRsvpRefreshWithCachedAssets(1440);
  const mobile=await newPage(375,{isMobile:true,hasTouch:true});await checkInvitationRouting(mobile);await mobile.context().close();
- const a=await newPage();await checkRequestedLayout(a);await checkInvitationRouting(a);await join(a);
+ const a=await newPage();await checkFeatureAssetVersions(a);await checkRequestedLayout(a);await checkInvitationRouting(a);await join(a);
  await a.locator('#tikForm button').click();check(await a.locator('#tikUrl').evaluate(el=>el===document.activeElement&&!el.validity.valid),'Joined TikTok form still validates empty URLs');
  let release;holdClaim=new Promise(r=>release=r);await a.locator('[data-dish-id="mac"]').click();await a.fill('#claimName','Test cook A');await a.locator('#claimForm button[type=submit]').click();
  check(!(await a.locator('#toast').innerText()).includes('sign-up is saved'),'No success before database confirmation');check(await a.locator('#claimForm button[type=submit]').isDisabled(),'Double submission disabled');release();await a.locator('#modalBackdrop').waitFor({state:'hidden'});
