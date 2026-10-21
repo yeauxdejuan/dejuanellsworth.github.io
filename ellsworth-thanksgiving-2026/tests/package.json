@@ -1,0 +1,15 @@
+{
+  "name": "ellsworth-thanksgiving-v2-checks",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node database.mjs && node browser.mjs",
+    "test:db": "node database.mjs",
+    "test:browser": "node browser.mjs"
+  },
+  "devDependencies": {
+    "embedded-postgres": "17.10.0-beta.17",
+    "pg": "8.23.1",
+    "playwright-core": "1.64.1"
+  }
+}

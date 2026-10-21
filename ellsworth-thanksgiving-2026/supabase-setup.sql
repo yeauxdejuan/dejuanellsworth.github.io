@@ -1,4 +1,9 @@
--- ELLSWORTH FAMILY THANKSGIVING · RUN ONCE IN A NEW SUPABASE PROJECT
+-- ELLSWORTH FAMILY THANKSGIVING · V1 BASELINE FOR NEW PROJECTS ONLY
+-- V2 INSTALLATION REQUIRES TWO STEPS:
+-- 1. Run this baseline ONCE in a NEW project (never rerun on production).
+-- 2. Run migrations/20261021051504_shared_dish_signups.sql before using V2.
+-- Existing installations: run ONLY that incremental migration.
+-- Keep these steps separate so legacy records are migrated with the same tested path.
 -- IMPORTANT: This schema does not contain the family invitation code.
 -- Set the private code in Supabase SQL Editor using the command in README.md.
 -- NEVER put an actual family code, service_role key, or secret key in GitHub.

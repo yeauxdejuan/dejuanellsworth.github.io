@@ -3,50 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#20382c">
+  <meta name="theme-color" content="#963f2b">
   <meta name="description" content="The Ellsworth Family Thanksgiving 2026 — our holiday stay, shared dinner sign-ups, family memories, games and TikToks.">
   <title>The Ellsworth Family · Thanksgiving 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght,SOFT,WONK@9..144,400,0,0;9..144,500,0,0;9..144,600,0,0;9..144,700,0,0&display=swap" rel="stylesheet">
   <style>
-    :root{--forest:#20382c;--deep:#142a20;--fern:#5f795e;--rust:#ba673b;--gold:#d6a65d;--cream:#faf6ef;--oat:#f0e9de;--paper:#fffdf8;--muted:#777d72;--line:#dfdfd2;--ink:#24362b;--serif:'Fraunces',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;--shadow:0 14px 50px rgba(31,44,28,.085)}
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}button,input,textarea,select{font:inherit}button{cursor:pointer}a{color:inherit}img{display:block;max-width:100%}section{scroll-margin-top:92px}::selection{background:#dfd09d;color:var(--forest)}
-    .shell{max-width:1240px;padding:0 28px;margin:0 auto}.eyebrow{display:inline-flex;align-items:center;gap:9px;text-transform:uppercase;letter-spacing:.18em;font-size:11px;font-weight:800;color:var(--rust)}.eyebrow:before{content:'';height:1px;width:25px;background:currentColor}.h2{font:500 clamp(34px,4vw,55px)/1.09 var(--serif);letter-spacing:-.035em;margin:13px 0 15px}.section-lead{color:#6d746a;max-width:595px;margin:0 0 29px;line-height:1.7}.nav-link{font-size:13px;font-weight:700;text-decoration:none;color:var(--forest);opacity:.82}.nav-link:hover{opacity:1;color:var(--rust)}.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:100px;border:1px solid transparent;background:var(--forest);color:white;text-decoration:none;font-weight:700;padding:13px 22px;transition:.2s ease;white-space:nowrap}.btn:hover{transform:translateY(-2px);background:#31533d}.btn.secondary{background:transparent;color:var(--forest);border-color:var(--forest)}.btn.secondary:hover{background:#e8efe6}.btn.light{background:var(--paper);color:var(--forest)}.btn.small{padding:9px 16px;font-size:12px}.btn.ghost{background:transparent;border-color:#d7dcd1;color:var(--forest)}.btn:focus-visible,.nav-link:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,.icon-btn:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
-    .topline{background:var(--deep);color:#efeee3;text-align:center;padding:9px 15px;text-transform:uppercase;letter-spacing:.14em;font-size:10px;font-weight:700}.topline span{color:#e9b67b}.site-header{position:sticky;top:0;z-index:40;background:rgba(250,246,239,.96);backdrop-filter:blur(18px);border-bottom:1px solid rgba(50,63,50,.09)}.nav{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:76px}.brand{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-weight:700;font-size:19px;letter-spacing:-.045em;text-decoration:none;color:var(--forest)}.brandmark{display:grid;place-items:center;width:37px;height:37px;border-radius:50%;border:1px solid #abb7a3;color:var(--rust);font-family:Georgia,serif;font-size:24px}.nav-links{display:flex;gap:26px;align-items:center}.nav-cta{padding:10px 18px;font-size:12px}.mobile-menu{display:none;border:0;background:transparent;font-size:22px;color:var(--forest)}
-    .hero{background:var(--forest);color:#f8f4ea;overflow:hidden;position:relative}.hero:before{content:'✳';position:absolute;font-size:470px;line-height:1;right:-105px;bottom:-245px;color:#ffffff08;pointer-events:none}.hero-wrap{display:grid;grid-template-columns:.92fr 1.08fr;gap:56px;min-height:645px;align-items:center;padding-top:54px;padding-bottom:57px}.hero .eyebrow{color:#e1b27a}.hero h1{font:500 clamp(52px,6.2vw,87px)/1.03 var(--serif);letter-spacing:-.045em;margin:21px 0 24px}.hero h1 em{color:#e4b57f;font-weight:400;font-style:italic}.hero p{font-size:16px;line-height:1.85;color:#d4ded2;max-width:495px;margin:0 0 34px}.hero-actions{display:flex;flex-wrap:wrap;gap:12px}.hero-actions .btn.secondary{color:#f9f5ed;border-color:#9daf9b}.hero-actions .btn.secondary:hover{background:#ffffff13}.hero-bottom{display:flex;flex-wrap:wrap;gap:24px;margin-top:48px;padding-top:24px;border-top:1px solid #79907966}.hero-stat strong{display:block;font:500 24px var(--serif);color:#f9f4e9}.hero-stat span{display:block;color:#c5d0c1;font-size:11px;letter-spacing:.04em;margin-top:4px}.hero-media{position:relative;padding:22px 0 32px 30px}.hero-main{height:505px;border-radius:190px 190px 14px 14px;overflow:hidden;position:relative;background:linear-gradient(35deg,#a69a7b,#dbccad)}.hero-main>img{width:100%;height:100%;object-fit:cover;object-position:center}.hero-main:after{content:'';position:absolute;inset:50% 0 0;background:linear-gradient(transparent,#0006);pointer-events:none}.hero-image-label{position:absolute;bottom:25px;left:25px;z-index:1;padding:8px 14px;border-radius:30px;background:#fbf6edf2;color:var(--forest);font-size:12px;font-weight:700}.photo-stamp{position:absolute;right:-25px;bottom:8px;background:var(--gold);color:#332d20;width:117px;height:117px;display:flex;align-items:center;justify-content:center;text-align:center;border-radius:50%;font:500 15px/1.35 var(--serif);transform:rotate(10deg);box-shadow:var(--shadow);z-index:2}.hero-leaf{position:absolute;top:-9px;left:-20px;font-size:69px;color:#b1a979;transform:rotate(22deg);line-height:1}
-    .ribbon{display:flex;gap:20px;flex-wrap:wrap;align-items:center;justify-content:center;padding:19px 28px;border-bottom:1px solid var(--line);background:#f1ebdf;color:#586957;font-size:12px;font-weight:700;letter-spacing:.035em}.ribbon i{font-style:normal;color:#c28d55}.section-pad{padding:95px 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:28px}.stay-grid{display:grid;grid-template-columns:.82fr 1.18fr;gap:70px;align-items:center}.stay-blurb{margin:23px 0}.amenity-list{display:grid;grid-template-columns:1fr 1fr;gap:15px 18px;margin:30px 0 34px}.amenity{display:flex;gap:11px;align-items:center;font-size:13px;font-weight:700}.amenity b{height:34px;width:34px;border-radius:50%;display:grid;place-items:center;background:#e9ece1;color:var(--forest);font-weight:500;font-size:17px}.stay-note{border-left:3px solid var(--gold);padding-left:15px;color:#6e766b;font-size:12px;line-height:1.7;margin-top:22px}.property-mosaic{display:grid;grid-template-columns:1.3fr 1fr;grid-template-rows:220px 220px;gap:10px}.property-mosaic button{border:0;padding:0;background:#dcd5c4;position:relative;overflow:hidden;border-radius:8px}.property-mosaic button:first-child{grid-row:span 2;border-radius:140px 10px 10px 10px}.property-mosaic img{width:100%;height:100%;object-fit:cover;transition:transform .45s}.property-mosaic button:hover img{transform:scale(1.055)}.property-mosaic button:after{content:'View photo ↗';position:absolute;bottom:13px;left:14px;padding:5px 11px;border-radius:99px;font-size:11px;font-weight:700;background:#fffdf3ed;opacity:0;transition:.2s}.property-mosaic button:hover:after{opacity:1}.property-mosaic button:last-child:after{content:'View all photos ↗'}
-    .menu-bg{background:var(--oat)}.menu-board{background:var(--paper);border:1px solid #e5e0d4;box-shadow:var(--shadow);border-radius:20px;overflow:hidden}.board-head{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:28px 32px;background:#faf9f4;border-bottom:1px solid var(--line)}.board-head h3{font:500 25px var(--serif);margin:0 0 4px}.board-head p{margin:0;color:var(--muted);font-size:12px}.board-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.progress-chip{background:#e9eee5;color:#36563d;padding:9px 13px;border-radius:99px;font-weight:700;font-size:11px}.mode-chip{font-size:11px;color:#a46332;background:#f6e6d6;border-radius:99px;padding:7px 12px;font-weight:800;display:inline-block;margin-bottom:12px}.mode-chip.shared{background:#e5f0e6;color:#365c41}.category-head{display:flex;align-items:center;gap:10px;margin:27px 31px 10px;text-transform:uppercase;font-size:11px;letter-spacing:.14em;font-weight:800;color:var(--rust)}.category-head:after{content:'';flex:1;height:1px;background:#e2dfd5}.dish-list{padding:0 23px 3px}.dish-row{display:grid;grid-template-columns:1fr minmax(150px,.8fr) auto;align-items:center;gap:15px;border-bottom:1px solid #ecebe4;padding:15px 9px}.dish-row:last-child{border-bottom:0}.dish-name{font-size:14px;font-weight:800}.dish-note{color:#858d82;font-size:11px;margin-top:2px}.dish-person{font-size:12px;color:#6b766b}.dish-person strong{color:#33583e}.dish-person.pending{font-style:italic;color:#a0a397}.dish-row .btn{min-width:87px}.menu-foot{display:flex;gap:20px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding:22px 30px;background:#f7f4ec;border-top:1px solid var(--line);font-size:12px;color:#7e8278}.menu-foot .btn{color:var(--forest)}
-    .memory-bg{background:#fdfaf5}.memory-layout{display:grid;grid-template-columns:.72fr 1.28fr;gap:70px;align-items:center}.memory-layout .h2{max-width:360px}.polaroid-illustration{display:flex;align-items:center;justify-content:center;height:85px;width:105px;border:7px solid white;border-bottom:20px solid white;box-shadow:0 8px 25px #0001;background:linear-gradient(130deg,#a5b5a0,#e8ca9c);transform:rotate(-9deg);font-size:38px;margin:23px 0 29px}.memory-frame{position:relative;min-height:450px;border-radius:12px;background:#e7e9dd;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}.memory-frame img{height:470px;width:100%;object-fit:contain;background:#e5e4d9}.memory-empty{padding:28px;text-align:center;max-width:360px}.memory-empty .empty-symbol{font:500 80px var(--serif);color:#9aaf92;line-height:1}.memory-empty h3{font:500 30px var(--serif);margin:15px 0 8px}.memory-empty p{font-size:13px;color:#6f786e;line-height:1.7}.carousel-bottom{position:absolute;bottom:16px;left:17px;right:17px;display:flex;align-items:center;justify-content:space-between;z-index:1;gap:15px}.controls{display:flex;gap:8px}.icon-btn{width:39px;height:39px;border-radius:50%;border:1px solid #dadccf;background:#fffffff2;display:grid;place-items:center;color:var(--forest);font-size:18px}.icon-btn:hover{background:#e9efdf}.slide-count{background:#fffef8f0;border-radius:25px;padding:8px 13px;font-weight:800;font-size:11px;color:var(--forest)}.memory-tools{display:flex;gap:10px;flex-wrap:wrap;margin:23px 0 10px}.memory-tools button{font-size:12px}.helper{font-size:11px;color:#91978e;line-height:1.6}.hidden-input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}.file-picker{cursor:pointer}.photo-caption{font-size:12px;color:#68746a;margin:14px 0 0;min-height:20px}
-    .games-bg{background:#20382c;color:#fff9ec}.games-bg .eyebrow{color:#ddb37d}.games-bg .section-lead{color:#c4d0c0}.games-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:24px}.game-card{background:#2c4938;border:1px solid #6e8b7155;border-radius:15px;padding:25px;min-height:195px;position:relative;overflow:hidden}.game-card:before{content:attr(data-num);position:absolute;right:19px;top:10px;font:500 57px var(--serif);color:#ffffff0b}.game-icon{display:inline-flex;align-items:center;justify-content:center;font-size:21px;width:42px;height:42px;border-radius:10px;background:#ffffff13;margin-bottom:24px}.game-card h3{font:500 22px var(--serif);margin:0 0 7px}.game-card p{color:#becdbd;font-size:12px;max-width:230px;line-height:1.65;margin:0}.game-add{margin-top:24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}.games-bg .btn.secondary{color:#f8f7ed;border-color:#8ea78b}.games-bg .btn.secondary:hover{background:#ffffff13}
-    .tiktok-layout{display:grid;grid-template-columns:.67fr 1.33fr;gap:66px;align-items:start}.tiktok-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.tik-card{border-radius:14px;background:#fff;min-height:300px;overflow:hidden;box-shadow:var(--shadow);border:1px solid #e8e7db}.tik-card iframe{width:100%;height:450px;border:0}.tik-head{padding:15px 17px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;font-weight:800}.tik-head a{color:var(--rust);font-size:11px}.tik-empty{min-height:310px;border:1.5px dashed #b9c3b1;border-radius:14px;background:#eeefe5;display:grid;place-items:center;text-align:center;padding:30px;color:#687568}.tik-empty strong{font:500 26px var(--serif);display:block;color:var(--forest);margin:8px 0}.tik-empty span{display:block;max-width:290px;font-size:12px;line-height:1.6}.small-form{margin-top:26px;display:flex;gap:8px;align-items:stretch}.small-form input{min-width:0;flex:1;border:1px solid #cfd4c9;background:white;border-radius:50px;padding:12px 17px;font-size:12px}.small-form .btn{padding:12px 18px;font-size:12px}.footer{background:#172e23;color:#d7e3d2;padding:55px 0 20px}.footer-grid{display:flex;align-items:center;justify-content:space-between;gap:24px;padding-bottom:42px;border-bottom:1px solid #e5f0dc33}.footer h2{font:500 35px var(--serif);color:#faf5e8;letter-spacing:-.03em;margin:0 0 10px}.footer p{font-size:13px;margin:0;color:#b9c7b9}.footer-bottom{display:flex;justify-content:space-between;gap:18px;align-items:center;padding-top:20px;font-size:11px;color:#aabdae}.footer a{color:#f4deb6}
-    .toast{position:fixed;right:24px;bottom:24px;z-index:90;background:var(--deep);color:white;max-width:340px;padding:15px 20px;border-radius:11px;box-shadow:0 12px 35px #0004;opacity:0;transform:translateY(15px);transition:.25s;pointer-events:none;font-size:13px}.toast.show{opacity:1;transform:translateY(0)}.modal-backdrop{position:fixed;inset:0;z-index:100;background:#12251bba;backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:22px}.modal-backdrop.show{display:flex}.modal{background:#fffdf7;border-radius:18px;width:min(100%,475px);padding:30px;box-shadow:0 24px 80px #0003;position:relative;max-height:92vh;overflow:auto}.modal h3{font:500 31px var(--serif);letter-spacing:-.035em;margin:0 0 10px}.modal p{font-size:13px;color:#717d70;line-height:1.65;margin:0 0 24px}.form-field{margin-bottom:15px}.form-field label{display:block;font-size:12px;font-weight:800;margin-bottom:7px}.form-field input,.form-field textarea,.form-field select{border:1px solid #cbd2c6;background:#fff;width:100%;padding:12px 14px;border-radius:10px;color:var(--forest)}.form-field textarea{resize:vertical;min-height:82px}.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:25px}.close-modal{position:absolute;right:16px;top:13px;font-size:24px;border:0;background:transparent;color:#758173}.modal.lightbox{padding:9px;width:min(92vw,1100px);background:#132018}.lightbox img{max-height:80vh;width:100%;object-fit:contain}.lightbox .close-modal{background:#fff;border-radius:50%;width:40px;height:40px;right:10px;top:10px}.lightbox-caption{color:white;font-size:12px;padding:8px 12px}
+    :root{--primary:#963f2b;--deep:#453026;--olive:#71754c;--rust:#b65a32;--gold:#d6a34a;--cream:#faf1e4;--oat:#f1e2cf;--paper:#fffdf8;--muted:#706057;--line:#dfcdb9;--ink:#453026;--serif:'Fraunces',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;--shadow:0 14px 50px rgba(31,44,28,.085)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}button,input,textarea,select{font:inherit}button{cursor:pointer}a{color:inherit}img{display:block;max-width:100%}section{scroll-margin-top:92px}::selection{background:#dfd09d;color:var(--primary)}
+    .shell{max-width:1240px;padding:0 28px;margin:0 auto}.eyebrow{display:inline-flex;align-items:center;gap:9px;text-transform:uppercase;letter-spacing:.18em;font-size:11px;font-weight:800;color:var(--rust)}.eyebrow:before{content:'';height:1px;width:25px;background:currentColor}.h2{font:500 clamp(34px,4vw,55px)/1.09 var(--serif);letter-spacing:-.035em;margin:13px 0 15px}.section-lead{color:#706057;max-width:595px;margin:0 0 29px;line-height:1.7}.nav-link{font-size:13px;font-weight:700;text-decoration:none;color:var(--primary);opacity:.82}.nav-link:hover{opacity:1;color:var(--rust)}.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:100px;border:1px solid transparent;background:var(--primary);color:white;text-decoration:none;font-weight:700;padding:13px 22px;transition:.2s ease;white-space:nowrap}.btn:hover{transform:translateY(-2px);background:#793121}.btn.secondary{background:transparent;color:var(--primary);border-color:var(--primary)}.btn.secondary:hover{background:#f6e7d7}.btn.light{background:var(--paper);color:var(--primary)}.btn.small{padding:9px 16px;font-size:12px}.btn.ghost{background:transparent;border-color:#d7dcd1;color:var(--primary)}.btn:focus-visible,.nav-link:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,.icon-btn:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+    .topline{background:var(--deep);color:#efeee3;text-align:center;padding:9px 15px;text-transform:uppercase;letter-spacing:.14em;font-size:10px;font-weight:700}.topline span{color:#e9b67b}.site-header{position:sticky;top:0;z-index:40;background:rgba(250,246,239,.96);backdrop-filter:blur(18px);border-bottom:1px solid rgba(50,63,50,.09)}.nav{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:76px}.brand{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-weight:700;font-size:19px;letter-spacing:-.045em;text-decoration:none;color:var(--primary)}.brandmark{display:grid;place-items:center;width:37px;height:37px;border-radius:50%;border:1px solid #c69e7e;color:var(--rust);font-family:Georgia,serif;font-size:24px}.nav-links{display:flex;gap:26px;align-items:center}.nav-cta{padding:10px 18px;font-size:12px}.mobile-menu{display:none;border:0;background:transparent;font-size:22px;color:var(--primary)}
+    .hero{background:var(--primary);color:#f8f4ea;overflow:hidden;position:relative}.hero:before{content:'';position:absolute;width:430px;height:430px;right:-110px;bottom:-180px;background:url('assets/autumn-leaf.svg') center/contain no-repeat;opacity:.12;pointer-events:none}.hero-wrap{display:grid;grid-template-columns:.92fr 1.08fr;gap:56px;min-height:645px;align-items:center;padding-top:54px;padding-bottom:57px}.hero .eyebrow{color:#e1b27a}.hero h1{font:500 clamp(52px,6.2vw,87px)/1.03 var(--serif);letter-spacing:-.045em;margin:21px 0 24px}.hero h1 em{color:#e4b57f;font-weight:400;font-style:italic}.hero p{font-size:16px;line-height:1.85;color:#fae4ce;max-width:495px;margin:0 0 34px}.hero-actions{display:flex;flex-wrap:wrap;gap:12px}.hero-actions .btn.secondary{color:#f9f5ed;border-color:#d9ad90}.hero-actions .btn.secondary:hover{background:#ffffff13}.hero-bottom{display:flex;flex-wrap:wrap;gap:24px;margin-top:48px;padding-top:24px;border-top:1px solid #d9ad9066}.hero-stat strong{display:block;font:500 24px var(--serif);color:#f9f4e9}.hero-stat span{display:block;color:#f3d6be;font-size:11px;letter-spacing:.04em;margin-top:4px}.hero-media{position:relative;padding:22px 0 32px 30px}.hero-main{height:505px;border-radius:190px 190px 14px 14px;overflow:hidden;position:relative;background:linear-gradient(35deg,#a69a7b,#dbccad)}.hero-main>img{width:100%;height:100%;object-fit:cover;object-position:center}.hero-main:after{content:'';position:absolute;inset:50% 0 0;background:linear-gradient(transparent,#0006);pointer-events:none}.hero-image-label{position:absolute;bottom:25px;left:25px;z-index:1;padding:8px 14px;border-radius:30px;background:#fbf6edf2;color:var(--primary);font-size:12px;font-weight:700}.photo-stamp{position:absolute;right:-25px;bottom:8px;background:var(--gold);color:#332d20;width:117px;height:117px;display:flex;align-items:center;justify-content:center;text-align:center;border-radius:50%;font:500 15px/1.35 var(--serif);transform:rotate(10deg);box-shadow:var(--shadow);z-index:2}.hero-leaf{position:absolute;top:-9px;left:-20px;font-size:69px;color:#d6a34a;transform:rotate(22deg);line-height:1}
+    .ribbon{display:flex;gap:20px;flex-wrap:wrap;align-items:center;justify-content:center;padding:19px 28px;border-bottom:1px solid var(--line);background:#f1ebdf;color:#78503a;font-size:12px;font-weight:700;letter-spacing:.035em}.ribbon i{font-style:normal;color:#c28d55}.section-pad{padding:95px 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:28px}.stay-grid{display:grid;grid-template-columns:.82fr 1.18fr;gap:70px;align-items:center}.stay-blurb{margin:23px 0}.amenity-list{display:grid;grid-template-columns:1fr 1fr;gap:15px 18px;margin:30px 0 34px}.amenity{display:flex;gap:11px;align-items:center;font-size:13px;font-weight:700}.amenity b{height:34px;width:34px;border-radius:50%;display:grid;place-items:center;background:#f1e2cf;color:var(--primary);font-weight:500;font-size:17px}.stay-note{border-left:3px solid var(--gold);padding-left:15px;color:#706057;font-size:12px;line-height:1.7;margin-top:22px}.property-mosaic{display:grid;grid-template-columns:1.3fr 1fr;grid-template-rows:220px 220px;gap:10px}.property-mosaic button{border:0;padding:0;background:#dcd5c4;position:relative;overflow:hidden;border-radius:8px}.property-mosaic button:first-child{grid-row:span 2;border-radius:140px 10px 10px 10px}.property-mosaic img{width:100%;height:100%;object-fit:cover;transition:transform .45s}.property-mosaic button:hover img{transform:scale(1.055)}.property-mosaic button:after{content:'View photo ↗';position:absolute;bottom:13px;left:14px;padding:5px 11px;border-radius:99px;font-size:11px;font-weight:700;background:#fffdf3ed;opacity:0;transition:.2s}.property-mosaic button:hover:after{opacity:1}.property-mosaic button:last-child:after{content:'View all photos ↗'}
+    .menu-bg{background:var(--oat)}.menu-board{background:var(--paper);border:1px solid #e5e0d4;box-shadow:var(--shadow);border-radius:20px;overflow:hidden}.board-head{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:28px 32px;background:#faf9f4;border-bottom:1px solid var(--line)}.board-head h3{font:500 25px var(--serif);margin:0 0 4px}.board-head p{margin:0;color:var(--muted);font-size:12px}.board-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.progress-chip{background:#f5e4cc;color:#795039;padding:9px 13px;border-radius:99px;font-weight:700;font-size:11px}.mode-chip{font-size:11px;color:#a46332;background:#f6e6d6;border-radius:99px;padding:7px 12px;font-weight:800;display:inline-block;margin-bottom:12px}.mode-chip.shared{background:#f6e6ca;color:#765023}.category-head{display:flex;align-items:center;gap:10px;margin:27px 31px 10px;text-transform:uppercase;font-size:11px;letter-spacing:.14em;font-weight:800;color:var(--rust)}.category-head:after{content:'';flex:1;height:1px;background:#e2dfd5}.dish-list{padding:0 23px 3px}.dish-row{display:grid;grid-template-columns:1fr minmax(150px,.8fr) auto;align-items:center;gap:15px;border-bottom:1px solid #ecebe4;padding:15px 9px}.dish-row:last-child{border-bottom:0}.dish-name{font-size:14px;font-weight:800}.dish-note{color:#706057;font-size:11px;margin-top:2px}.dish-person{font-size:12px;color:#706057}.dish-person strong{color:#813e26}.dish-person.pending{font-style:italic;color:#706057}.dish-row .btn{min-width:87px}.menu-foot{display:flex;gap:20px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding:22px 30px;background:#f7f4ec;border-top:1px solid var(--line);font-size:12px;color:#706057}.menu-foot .btn{color:var(--primary)}
+    .memory-bg{background:#fdfaf5}.memory-layout{display:grid;grid-template-columns:.72fr 1.28fr;gap:70px;align-items:center}.memory-layout .h2{max-width:360px}.polaroid-illustration{display:flex;align-items:center;justify-content:center;height:85px;width:105px;border:7px solid white;border-bottom:20px solid white;box-shadow:0 8px 25px #0001;background:linear-gradient(130deg,#c9956e,#e8ca9c);transform:rotate(-9deg);font-size:38px;margin:23px 0 29px}.memory-frame{position:relative;min-height:450px;border-radius:12px;background:#f1e2cf;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}.memory-frame img{height:470px;width:100%;object-fit:contain;background:#f1e2cf}.memory-empty{padding:28px;text-align:center;max-width:360px}.memory-empty .empty-symbol{font:500 80px var(--serif);color:#b65a32;line-height:1}.memory-empty h3{font:500 30px var(--serif);margin:15px 0 8px}.memory-empty p{font-size:13px;color:#706057;line-height:1.7}.carousel-bottom{position:absolute;bottom:16px;left:17px;right:17px;display:flex;align-items:center;justify-content:space-between;z-index:1;gap:15px}.controls{display:flex;gap:8px}.icon-btn{width:39px;height:39px;border-radius:50%;border:1px solid #dadccf;background:#fffffff2;display:grid;place-items:center;color:var(--primary);font-size:18px}.icon-btn:hover{background:#f5e4cc}.slide-count{background:#fffef8f0;border-radius:25px;padding:8px 13px;font-weight:800;font-size:11px;color:var(--primary)}.memory-tools{display:flex;gap:10px;flex-wrap:wrap;margin:23px 0 10px}.memory-tools button{font-size:12px}.helper{font-size:11px;color:#706057;line-height:1.6}.hidden-input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}.file-picker{cursor:pointer}.photo-caption{font-size:12px;color:#706057;margin:14px 0 0;min-height:20px}
+    .games-bg{background:#963f2b;color:#fff9ec}.games-bg .eyebrow{color:#ddb37d}.games-bg .section-lead{color:#f5ddc8}.games-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:24px}.game-card{background:#7c3829;border:1px solid #d9ad9055;border-radius:15px;padding:25px;min-height:195px;position:relative;overflow:hidden}.game-card:before{content:attr(data-num);position:absolute;right:19px;top:10px;font:500 57px var(--serif);color:#ffffff0b}.game-icon{display:inline-flex;align-items:center;justify-content:center;font-size:21px;width:42px;height:42px;border-radius:10px;background:#ffffff13;margin-bottom:24px}.game-card h3{font:500 22px var(--serif);margin:0 0 7px}.game-card p{color:#f0d9c3;font-size:12px;max-width:230px;line-height:1.65;margin:0}.game-add{margin-top:24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}.games-bg .btn.secondary{color:#f8f7ed;border-color:#d9ad90}.games-bg .btn.secondary:hover{background:#ffffff13}
+    .tiktok-layout{display:grid;grid-template-columns:.67fr 1.33fr;gap:66px;align-items:start}.tiktok-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.tik-card{border-radius:14px;background:#fff;min-height:300px;overflow:hidden;box-shadow:var(--shadow);border:1px solid #e8e7db}.tik-card iframe{width:100%;height:450px;border:0}.tik-head{padding:15px 17px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;font-weight:800}.tik-head a{color:var(--rust);font-size:11px}.tik-empty{min-height:310px;border:1.5px dashed #b9c3b1;border-radius:14px;background:#f6e7d7;display:grid;place-items:center;text-align:center;padding:30px;color:#706057}.tik-empty strong{font:500 26px var(--serif);display:block;color:var(--primary);margin:8px 0}.tik-empty span{display:block;max-width:290px;font-size:12px;line-height:1.6}.small-form{margin-top:26px;display:flex;gap:8px;align-items:stretch}.small-form input{min-width:0;flex:1;border:1px solid #dfcdb9;background:white;border-radius:50px;padding:12px 17px;font-size:12px}.small-form .btn{padding:12px 18px;font-size:12px}.footer{background:#453026;color:#f5ddc8;padding:55px 0 20px}.footer-grid{display:flex;align-items:center;justify-content:space-between;gap:24px;padding-bottom:42px;border-bottom:1px solid #e5f0dc33}.footer h2{font:500 35px var(--serif);color:#faf5e8;letter-spacing:-.03em;margin:0 0 10px}.footer p{font-size:13px;margin:0;color:#ead0b9}.footer-bottom{display:flex;justify-content:space-between;gap:18px;align-items:center;padding-top:20px;font-size:11px;color:#ead0b9}.footer a{color:#f4deb6}
+    .toast{position:fixed;right:24px;bottom:24px;z-index:90;background:var(--deep);color:white;max-width:340px;padding:15px 20px;border-radius:11px;box-shadow:0 12px 35px #0004;opacity:0;transform:translateY(15px);transition:.25s;pointer-events:none;font-size:13px}.toast.show{opacity:1;transform:translateY(0)}.modal-backdrop{position:fixed;inset:0;z-index:100;background:#12251bba;backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:22px}.modal-backdrop.show{display:flex}.modal{background:#fffdf7;border-radius:18px;width:min(100%,475px);padding:30px;box-shadow:0 24px 80px #0003;position:relative;max-height:92vh;overflow:auto}.modal h3{font:500 31px var(--serif);letter-spacing:-.035em;margin:0 0 10px}.modal p{font-size:13px;color:#706057;line-height:1.65;margin:0 0 24px}.form-field{margin-bottom:15px}.form-field label{display:block;font-size:12px;font-weight:800;margin-bottom:7px}.form-field input,.form-field textarea,.form-field select{border:1px solid #cbd2c6;background:#fff;width:100%;padding:12px 14px;border-radius:10px;color:var(--primary)}.form-field textarea{resize:vertical;min-height:82px}.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:25px}.close-modal{position:absolute;right:16px;top:13px;font-size:24px;border:0;background:transparent;color:#795039}.modal.lightbox{padding:9px;width:min(92vw,1100px);background:#132018}.lightbox img{max-height:80vh;width:100%;object-fit:contain}.lightbox .close-modal{background:#fff;border-radius:50%;width:40px;height:40px;right:10px;top:10px}.lightbox-caption{color:white;font-size:12px;padding:8px 12px}
     @media(max-width:1000px){.nav-links{gap:15px}.hero-wrap{gap:28px}.stay-grid,.memory-layout,.tiktok-layout{gap:34px}.shell{padding:0 24px}.hero-main{height:460px}.games-grid{grid-template-columns:repeat(2,1fr)}}
     @media(max-width:760px){.shell{padding:0 18px}.mobile-menu{display:block}.nav{min-height:68px}.nav-links{position:absolute;left:0;right:0;top:100%;padding:18px 24px 22px;background:var(--cream);display:none;flex-direction:column;align-items:stretch;gap:17px;box-shadow:0 14px 20px #0001}.nav-links.open{display:flex}.nav-cta{display:none}.hero-wrap,.stay-grid,.memory-layout,.tiktok-layout{grid-template-columns:1fr}.hero-wrap{padding-top:64px;padding-bottom:40px;gap:24px}.hero h1{font-size:clamp(50px,13vw,78px)}.hero-media{padding:0 15px 26px}.hero-main{height:340px;border-radius:150px 150px 10px 10px}.photo-stamp{width:91px;height:91px;font-size:13px;right:-6px}.hero-bottom{margin-top:36px;gap:25px}.section-pad{padding:70px 0}.stay-grid{gap:30px}.stay-grid .stay-copy{order:0}.property-mosaic{grid-template-rows:160px 160px;gap:7px}.games-grid{grid-template-columns:1fr 1fr}.memory-layout{gap:24px}.memory-frame{min-height:360px}.memory-frame img{height:410px}.tiktok-layout{gap:24px}.tiktok-cards{grid-template-columns:1fr 1fr}.section-head{align-items:start;flex-direction:column;gap:2px}.small-form{flex-wrap:wrap}.small-form input{flex-basis:100%}}
     @media(max-width:490px){.topline{font-size:9px;letter-spacing:.07em}.brand{font-size:17px}.hero h1{font-size:54px}.hero p{font-size:14px}.hero-actions .btn{font-size:12px;padding:12px 17px}.hero-stat strong{font-size:20px}.hero-main{height:320px}.ribbon{gap:10px;font-size:10px}.h2{font-size:37px}.board-head{padding:24px 18px}.board-actions{width:100%}.dish-list{padding:0 12px}.category-head{margin-left:18px;margin-right:18px}.dish-row{grid-template-columns:1fr auto;gap:6px 10px;padding:13px 4px}.dish-person{grid-column:1}.dish-row .btn{grid-column:2;grid-row:1/span 2}.menu-foot{padding:18px;gap:12px}.games-grid,.tiktok-cards{grid-template-columns:1fr}.game-card{min-height:170px}.game-icon{margin-bottom:17px}.footer-grid,.footer-bottom{align-items:start;flex-direction:column}}
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
 
-    .family-portal{background:#e9e5d9;padding:30px 0;border-bottom:1px solid #d7d5c8}.family-portal-wrap{display:grid;grid-template-columns:1.3fr .85fr;align-items:center;gap:40px}.family-portal h2{font:500 clamp(26px,3vw,38px)/1.15 var(--serif);letter-spacing:-.025em;margin:10px 0}.family-portal h2 em{color:var(--rust)}.family-portal p{margin:0;color:#607060;max-width:610px;font-size:13px;line-height:1.75}.family-portal .portal-status{font-weight:700;color:#944e33;margin-top:9px}.family-join-form{display:grid;gap:9px}.family-join-form label{font-size:12px;font-weight:800}.family-join-form input{padding:13px 16px;border:1px solid #c9c9b6;border-radius:9px;min-width:0;background:#fffdf8;color:var(--ink)}.family-join-form .btn{width:100%}.member-strip{background:#e2ebe0;border-bottom:1px solid #cad7c8;padding:12px 0}.member-strip-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;font-size:12px;font-weight:750;color:#34553d}.member-leave{background:none;border:0;text-decoration:underline;color:#536852;font-size:12px}.family-portal[hidden],.member-strip[hidden]{display:none!important}
+    .family-portal{background:#e9e5d9;padding:30px 0;border-bottom:1px solid #d7d5c8}.family-portal-wrap{display:grid;grid-template-columns:1.3fr .85fr;align-items:center;gap:40px}.family-portal h2{font:500 clamp(26px,3vw,38px)/1.15 var(--serif);letter-spacing:-.025em;margin:10px 0}.family-portal h2 em{color:var(--rust)}.family-portal p{margin:0;color:#706057;max-width:610px;font-size:13px;line-height:1.75}.family-portal .portal-status{font-weight:700;color:#944e33;margin-top:9px}.family-join-form{display:grid;gap:9px}.family-join-form label{font-size:12px;font-weight:800}.family-join-form input{padding:13px 16px;border:1px solid #c9c9b6;border-radius:9px;min-width:0;background:#fffdf8;color:var(--ink)}.family-join-form .btn{width:100%}.member-strip{background:#f6e6ca;border-bottom:1px solid #cad7c8;padding:12px 0}.member-strip-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;font-size:12px;font-weight:750;color:#795039}.member-leave{background:none;border:0;text-decoration:underline;color:#795039;font-size:12px}.family-portal[hidden],.member-strip[hidden]{display:none!important}
     @media(max-width:760px){.family-portal-wrap{grid-template-columns:1fr;gap:20px}.member-strip-inner{align-items:flex-start;flex-direction:column;gap:6px}}
+
+    /* Version 2 autumn details; all decoration ignores pointer input. */
+    .leaf-mark{display:inline-block;width:1em;height:1em;background:url('assets/autumn-leaf.svg') center/contain no-repeat;vertical-align:middle;flex-shrink:0}
+    .hero-wrap{position:relative;z-index:1}.falling-leaves{position:absolute;inset:0;overflow:hidden;pointer-events:none}.falling-leaves span{position:absolute;top:-60px;left:3%;width:30px;height:40px;background:url('assets/autumn-leaf.svg') center/contain no-repeat;opacity:.25;animation:leaf-fall 18s linear infinite}.falling-leaves span:nth-child(2){left:26%;animation-delay:-8s;width:19px}.falling-leaves span:nth-child(3){left:47%;animation-delay:-13s}.falling-leaves span:nth-child(4){left:70%;animation-delay:-4s;width:22px}.falling-leaves span:nth-child(5){left:90%;animation-delay:-15s}.falling-leaves span:nth-child(6){left:98%;animation-delay:-10s;width:18px}
+    @keyframes leaf-fall{from{transform:translate(0,-50px) rotate(0)}to{transform:translate(-45px,850px) rotate(270deg)}}
+    .eyebrow:before{width:20px;height:23px;background:url('assets/autumn-leaf.svg') center/contain no-repeat}.section-pad{border-bottom:1px solid var(--line)}.developer-credit{text-align:center;margin:24px 0 0!important;font-size:11px!important;line-height:1.8}.developer-credit a{text-underline-offset:3px}.hero p,.games-bg .section-lead{color:#fae4ce}
+    button:disabled{cursor:default;opacity:.65;transform:none!important}.dish-person ul{list-style:none;padding:0;margin:0}.dish-person li+li{margin-top:6px}.dish-person small{display:block;color:#706057}.dish-capacity{display:inline-block;font-size:11px;font-weight:700;color:#795039;background:#f5e4cc;border-radius:30px;padding:3px 9px;margin-top:5px}.dish-row>div{min-width:0;overflow-wrap:anywhere}.dish-row .btn{white-space:normal}.dish-note{overflow-wrap:anywhere}
+    .property-mosaic{grid-template-rows:repeat(4,130px)}.property-mosaic button:first-child{grid-row:span 4}.property-mosaic button:last-child{grid-column:2}.property-mosaic button:focus-visible{outline:3px solid var(--rust);outline-offset:3px}.lightbox-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px}.lightbox-caption{text-align:center}.lightbox img{touch-action:pan-y}
+    .tiktok-cards{display:block;min-width:0}.tik-card{max-width:440px;margin:auto}.tik-card iframe{display:block;width:100%;height:580px;max-height:72vh}.tik-poster{padding:56px 24px;text-align:center;background:var(--oat)}.tik-poster p{font-size:13px}.tik-controls{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;padding:18px}.tik-status{padding:0 20px;font-size:12px;color:#706057}.tik-fallback{padding:0 20px 20px;font-size:12px}.tik-fallback summary{cursor:pointer;text-decoration:underline}.tik-fallback button{margin-top:8px}.tik-head{flex-wrap:wrap}
+    .modal-backdrop{background:#392318bd}.modal.lightbox{background:#453026}.helper{font-size:12px}.section-lead,.helper,.modal p{color:#706057}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:3px}.toast{max-width:min(340px,calc(100vw - 32px));right:16px}.small-form>*{max-width:100%}
+    @media(max-width:760px){.property-mosaic{grid-template-rows:repeat(4,100px)}}
+    @media(max-width:490px){.dish-row{grid-template-columns:minmax(0,1fr) auto}.property-mosaic{grid-template-rows:repeat(4,85px)}.tik-card iframe{height:530px}.hero-leaf{left:0}.hero h1{font-size:clamp(45px,13vw,54px)}}
+    @media(prefers-reduced-motion:reduce){.falling-leaves{display:none}}
   </style>
 </head>
 <body>
-  <div class="topline">THE ELLSWORTH FAMILY <span>✳</span> THANKSGIVING 2026</div>
+  <div class="topline">THE ELLSWORTH FAMILY <span><span class="leaf-mark" aria-hidden="true"></span></span> THANKSGIVING 2026</div>
   <header class="site-header"><div class="shell nav">
-    <a href="#home" class="brand" aria-label="Ellsworth Family Thanksgiving home"><span class="brandmark">✳</span><span>Ellsworth <i style="font-weight:400">Family.</i></span></a>
+    <a href="#home" class="brand" aria-label="Ellsworth Family Thanksgiving home"><span class="brandmark"><span class="leaf-mark" aria-hidden="true"></span></span><span>Ellsworth <i style="font-weight:400">Family.</i></span></a>
     <button class="mobile-menu" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
     <nav class="nav-links" id="navLinks" aria-label="Main navigation"><a class="nav-link" href="#stay">The house</a><a class="nav-link" href="#menu">The menu</a><a class="nav-link" href="#memories">Memories</a><a class="nav-link" href="#games">Games</a><a class="nav-link" href="#tiktoks">TikToks</a></nav>
     <a class="btn nav-cta" href="#menu">Sign up for a dish <span aria-hidden="true">↗</span></a>
   </div></header>
   <main>
-    <section class="hero" id="home"><div class="shell hero-wrap">
+    <section class="hero" id="home"><div class="falling-leaves" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="shell hero-wrap">
       <div><div class="eyebrow">The Ellsworth Family · Thanksgiving 2026</div><h1>Good food.<br>Full hearts.<br><em>Ellsworths.</em></h1><p>The Ellsworth Family is coming together in the New Orleans area for good food, nonstop laughs, old traditions, and a few new stories we’ll never let anyone forget.</p>
       <div class="hero-actions"><a class="btn light" href="#menu">Bring something to the table <span aria-hidden="true">↗</span></a><a class="btn secondary" href="#stay">Explore our stay</a></div>
       <div class="hero-bottom"><div class="hero-stat"><strong>Nov 26</strong><span>Thanksgiving Thursday</span></div><div class="hero-stat"><strong>Arabi, LA</strong><span>New Orleans area</span></div><div class="hero-stat"><strong id="daysLeft">—</strong><span id="countdownLabel">until Thanksgiving</span></div></div>
       </div>
-      <div class="hero-media"><span class="hero-leaf" aria-hidden="true">✳</span><div class="hero-main"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/49249a86-b758-46af-aae5-5055801dc322.jpeg?im_w=1200" alt="Friscoville Mansion — photograph from the Airbnb listing" fetchpriority="high"><div class="hero-image-label">The Ellsworth holiday home · Friscoville Mansion</div></div><div class="photo-stamp">Gather.<br>Give thanks.<br>Repeat.</div></div>
+      <div class="hero-media"><span class="hero-leaf" aria-hidden="true"><span class="leaf-mark" aria-hidden="true"></span></span><div class="hero-main"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/49249a86-b758-46af-aae5-5055801dc322.jpeg?im_w=1200" alt="Friscoville Mansion — photograph from the Airbnb listing" fetchpriority="high"><div class="hero-image-label">The Ellsworth holiday home · Friscoville Mansion</div></div><div class="photo-stamp">Gather.<br>Give thanks.<br>Repeat.</div></div>
     </div></section>
-    <div class="ribbon"><span>THE ELLSWORTH FAMILY</span><i>✳</i><span>ONE BIG TABLE</span><i>✳</i><span>SO MANY MEMORIES</span><i>✳</i><span>GOOD TIMES</span></div>
+    <div class="ribbon"><span>THE ELLSWORTH FAMILY</span><i><span class="leaf-mark" aria-hidden="true"></span></i><span>ONE BIG TABLE</span><i><span class="leaf-mark" aria-hidden="true"></span></i><span>SO MANY MEMORIES</span><i><span class="leaf-mark" aria-hidden="true"></span></i><span>GOOD TIMES</span></div>
 
     <section class="family-portal" id="familyPortal" hidden>
       <div class="shell family-portal-wrap">
@@ -54,31 +67,32 @@
         <form id="familyJoinForm" class="family-join-form"><label for="familyCode">Private family invitation code</label><input type="password" id="familyCode" autocomplete="off" minlength="20" maxlength="128" required placeholder="Enter the Ellsworth invitation code"><button class="btn" type="submit" id="joinFamilyBtn">Join the family board ↗</button></form>
       </div>
     </section>
-    <div class="member-strip" id="memberStrip" hidden><div class="shell member-strip-inner"><span>✳ You’re connected to the Ellsworth Family board. Changes are saved for everyone.</span><button type="button" class="member-leave" id="leaveFamilyBtn">Disconnect this device</button></div></div>
+    <div class="member-strip" id="memberStrip" hidden><div class="shell member-strip-inner"><span><span class="leaf-mark" aria-hidden="true"></span> You’re connected to the Ellsworth Family board. Changes are saved for everyone.</span><button type="button" class="member-leave" id="leaveFamilyBtn">Disconnect this device</button></div></div>
     <section class="section-pad" id="stay"><div class="shell stay-grid">
-      <div class="stay-copy"><div class="eyebrow">01 / Where we're staying</div><h2 class="h2">The Ellsworth holiday home, <em>all together.</em></h2><p class="section-lead stay-blurb">Meet <strong>Friscoville Mansion</strong>, a restored Greek Revival home in Arabi, Louisiana. The Airbnb listing describes a private upstairs unit with a balcony, updated kitchen and room to relax together.</p><div class="amenity-list"><div class="amenity"><b>⌂</b> 3 bedrooms</div><div class="amenity"><b>◷</b> 2 bathrooms</div><div class="amenity"><b>✦</b> Full kitchen</div><div class="amenity"><b>↗</b> Private balcony</div></div><a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.airbnb.com/rooms/961414748638377724">Open Airbnb listing <span aria-hidden="true">↗</span></a><p class="stay-note">The listing allows up to 9 guests and identifies the accommodation as an upstairs unit. Confirm rules for dinner visitors and gatherings with the host. The exact house address and arrival instructions will be shared privately.</p></div>
+      <div class="stay-copy"><div class="eyebrow">01 / Where we're staying</div><h2 class="h2">The Ellsworth holiday home, <em>all together.</em></h2><p class="section-lead stay-blurb">Meet <strong>Friscoville Mansion</strong>, a restored Greek Revival home in Arabi, Louisiana. The Airbnb listing describes a private upstairs unit with a balcony, updated kitchen and room to relax together.</p><div class="amenity-list"><div class="amenity"><b>⌂</b> 3 bedrooms</div><div class="amenity"><b>◷</b> 2 bathrooms</div><div class="amenity"><b>✦</b> Full kitchen</div><div class="amenity"><b>↗</b> Private balcony</div></div><a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.airbnb.com/rooms/961414748638377724">Open Airbnb listing <span aria-hidden="true">↗</span></a></div>
       <div class="property-mosaic" aria-label="Airbnb listing photo gallery">
-        <button data-house-photo="0" aria-label="Open Airbnb photo 1"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/49249a86-b758-46af-aae5-5055801dc322.jpeg?im_w=720" alt="Airbnb listing photo 1"></button>
-        <button data-house-photo="1" aria-label="Open Airbnb photo 2"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/3ce4088a-8b4d-4bec-90a3-e5e38256338b.jpeg?im_w=720" alt="Airbnb listing photo 2"></button>
-        <button data-house-photo="2" aria-label="Open Airbnb photo 3"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/4911d8e7-a039-4d62-b2c7-c0c3abe2ed26.jpeg?im_w=720" alt="Airbnb listing photo 3"></button>
-        <button data-house-photo="3" aria-label="Open Airbnb photo 4"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/37ddd49a-3544-4cc4-b765-52c10b390627.jpeg?im_w=720" alt="Airbnb listing photo 4"></button>
+        <button data-house-photo="0" aria-label="Open Airbnb photo 1"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/49249a86-b758-46af-aae5-5055801dc322.jpeg?im_w=720" alt="Holiday home — Airbnb listing photograph 1"></button>
+        <button data-house-photo="1" aria-label="Open Airbnb photo 2"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/3ce4088a-8b4d-4bec-90a3-e5e38256338b.jpeg?im_w=720" alt="Holiday home — Airbnb listing photograph 2"></button>
+        <button data-house-photo="2" aria-label="Open Airbnb photo 3"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/4911d8e7-a039-4d62-b2c7-c0c3abe2ed26.jpeg?im_w=720" alt="Holiday home — Airbnb listing photograph 3"></button>
+        <button data-house-photo="3" aria-label="Open Airbnb photo 4"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/37ddd49a-3544-4cc4-b765-52c10b390627.jpeg?im_w=720" alt="Holiday home — Airbnb listing photograph 4"></button>
+        <button data-house-photo="4" aria-label="Open Airbnb photo 5"><img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/26bd235d-7aea-4727-9a6f-300cd2fd75da.jpeg?im_w=720" alt="Holiday home — Airbnb listing photograph 5"></button>
       </div>
     </div></section>
     <section class="section-pad menu-bg" id="menu"><div class="shell"><div class="section-head"><div><div class="eyebrow">02 / Everybody brings something</div><h2 class="h2">What's on <em>the menu?</em></h2><p class="section-lead">Every Ellsworth favorite belongs on the table. Claim a dish, add your name, or contribute something new so everyone knows what’s covered.</p></div><div><span id="modeChip" class="mode-chip">Preview mode · saved on this device</span></div></div>
       <div class="menu-board"><div class="board-head"><div><h3>The Ellsworth Family potluck</h3><p>Choose something to cook, bring, or contribute.</p></div><div class="board-actions"><span id="menuProgress" class="progress-chip">0 dishes claimed</span><button id="addDishBtn" class="btn small">+ Add a dish</button></div></div><div id="dishBoard" aria-live="polite"></div><div class="menu-foot"><span id="menuFootnote">Sign-ups in this preview are stored only on your device. Set up shared mode to sync the whole family.</span><button class="btn ghost small" id="refreshMenuBtn">↻ Refresh</button></div></div>
     </div></section>
     <section class="section-pad memory-bg" id="memories"><div class="shell memory-layout">
-      <div><div class="eyebrow">03 / Our favorite people</div><h2 class="h2">The best part is <em>who's here.</em></h2><p class="section-lead">From the old family albums to this year’s memories: add your favorite Ellsworth photos and let the slideshow play while we catch up.</p><div class="polaroid-illustration" aria-hidden="true">✳</div><div class="memory-tools"><label class="btn small file-picker" for="photoUpload">+ Add family photos</label><input class="hidden-input" type="file" id="photoUpload" accept="image/*" multiple><button class="btn secondary small" id="addPhotoUrlBtn">+ Photo link</button></div><p class="helper">Photos added from your device stay in this browser. To show them to everyone, add the photos to a shared website version or use public image URLs.</p><div class="photo-caption" id="photoCaption"></div></div>
-      <div class="memory-frame" id="memoryFrame"><div class="memory-empty" id="memoryEmpty"><div class="empty-symbol">✳</div><h3>The Ellsworth family album.</h3><p>No photos yet. Add a few family favorites to create an automatic slideshow here.</p><label class="btn small file-picker" for="photoUpload">Choose photos <span aria-hidden="true">↗</span></label></div><div class="carousel-bottom" id="memoryControls" style="display:none"><span class="slide-count" id="slideCount">1 / 1</span><div class="controls"><button class="icon-btn" id="photoPrev" aria-label="Previous family photo">←</button><button class="icon-btn" id="photoPause" aria-label="Pause slideshow">Ⅱ</button><button class="icon-btn" id="photoNext" aria-label="Next family photo">→</button></div></div></div>
+      <div><div class="eyebrow">03 / Our favorite people</div><h2 class="h2">The best part is <em>who's here.</em></h2><p class="section-lead">From the old family albums to this year’s memories: add your favorite Ellsworth photos and let the slideshow play while we catch up.</p><div class="polaroid-illustration" aria-hidden="true"><span class="leaf-mark" aria-hidden="true"></span></div><div class="memory-tools"><label class="btn small file-picker" for="photoUpload" tabindex="0" role="button">+ Add family photos</label><input class="hidden-input" type="file" id="photoUpload" accept="image/*" multiple><button class="btn secondary small" id="addPhotoUrlBtn">+ Photo link</button></div><p class="helper">Join the family board to upload photos to the shared private album. In an unconfigured preview, photos stay in this browser.</p><div class="photo-caption" id="photoCaption"></div></div>
+      <div class="memory-frame" id="memoryFrame"><div class="memory-empty" id="memoryEmpty"><div class="empty-symbol"><span class="leaf-mark" aria-hidden="true"></span></div><h3>The Ellsworth family album.</h3><p>No photos yet. Add a few family favorites to create an automatic slideshow here.</p><label class="btn small file-picker" for="photoUpload" tabindex="0" role="button">Choose photos <span aria-hidden="true">↗</span></label></div><div class="carousel-bottom" id="memoryControls" style="display:none"><span class="slide-count" id="slideCount">1 / 1</span><div class="controls"><button class="icon-btn" id="photoPrev" aria-label="Previous family photo">←</button><button class="icon-btn" id="photoPause" aria-label="Pause slideshow">Ⅱ</button><button class="icon-btn" id="photoNext" aria-label="Next family photo">→</button></div></div></div>
     </div></section>
-    <section class="section-pad games-bg" id="games"><div class="shell"><div class="eyebrow">04 / After we eat</div><h2 class="h2">Let the <em>games begin.</em></h2><p class="section-lead">The Ellsworth game-night lineup is ready. Bring your partners, your competitive streak, and any game the family needs to try.</p><div class="games-grid" id="gamesGrid"></div><div class="game-add"><button class="btn light small" id="addGameBtn">+ Suggest a game</button><span style="font-size:12px;color:#b9cbb8">Games are suggestions until the family confirms the lineup.</span></div></div></section>
-    <section class="section-pad" id="tiktoks"><div class="shell tiktok-layout"><div><div class="eyebrow">05 / Send it to the group chat</div><h2 class="h2">TikTok made <em>us do it.</em></h2><p class="section-lead">The funniest clip in the Ellsworth group chat? A recipe or family challenge? Add TikToks here to bring them to the whole family.</p><form id="tikForm" class="small-form"><input id="tikUrl" type="url" placeholder="Paste a full TikTok video URL" aria-label="TikTok video URL" required><button class="btn" type="submit">Add video ↗</button></form><p class="helper">Use a full link containing <strong>/video/</strong> and a video number. TikTok's player requires internet and may be blocked by browser privacy settings. Clips added here are saved locally.</p></div><div id="tiktokGrid" class="tiktok-cards" aria-live="polite"></div></div></section>
+    <section class="section-pad games-bg" id="games"><div class="shell"><div class="eyebrow">04 / After we eat</div><h2 class="h2">Let the <em>games begin.</em></h2><p class="section-lead">The Ellsworth game-night lineup is ready. Bring your partners, your competitive streak, and any game the family needs to try.</p><div class="games-grid" id="gamesGrid"></div><div class="game-add"><button class="btn light small" id="addGameBtn">+ Suggest a game</button><span style="font-size:12px;color:#f0d9c3">Games are suggestions until the family confirms the lineup.</span></div></div></section>
+    <section class="section-pad" id="tiktoks"><div class="shell tiktok-layout"><div><div class="eyebrow">05 / Send it to the group chat</div><h2 class="h2">TikTok made <em>us do it.</em></h2><p class="section-lead">The funniest clip in the Ellsworth group chat? A recipe or family challenge? Add TikToks here to bring them to the whole family.</p><form id="tikForm" class="small-form"><input id="tikUrl" type="url" placeholder="Paste a full TikTok video URL" aria-label="TikTok video URL" required><button class="btn" type="submit">Add video ↗</button></form><p class="helper">Use a full link containing <strong>/video/</strong> and a video number. TikTok's player requires internet and may be blocked by browser privacy settings. Videos play only when you choose Play. Next unlocks when the current clip ends. If the player is blocked, choose manual navigation.</p></div><div id="tiktokGrid" class="tiktok-cards" aria-live="polite"></div></div></section>
   </main>
-  <footer class="footer"><div class="shell"><div class="footer-grid"><div><h2>The Ellsworth Family.<br><em>See you at the table.</em></h2><p>New Orleans area · Thanksgiving 2026 · The Ellsworth tradition.</p></div><a class="btn light" href="#home">Back to top ↑</a></div><div class="footer-bottom"><span>Made for the Ellsworth Family, with love. &nbsp;✳</span><span>Property photos from <a href="https://www.airbnb.com/rooms/961414748638377724" target="_blank" rel="noopener noreferrer">the Friscoville Mansion Airbnb listing</a>.</span></div></div></footer>
+  <footer class="footer"><div class="shell"><div class="footer-grid"><div><h2>The Ellsworth Family.<br><em>See you at the table.</em></h2><p>New Orleans area · Thanksgiving 2026 · The Ellsworth tradition.</p></div><a class="btn light" href="#home">Back to top ↑</a></div><div class="footer-bottom"><span>Made for the Ellsworth Family, with love. &nbsp;<span class="leaf-mark" aria-hidden="true"></span></span><span>Property photos from <a href="https://www.airbnb.com/rooms/961414748638377724" target="_blank" rel="noopener noreferrer">the Friscoville Mansion Airbnb listing</a>.</span></div><p class="developer-credit">Built by <a href="https://github.com/yeauxdejuan" target="_blank" rel="noopener noreferrer">De’Juan Ellsworth</a> · Family Developer/Engineer</p></div></footer>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <div id="modalBackdrop" class="modal-backdrop" role="presentation"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><button class="close-modal" id="modalClose" aria-label="Close dialog">×</button><div id="modalBody"></div></div></div>
-  <div id="lightboxBackdrop" class="modal-backdrop" role="presentation"><div class="modal lightbox" role="dialog" aria-modal="true" aria-label="Airbnb photo viewer"><button class="close-modal" id="lightboxClose" aria-label="Close photo">×</button><img id="lightboxImage" src="" alt="Full-size Airbnb listing photograph"><div class="lightbox-caption">Photo from Friscoville Mansion's Airbnb listing</div></div></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <div id="lightboxBackdrop" class="modal-backdrop" role="presentation"><div class="modal lightbox" role="dialog" aria-modal="true" aria-label="Airbnb photo viewer"><button class="close-modal" id="lightboxClose" aria-label="Close photo">×</button><img id="lightboxImage" alt="Full-size Airbnb listing photograph"><div class="lightbox-toolbar"><button class="icon-btn" id="housePrev" aria-label="Previous property photo">←</button><span class="lightbox-caption" id="housePhotoCaption" role="status"></span><button class="icon-btn" id="houseNext" aria-label="Next property photo">→</button></div></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
 <script>
 'use strict';
 /* ELLSWORTH FAMILY · GITHUB PAGES + SUPABASE
@@ -142,7 +156,7 @@ const configured=Boolean(FAMILY_CONFIG.url.trim()&&FAMILY_CONFIG.publishableKey.
 const sb=configured && window.supabase?.createClient ? window.supabase.createClient(FAMILY_CONFIG.url.trim(),FAMILY_CONFIG.publishableKey.trim()) : null;
 let isShared=false, memberUserId=null;
 let menuItems=load('menu',[]),games=load('games',STARTER_GAMES),tiktoks=load('tiktoks',DEFAULT_TIKTOKS);
-let photos=[...SHARED_FAMILY_PHOTOS],slideIndex=0,playing=true,slideTimer=null;
+let photos=[...SHARED_FAMILY_PHOTOS],slideIndex=0,playing=!window.matchMedia('(prefers-reduced-motion: reduce)').matches,slideTimer=null;
 if(configured){menuItems=[];games=[...STARTER_GAMES];tiktoks=[...DEFAULT_TIKTOKS];}
 const toast=$('#toast');let toastTimer;
 function notify(message){toast.textContent=message;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),4000);}
@@ -180,7 +194,7 @@ $('#familyJoinForm').addEventListener('submit',async event=>{
 $('#leaveFamilyBtn').addEventListener('click',async()=>{
   if(!sb)return;
   try{await sb.auth.signOut();}catch(error){console.error(error);}
-  isShared=false;memberUserId=null;menuItems=[];games=[...STARTER_GAMES];tiktoks=[...DEFAULT_TIKTOKS];photos=[...SHARED_FAMILY_PHOTOS];
+  isShared=false;memberUserId=null;menuReady=false;menuItems=[];games=[...STARTER_GAMES];tiktoks=[...DEFAULT_TIKTOKS];photos=[...SHARED_FAMILY_PHOTOS];
   familyAccessUI();renderMenu();renderGames();renderTiktoks();renderPhotos();notify('This browser is disconnected. Rejoining will require the code.');
 });
 familyAccessUI();
@@ -190,52 +204,174 @@ if(sb)setInterval(()=>{if(isShared&&!document.hidden&&!$('#modalBackdrop').class
   Promise.allSettled([refreshMenu(),refreshGames(),refreshTiktoks()]);
 }},30000);
 if(sb)setInterval(()=>{if(isShared&&!document.hidden)refreshPhotos();},30*60*1000);
-function openModal(html){$('#modalBody').innerHTML=html;$('#modalBackdrop').classList.add('show');document.body.style.overflow='hidden';$('#modalBody input, #modalBody select, #modalBody button')?.focus();}
-function closeModal(){ $('#modalBackdrop').classList.remove('show');document.body.style.overflow='';$('#modalBody').innerHTML=''; }
+let modalTrigger=null;
+function openModal(html){modalTrigger=document.activeElement;$('#modalBody').innerHTML=html;$('#modalBackdrop').classList.add('show');document.body.style.overflow='hidden';$('#modalBody input, #modalBody select, #modalBody button')?.focus();}
+function closeModal(){ if(!$('#modalBackdrop').classList.contains('show'))return;$('#modalBackdrop').classList.remove('show');document.body.style.overflow='';$('#modalBody').innerHTML='';modalTrigger?.focus(); }
 $('#modalClose').addEventListener('click',closeModal);
 $('#modalBackdrop').addEventListener('click',e=>{if(e.target===$('#modalBackdrop'))closeModal();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeLightbox();}});
 $('#menuToggle').addEventListener('click',()=>{let open=$('#navLinks').classList.toggle('open');$('#menuToggle').setAttribute('aria-expanded',String(open));$('#menuToggle').textContent=open?'×':'☰';});
 document.querySelectorAll('.nav-link').forEach(a=>a.addEventListener('click',()=>{$('#navLinks').classList.remove('open');$('#menuToggle').textContent='☰';$('#menuToggle').setAttribute('aria-expanded','false');}));
 (function setCountdown(){let today=new Date(),holiday=new Date(2026,10,26,0,0,0),days=Math.ceil((holiday-today)/(1000*60*60*24));$('#daysLeft').textContent=days>0?`${days} days`:days===0?'Today!':'2026';$('#countdownLabel').textContent=days>0?'until Thanksgiving':days===0?'Happy Thanksgiving':'Thanksgiving memories';})();
-/* ── Airbnb property lightbox ── */
-function closeLightbox(){$('#lightboxBackdrop').classList.remove('show');document.body.style.overflow='';}
-$('#lightboxClose').addEventListener('click',closeLightbox);$('#lightboxBackdrop').addEventListener('click',e=>{if(e.target===$('#lightboxBackdrop'))closeLightbox();});
-document.querySelectorAll('[data-house-photo]').forEach(b=>b.addEventListener('click',()=>{$('#lightboxImage').src=AIRBNB_PHOTOS[Number(b.dataset.housePhoto)];$('#lightboxBackdrop').classList.add('show');document.body.style.overflow='hidden';}));
-/* ── Menu: local preview or optional shared Supabase REST ── */
+/* ── Property gallery: lightbox, keyboard and touch navigation ── */
+let houseIndex=0,houseTrigger=null,houseTouchStart=null;
+function showHousePhoto(index){
+  houseIndex=(index+AIRBNB_PHOTOS.length)%AIRBNB_PHOTOS.length;
+  $('#lightboxImage').src=AIRBNB_PHOTOS[houseIndex];
+  $('#lightboxImage').alt=`Holiday home — Airbnb listing photograph ${houseIndex+1} of ${AIRBNB_PHOTOS.length}`;
+  $('#housePhotoCaption').textContent=`${houseIndex+1} / ${AIRBNB_PHOTOS.length} · Photo from the original Airbnb listing`;
+}
+function closeLightbox(){
+  if(!$('#lightboxBackdrop').classList.contains('show'))return;
+  $('#lightboxBackdrop').classList.remove('show');document.body.style.overflow='';houseTrigger?.focus();
+}
+$('#lightboxClose').addEventListener('click',closeLightbox);
+$('#lightboxBackdrop').addEventListener('click',e=>{if(e.target===$('#lightboxBackdrop'))closeLightbox();});
+document.querySelectorAll('[data-house-photo]').forEach(button=>button.addEventListener('click',()=>{
+  houseTrigger=button;showHousePhoto(Number(button.dataset.housePhoto));$('#lightboxBackdrop').classList.add('show');
+  document.body.style.overflow='hidden';$('#lightboxClose').focus();
+}));
+$('#housePrev').addEventListener('click',()=>showHousePhoto(houseIndex-1));
+$('#houseNext').addEventListener('click',()=>showHousePhoto(houseIndex+1));
+$('#lightboxImage').addEventListener('touchstart',e=>{const t=e.changedTouches[0];houseTouchStart={x:t.clientX,y:t.clientY};},{passive:true});
+$('#lightboxImage').addEventListener('touchend',e=>{
+  if(!houseTouchStart)return;const t=e.changedTouches[0],dx=t.clientX-houseTouchStart.x,dy=t.clientY-houseTouchStart.y;
+  if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy))showHousePhoto(houseIndex+(dx<0?1:-1));houseTouchStart=null;
+},{passive:true});
+document.addEventListener('keydown',e=>{
+  if($('#lightboxBackdrop').classList.contains('show')&&['ArrowLeft','ArrowRight'].includes(e.key)){
+    e.preventDefault();showHousePhoto(houseIndex+(e.key==='ArrowLeft'?-1:1));
+  }
+  if(e.key!=='Tab')return;
+  const overlay=document.querySelector('.modal-backdrop.show');if(!overlay)return;
+  const focusable=[...overlay.querySelectorAll('button:not(:disabled),a[href],input:not(:disabled),select:not(:disabled),textarea:not(:disabled),summary')].filter(el=>el.getClientRects().length);
+  const first=focusable[0],last=focusable[focusable.length-1];
+  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}
+  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}
+});
+/* ── Menu: normalized signups, up to three accounts per dish ── */
 const categories=['The main table','The sides','Something sweet','Drinks & extras','Other family favorites'];
-function combinedMenu(){let merged=new Map(STARTER_DISHES.map(d=>[d.id,{...d,assignee:'',note:''}]));menuItems.forEach(d=>merged.set(d.id,{...merged.get(d.id),...d}));return [...merged.values()];}
-function renderMenu(){let all=combinedMenu(),claimed=all.filter(d=>d.assignee?.trim()).length;$('#menuProgress').textContent=`${claimed} of ${all.length} dishes claimed`;$('#modeChip').textContent=isShared?'Ellsworth shared board · live':configured?'Join the family to view live sign-ups':'Preview mode · saved on this device';$('#modeChip').classList.toggle('shared',isShared);$('#menuFootnote').textContent=isShared?'All Ellsworth assignments are saved to the family database. Updates refresh automatically.':configured?'Enter your family code above to claim a dish or see live sign-ups.':'Local preview only. Publish the site and configure Supabase to share with the family.';
-let html='';categories.forEach(category=>{let items=all.filter(d=>d.category===category);if(!items.length)return;html+=`<div class="category-head">${esc(category)}</div><div class="dish-list">`;for(let d of items){let claimed=Boolean(d.assignee?.trim()),canEdit=!isShared||!claimed||d.claimed_by===memberUserId;html+=`<div class="dish-row"><div><div class="dish-name">${esc(d.label)}</div>${d.note?`<div class="dish-note">${esc(d.note)}</div>`:''}</div><div class="dish-person ${claimed?'':'pending'}">${claimed?`Bringing it: <strong>${esc(d.assignee)}</strong>`:'Nobody claimed this yet'}</div><button class="btn small ${claimed?'ghost':''}" data-dish-id="${esc(d.id)}" ${!canEdit?'disabled title="Already claimed by another family member"':''}>${claimed?'Edit':'I’ll bring it'}</button></div>`;}html+='</div>';});$('#dishBoard').innerHTML=html;
+const previewUserId='preview-device';
+let menuReady=!configured;
+function dishSignups(d){
+  if(Array.isArray(d.signups))return d.signups;
+  // Upgrade device-only V1 previews without discarding the original name or note.
+  return d.assignee?.trim()?[{slot:1,user_id:d.claimed_by||previewUserId,assignee:d.assignee,note:d.note||''}]:[];
 }
-function menuSaveLocal(d){const ix=menuItems.findIndex(x=>x.id===d.id);if(ix===-1)menuItems.push(d);else menuItems[ix]=d;save('menu',menuItems);renderMenu();}
+function ownSignup(d){return dishSignups(d).find(s=>s.user_id===(isShared?memberUserId:previewUserId));}
+function combinedMenu(){
+  const merged=new Map(STARTER_DISHES.map(d=>[d.id,{...d,signups:[],note:''}]));
+  menuItems.forEach(d=>merged.set(d.id,{...merged.get(d.id),...d,signups:dishSignups(d)}));
+  return [...merged.values()];
+}
+function renderMenu(){
+  const all=combinedMenu(),claimed=all.filter(d=>dishSignups(d).length).length;
+  $('#menuProgress').textContent=`${claimed} of ${all.length} dishes covered`;
+  $('#modeChip').textContent=isShared?'Ellsworth shared board':configured?'Join the family to view sign-ups':'Preview mode · saved on this device';
+  $('#modeChip').classList.toggle('shared',isShared);
+  $('#menuFootnote').textContent=isShared?(menuReady?'Up to 3 family members per dish. Changes sync every 30 seconds while this tab is active.':'The menu is temporarily unavailable. Refresh or contact the organizer.'):configured?'Enter your family code above to claim a dish or see sign-ups.':'Local preview only. Configure Supabase to share with the family.';
+  $('#addDishBtn').disabled=configured&&(!isShared||!menuReady);
+  let html='';
+  for(const category of [...new Set([...categories,...all.map(d=>d.category)])]){
+    const items=all.filter(d=>d.category===category);if(!items.length)continue;
+    html+=`<div class="category-head">${esc(category)}</div><div class="dish-list">`;
+    for(const d of items){
+      const signups=dishSignups(d),own=ownSignup(d),full=signups.length>=3;
+      const unavailable=(configured&&(!isShared||!menuReady))||(full&&!own);
+      html+=`<div class="dish-row"><div><div class="dish-name">${esc(d.label)}</div><span class="dish-capacity">${signups.length}/3 assigned · ${full?'Full':'Open'}</span>${d.note?`<div class="dish-note">${esc(d.note)}</div>`:''}</div><div class="dish-person ${signups.length?'':'pending'}">${signups.length?`<ul>${signups.map(s=>`<li><strong>${esc(s.assignee)}</strong>${s.user_id===(isShared?memberUserId:previewUserId)?' (you)':''}${s.note?`<small>${esc(s.note)}</small>`:''}</li>`).join('')}</ul>`:'Be the first to bring it'}</div><button class="btn small ${own?'ghost':''}" data-dish-id="${esc(d.id)}" aria-label="${esc(own?'Edit your signup for ':full?'Full: ':'Sign up for ')}${esc(d.label)}" ${unavailable?'disabled':''}>${own?'Edit my sign-up':full?'Full':'I’ll bring it'}</button></div>`;
+    }
+    html+='</div>';
+  }
+  $('#dishBoard').innerHTML=html;
+}
+function menuSaveLocal(d){
+  const next=menuItems.filter(x=>x.id!==d.id).concat(d);
+  if(!save('menu',next))return false;
+  menuItems=next;renderMenu();return true;
+}
 async function refreshMenu(showToast=false){
-  if(!isShared){if(!configured)menuItems=load('menu',[]);renderMenu();return;}
+  if(!isShared){if(!configured)menuItems=load('menu',[]);menuReady=!configured;renderMenu();return true;}
+  const requestedUser=memberUserId;
   try{
-    const {data,error}=await sb.from('thanksgiving_dishes').select('id,label,category,assignee,note,claimed_by').eq('event_id',FAMILY_CONFIG.eventId);
+    const {data,error}=await sb.from('thanksgiving_dishes')
+      .select('id,label,category,note,signups:thanksgiving_dish_signups(slot,user_id,assignee,note)')
+      .eq('event_id',FAMILY_CONFIG.eventId);
+    if(!isShared||requestedUser!==memberUserId)return false;
     if(error)throw error;
-    menuItems=data.map(d=>({...d,assignee:d.assignee||'',note:d.note||''}));renderMenu();
-    if(showToast)notify('The Ellsworth menu is up to date.');
-  }catch(error){console.error(error);if(showToast)notify('The family menu could not be refreshed.');}
+    menuItems=data.map(d=>({...d,signups:(d.signups||[]).sort((a,b)=>a.slot-b.slot)}));
+    menuReady=true;renderMenu();if(showToast)notify('The Ellsworth menu is up to date.');return true;
+  }catch(error){
+    console.error('Family menu refresh failed:',error);menuReady=false;renderMenu();
+    if(showToast)notify('The family menu could not be refreshed. Please try again.');return false;
+  }
 }
-async function submitDish(d,assignee,note){
-  if(!assertFamilyAccess())return false;
-  if(!isShared){menuSaveLocal({...d,assignee,note});notify(assignee?`${d.label} is assigned to ${assignee}.`:`${d.label} is open again.`);return true;}
+async function submitDish(d,assignee,note,action='claim'){
+  if(!assertFamilyAccess()||(configured&&!menuReady))return false;
+  let result;
   try{
-    const {data,error}=await sb.rpc('claim_ellsworth_dish',{
-      p_event_id:FAMILY_CONFIG.eventId,p_id:d.id,p_label:d.label,p_category:d.category,
-      p_assignee:assignee,p_note:note
-    });
-    if(error)throw error;
-    if(!data){notify('This dish is already claimed by someone else.');await refreshMenu();return false;}
-    await refreshMenu();notify(assignee?'Dish assignment saved for the Ellsworth Family.':'Dish released for the Ellsworth Family.');return true;
-  }catch(error){console.error(error);notify('Could not save the family menu assignment.');return false;}
+    if(isShared){
+      const {data,error}=await sb.rpc('manage_ellsworth_signup',{
+        p_event_id:FAMILY_CONFIG.eventId,p_id:d.id,p_label:d.label,p_category:d.category,
+        p_assignee:assignee,p_note:note,p_action:action
+      });
+      if(error)throw error;result=data;
+    }else{
+      // Re-read local state before writing, so another tab's edits are preserved.
+      menuItems=load('menu',[]);d=combinedMenu().find(x=>x.id===d.id)||d;
+      let signups=[...dishSignups(d)],own=ownSignup(d);
+      if(action==='claim'&&own)result='already_assigned';
+      else if(action==='claim'&&signups.length>=3)result='full';
+      else if(action!=='claim'&&!own)result='not_assigned';
+      else{
+        if(action==='release')signups=signups.filter(s=>s.user_id!==previewUserId);
+        else if(action==='update')signups=signups.map(s=>s.user_id===previewUserId?{...s,assignee,note}:s);
+        else signups.push({slot:[1,2,3].find(n=>!signups.some(s=>s.slot===n)),user_id:previewUserId,assignee,note});
+        if(!menuSaveLocal({...d,signups}))return false;
+        result=action==='release'?'removed':action==='update'?'updated':'claimed';
+      }
+    }
+    const messages={claimed:'Your sign-up is saved. Thank you for bringing a dish!',updated:'Your sign-up is updated.',removed:'Your sign-up was removed. A slot is open again.',already_assigned:'Your account is already signed up for this dish.',full:'This dish just filled up. All 3 slots are taken.',not_assigned:'Your sign-up is no longer on this dish. Refresh and try again.'};
+    if(!messages[result])throw new Error('Unexpected signup response');
+    await refreshMenu();notify(messages[result]);
+    return ['claimed','updated','removed'].includes(result);
+  }catch(error){
+    console.error('Dish signup failed:',error);
+    notify(error.code==='23505'||error.code==='40001'||error.code==='40P01'?'Another claim changed this dish. Refresh and try again.':'Could not save your sign-up. Check your connection and try again.');
+    await refreshMenu();return false;
+  }
 }
-$('#dishBoard').addEventListener('click',e=>{let button=e.target.closest('button[data-dish-id]');if(!button||!assertFamilyAccess())return;let d=combinedMenu().find(x=>x.id===button.dataset.dishId);if(!d)return;openModal(`<h3 id="modalTitle">${d.assignee?'Update this dish':'Claim this dish'}</h3><p><strong>${esc(d.label)}</strong> ${d.assignee?'is assigned to '+esc(d.assignee)+'. You can update or release this dish.':'is still looking for a cook. Put your name on it!'}</p><form id="claimForm"><div class="form-field"><label for="claimName">Your name</label><input id="claimName" maxlength="75" required placeholder="Who’s bringing this?" value="${esc(d.assignee||'')}"></div><div class="form-field"><label for="claimNote">Details (optional)</label><input id="claimNote" maxlength="130" placeholder="Anything the family should know?" value="${esc(d.note||'')}"></div><div class="modal-actions">${d.assignee?'<button type="button" id="releaseDish" class="btn ghost">Release dish</button>':''}<button type="submit" class="btn">Save assignment</button></div></form>`);
-$('#claimForm').addEventListener('submit',async ev=>{ev.preventDefault();let name=$('#claimName').value.trim();if(!name)return;let button=$('#claimForm button[type="submit"]');button.disabled=true;button.textContent='Saving…';let ok=await submitDish(d,name,$('#claimNote').value.trim());if(ok)closeModal();else{button.disabled=false;button.textContent='Save assignment';}});
-$('#releaseDish')?.addEventListener('click',async()=>{if(!confirm(`Release ${d.label} from ${d.assignee}?`))return;let ok=await submitDish(d,'','');if(ok)closeModal();});});
-$('#addDishBtn').addEventListener('click',()=>{if(!assertFamilyAccess())return;openModal(`<h3 id="modalTitle">Add your family favorite</h3><p>Don't see your dish? Add it to the board so somebody can claim it.</p><form id="dishForm"><div class="form-field"><label for="newDishName">Dish or item</label><input id="newDishName" required maxlength="90" placeholder="e.g., Crawfish étouffée"></div><div class="form-field"><label for="newDishCategory">Category</label><select id="newDishCategory">${categories.map(c=>`<option>${esc(c)}</option>`).join('')}</select></div><div class="modal-actions"><button type="submit" class="btn">Add to menu</button></div></form>`);$('#dishForm').addEventListener('submit',async ev=>{ev.preventDefault();let label=$('#newDishName').value.trim(),category=$('#newDishCategory').value;if(!label)return;let d={id:uid(),label,category,assignee:'',note:''};if(isShared){try{const {error}=await sb.from('thanksgiving_dishes').insert({...d,event_id:FAMILY_CONFIG.eventId,assignee:null,note:null});if(error)throw error;await refreshMenu();notify('Dish added to the Ellsworth Family menu.');closeModal();}catch(err){console.error(err);notify('Could not add dish to the shared menu.');}}else{menuSaveLocal(d);closeModal();notify('New dish added to your preview menu.');}});});
+$('#dishBoard').addEventListener('click',e=>{
+  const button=e.target.closest('button[data-dish-id]');if(!button||!assertFamilyAccess())return;
+  const d=combinedMenu().find(x=>x.id===button.dataset.dishId);if(!d)return;
+  const own=ownSignup(d);
+  openModal(`<h3 id="modalTitle">${own?'Your dish sign-up':'Bring something good'}</h3><p><strong>${esc(d.label)}</strong> · ${dishSignups(d).length}/3 assigned. ${own?'You can update your details or remove your own sign-up.':'Add your name to an available slot.'}</p><form id="claimForm"><div class="form-field"><label for="claimName">Your name</label><input id="claimName" maxlength="75" required placeholder="Who’s bringing this?" value="${esc(own?.assignee||'')}"></div><div class="form-field"><label for="claimNote">Details (optional)</label><input id="claimNote" maxlength="130" placeholder="Anything the family should know?" value="${esc(own?.note||'')}"></div><div class="modal-actions">${own?'<button type="button" id="releaseDish" class="btn ghost">Remove my sign-up</button>':''}<button type="submit" class="btn">${own?'Update sign-up':'Save sign-up'}</button></div></form>`);
+  let saving=false;
+  async function send(action){
+    if(saving)return;const name=$('#claimName').value.trim();if(action!=='release'&&!name)return;
+    saving=true;const form=$('#claimForm');form.querySelectorAll('button').forEach(b=>b.disabled=true);
+    const ok=await submitDish(d,name,$('#claimNote').value.trim(),action);
+    if(ok&&form.isConnected)closeModal();
+    else if(form.isConnected){saving=false;form.querySelectorAll('button').forEach(b=>b.disabled=false);}
+  }
+  $('#claimForm').addEventListener('submit',ev=>{ev.preventDefault();send(own?'update':'claim');});
+  $('#releaseDish')?.addEventListener('click',()=>send('release'));
+});
+$('#addDishBtn').addEventListener('click',()=>{
+  if(!assertFamilyAccess())return;
+  openModal(`<h3 id="modalTitle">Add your family favorite</h3><p>Add a new dish with three open sign-up slots.</p><form id="dishForm"><div class="form-field"><label for="newDishName">Dish or item</label><input id="newDishName" required maxlength="90" placeholder="e.g., Crawfish étouffée"></div><div class="form-field"><label for="newDishCategory">Category</label><select id="newDishCategory">${categories.map(c=>`<option>${esc(c)}</option>`).join('')}</select></div><div class="modal-actions"><button type="submit" class="btn">Add to menu</button></div></form>`);
+  $('#dishForm').addEventListener('submit',async ev=>{
+    ev.preventDefault();const label=$('#newDishName').value.trim(),category=$('#newDishCategory').value;if(!label)return;
+    const button=$('#dishForm button');button.disabled=true;
+    const d={id:uid(),label,category};
+    try{
+      if(isShared){const {error}=await sb.from('thanksgiving_dishes').insert({...d,event_id:FAMILY_CONFIG.eventId});if(error)throw error;await refreshMenu();}
+      else if(!menuSaveLocal({...d,signups:[]})){button.disabled=false;return;}
+      closeModal();notify('Dish added to the family menu.');
+    }catch(error){console.error(error);notify('Could not add this dish. Please try again.');button.disabled=false;}
+  });
+});
 $('#refreshMenuBtn').addEventListener('click',()=>refreshMenu(true));
+window.addEventListener('storage',e=>{if(!configured&&e.key==='thanksgiving26_menu')refreshMenu();});
 renderMenu();
 /* ── Family slideshow with locally saved IndexedDB images ── */
 function photoDb(){return new Promise((resolve,reject)=>{if(!('indexedDB'in window))return reject(new Error('No IndexedDB'));const request=indexedDB.open('thanksgiving2026photos',1);request.onupgradeneeded=()=>request.result.createObjectStore('photos',{keyPath:'id'});request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error);});}
@@ -244,10 +380,11 @@ async function storePhoto(item){const db=await photoDb();return new Promise((res
 function renderPhotos(){let frame=$('#memoryFrame');frame.querySelector('.active-photo')?.remove();if(!photos.length){$('#memoryEmpty').style.display='block';$('#memoryControls').style.display='none';$('#photoCaption').textContent='';return;}if(slideIndex>=photos.length)slideIndex=0;$('#memoryEmpty').style.display='none';let img=document.createElement('img');img.className='active-photo';img.src=photos[slideIndex].url;img.alt=photos[slideIndex].caption||`Family photo ${slideIndex+1}`;img.loading='eager';frame.insertBefore(img,$('#memoryControls'));$('#memoryControls').style.display='flex';$('#slideCount').textContent=`${slideIndex+1} / ${photos.length}`;$('#photoCaption').textContent=photos[slideIndex].caption||'A little family love.';}
 function moveSlide(dir){if(!photos.length)return;slideIndex=(slideIndex+dir+photos.length)%photos.length;renderPhotos();resetSlideTimer();}
 function resetSlideTimer(){clearInterval(slideTimer);if(playing&&photos.length>1)slideTimer=setInterval(()=>{slideIndex=(slideIndex+1)%photos.length;renderPhotos();},5500);}
+$('#photoPause').textContent=playing?'Ⅱ':'▶';$('#photoPause').setAttribute('aria-label',playing?'Pause slideshow':'Play slideshow');
 $('#photoPrev').addEventListener('click',()=>moveSlide(-1));$('#photoNext').addEventListener('click',()=>moveSlide(1));$('#photoPause').addEventListener('click',()=>{playing=!playing;$('#photoPause').textContent=playing?'Ⅱ':'▶';$('#photoPause').setAttribute('aria-label',playing?'Pause slideshow':'Play slideshow');resetSlideTimer();});
 async function compressPhoto(file){return new Promise((resolve,reject)=>{let img=new Image(),url=URL.createObjectURL(file);img.onload=()=>{try{let size=Math.min(1,1800/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*size)),h=Math.max(1,Math.round(img.height*size)),c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);URL.revokeObjectURL(url);resolve(c.toDataURL('image/jpeg',.82));}catch(e){URL.revokeObjectURL(url);reject(e);}};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('File is not a readable photo'));};img.src=url;});}
 async function refreshPhotos(){
-  if(!isShared)return;
+  if(!isShared)return;const requestedUser=memberUserId;
   try{
     const {data,error}=await sb.from('thanksgiving_photos').select('id,path,external_url,caption').eq('event_id',FAMILY_CONFIG.eventId).order('created_at',{ascending:true});
     if(error)throw error;
@@ -257,6 +394,7 @@ async function refreshPhotos(){
       if(signError){console.error(signError);return null;}
       return {id:row.id,url:signed.signedUrl,caption:row.caption||''};
     }));
+    if(!isShared||requestedUser!==memberUserId)return;
     const currentId=photos[slideIndex]?.id;
     photos=[...SHARED_FAMILY_PHOTOS,...updated.filter(Boolean)];
     const nextIndex=photos.findIndex(photo=>photo.id===currentId);
@@ -264,6 +402,7 @@ async function refreshPhotos(){
     renderPhotos();resetSlideTimer();
   }catch(error){console.error(error);notify('Could not load the shared family slideshow.');}
 }
+document.querySelectorAll('label[for="photoUpload"]').forEach(label=>label.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();$('#photoUpload').click();}}));
 $('#photoUpload').addEventListener('change',async event=>{
   if(!assertFamilyAccess()){event.target.value='';return;}
   const selected=[...event.target.files].slice(0,20);if(!selected.length)return;
@@ -308,9 +447,9 @@ $('#addPhotoUrlBtn').addEventListener('click',()=>{
 (async()=>{if(configured){renderPhotos();return;}const saved=await storedPhotos();photos=[...SHARED_FAMILY_PHOTOS,...load('photo_urls',[]),...saved];renderPhotos();resetSlideTimer();})();
 /* ── Ellsworth Family games ── */
 function renderGames(){$('#gamesGrid').innerHTML=games.map((g,i)=>`<article class="game-card" data-num="${String(i+1).padStart(2,'0')}"><span class="game-icon" aria-hidden="true">${esc(g.icon||'✦')}</span><h3>${esc(g.name)}</h3><p>${esc(g.desc)}</p></article>`).join('');}
-async function refreshGames(){if(!isShared)return;try{
+async function refreshGames(){if(!isShared)return;const requestedUser=memberUserId;try{
   const {data,error}=await sb.from('thanksgiving_games').select('name,description,icon').eq('event_id',FAMILY_CONFIG.eventId).order('created_at',{ascending:true});
-  if(error)throw error;games=[...STARTER_GAMES,...data.map(g=>({name:g.name,desc:g.description,icon:g.icon||'✦'}))];renderGames();
+  if(error)throw error;if(!isShared||requestedUser!==memberUserId)return;games=[...STARTER_GAMES,...data.map(g=>({name:g.name,desc:g.description,icon:g.icon||'✦'}))];renderGames();
 }catch(error){console.error(error);notify('Could not refresh the family games.');}}
 $('#addGameBtn').addEventListener('click',()=>{
   if(!assertFamilyAccess())return;
@@ -322,25 +461,89 @@ $('#addGameBtn').addEventListener('click',()=>{
     closeModal();notify('Ellsworth game suggestion saved!');
   });
 });renderGames();
-/* ── Shared family TikTok wall ── */
-function parseTikTok(url){try{let u=new URL(url);if(!/(^|\.)tiktok\.com$/i.test(u.hostname))return null;let match=u.pathname.match(/\/video\/(\d{15,22})(?:\/|$)/);return match?{id:match[1],url:u.origin+u.pathname}:null;}catch{return null;}}
-function renderTiktoks(){
-  const grid=$('#tiktokGrid');let valid=tiktoks.map(parseTikTok).filter(Boolean);
-  if(!valid.length){grid.innerHTML=`<div class="tik-empty" style="grid-column:1/-1"><div><span style="font-size:45px;color:#b4a371">♫</span><strong>Bring the Ellsworth group chat here.</strong><span>Paste a full TikTok video link to get the family watch party started.</span></div></div>`;return;}
-  grid.innerHTML=valid.map((v,i)=>`<article class="tik-card"><div class="tik-head"><span>Ellsworth favorite #${i+1}</span><a href="${esc(v.url)}" target="_blank" rel="noopener noreferrer">Open TikTok ↗</a></div><iframe title="TikTok video ${i+1}" loading="lazy" allow="encrypted-media; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" src="https://www.tiktok.com/embed/v2/${v.id}"></iframe></article>`).join('');
+/* ── One-video playlist using TikTok's documented /player/v1 API ── */
+function parseTikTok(url){
+  try{
+    const u=new URL(url);
+    if(u.protocol!=='https:'||!['www.tiktok.com','tiktok.com','m.tiktok.com'].includes(u.hostname.toLowerCase())||u.username||u.password||u.port)return null;
+    const match=u.pathname.match(/^\/@([\w.-]+)\/video\/(\d{15,22})\/?$/);
+    return match?{id:match[2],url:`https://www.tiktok.com/@${match[1]}/video/${match[2]}`}:null;
+  }catch{return null;}
 }
-async function refreshTiktoks(){if(!isShared)return;try{
+let tikPlaylist=[],tikState={id:null,index:0,loaded:false,ended:false,manual:false,hasPlayed:false};
+function updateTikControls(){
+  const next=$('#tikNext');if(!next)return;
+  next.disabled=!tikState.ended&&!tikState.manual;
+  next.textContent=tikState.index>=tikPlaylist.length-1?'Back to first video':'Next video →';
+  $('#tikPosition').textContent=`Family favorite ${tikState.index+1} / ${tikPlaylist.length}`;
+  $('#tikStatus').textContent=tikState.manual?'Manual navigation is on. Completion cannot be verified in this mode.':tikState.ended?'This video has finished. The next video is ready.':tikState.loaded?'Press Play inside the video. Next unlocks when this video ends.':'Choose Play video to load this clip. Nothing plays automatically.';
+}
+function renderTiktoks(force=false){
+  const valid=[...new Map(tiktoks.map(parseTikTok).filter(Boolean).map(v=>[v.id,v])).values()];
+  tikPlaylist=valid;
+  if(!valid.length){
+    tikState={id:null,index:0,loaded:false,ended:false,manual:false,hasPlayed:false};
+    $('#tiktokGrid').innerHTML='<div class="tik-empty"><div><span aria-hidden="true">♫</span><strong>Bring the Ellsworth group chat here.</strong><span>Add a full TikTok video link to start the family playlist.</span></div></div>';return;
+  }
+  // Polling and appended clips must never replace a currently playing iframe.
+  const current=valid.findIndex(v=>v.id===tikState.id);
+  if(!force&&current>=0&&$('#tikNext')){tikState.index=current;updateTikControls();return;}
+  const index=current>=0?current:Math.min(tikState.index,valid.length-1),video=valid[index];
+  tikState={id:video.id,index,loaded:false,ended:false,manual:false,hasPlayed:false};
+  // Replacing the entire frame removes the previous browsing context and its audio.
+  $('#tiktokGrid').innerHTML=`<article class="tik-card"><div class="tik-head"><span id="tikPosition"></span><a href="${esc(video.url)}" target="_blank" rel="noopener noreferrer">Open TikTok ↗</a></div><div id="tikPlayerSlot" class="tik-poster"><p>One clip. The whole family.</p><button type="button" class="btn" id="tikLoad">Play video ▷</button><p class="helper">The player may ask you to tap Play once more.</p></div><p class="tik-status" id="tikStatus" role="status"></p><div class="tik-controls"><button class="btn secondary small" id="tikNext" disabled>Next video →</button></div><details class="tik-fallback"><summary>Video blocked or Next hasn’t unlocked?</summary><p>TikTok may be unavailable, or its playback events may be blocked. You can switch to manual navigation and open the clip on TikTok. Manual mode cannot verify that a video has finished.</p><button type="button" class="btn ghost small" id="tikManual">Use manual navigation</button></details></article>`;
+  $('#tikLoad').addEventListener('click',()=>{
+    const slot=$('#tikPlayerSlot');slot.classList.remove('tik-poster');
+    slot.innerHTML=`<iframe id="tikPlayer" title="Family TikTok video ${index+1}" allow="fullscreen; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" src="https://www.tiktok.com/player/v1/${video.id}?autoplay=0&loop=0&controls=1&play_button=1"></iframe>`;
+    tikState.loaded=true;updateTikControls();
+  });
+  $('#tikManual').addEventListener('click',()=>{
+    // Unload the embed before enabling a path to another clip.
+    $('#tikPlayerSlot').innerHTML='<p class="tik-status">Player closed for manual navigation. Use Open TikTok above to watch this clip.</p>';
+    tikState.loaded=false;tikState.manual=true;updateTikControls();
+  });
+  $('#tikNext').addEventListener('click',()=>{
+    if(!tikState.ended&&!tikState.manual)return;
+    const next=(tikState.index+1)%tikPlaylist.length;
+    tikState.id=tikPlaylist[next].id;renderTiktoks(true);$('#tikLoad')?.focus();
+  });
+  updateTikControls();
+}
+window.addEventListener('message',event=>{
+  const frame=$('#tikPlayer');
+  if(!frame||event.origin!=='https://www.tiktok.com'||event.source!==frame.contentWindow)return;
+  const message=event.data;
+  if(!message||typeof message!=='object'||message['x-tiktok-player']!==true)return;
+  if(message.type==='onStateChange'){
+    if(message.value===1)tikState.hasPlayed=true;
+    if(message.value===0&&tikState.hasPlayed){tikState.ended=true;updateTikControls();}
+  }
+  if(message.type==='onPlayerError'||message.type==='onError'){
+    $('#tikStatus').textContent='TikTok could not play this clip. Open TikTok or choose manual navigation below.';
+  }
+});
+// Avoid background audio. This never sends a play command.
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden)$('#tikPlayer')?.contentWindow.postMessage({type:'pause','x-tiktok-player':true},'https://www.tiktok.com');
+});
+async function refreshTiktoks(){if(!isShared)return;const requestedUser=memberUserId;try{
   const {data,error}=await sb.from('thanksgiving_tiktoks').select('url').eq('event_id',FAMILY_CONFIG.eventId).order('created_at',{ascending:true});if(error)throw error;
+  if(!isShared||requestedUser!==memberUserId)return;
   tiktoks=[...DEFAULT_TIKTOKS,...data.map(v=>v.url)];renderTiktoks();
 }catch(error){console.error(error);notify('Could not load the shared TikToks.');}}
 $('#tikForm').addEventListener('submit',async event=>{
   event.preventDefault();if(!assertFamilyAccess())return;
-  const parsed=parseTikTok($('#tikUrl').value.trim());if(!parsed){notify('Use a full tiktok.com/@creator/video/NUMBER link.');return;}
-  if(tiktoks.some(url=>parseTikTok(url)?.id===parsed.id)){notify('That video is already on the Ellsworth wall.');return;}
-  if(isShared){const {error}=await sb.from('thanksgiving_tiktoks').insert({event_id:FAMILY_CONFIG.eventId,url:parsed.url});if(error){console.error(error);notify('Could not save this TikTok.');return;}await refreshTiktoks();}
-  else{tiktoks.push(parsed.url);save('tiktoks',tiktoks);renderTiktoks();}
-  $('#tikUrl').value='';notify('TikTok added to the Ellsworth Family wall.');
-});renderTiktoks();
+  const parsed=parseTikTok($('#tikUrl').value.trim());if(!parsed){notify('Use a full HTTPS tiktok.com/@creator/video/NUMBER link.');return;}
+  if(tiktoks.some(url=>parseTikTok(url)?.id===parsed.id)){notify('That video is already in the family playlist.');return;}
+  const button=$('#tikForm button');button.disabled=true;
+  try{
+    if(isShared){const {error}=await sb.from('thanksgiving_tiktoks').insert({event_id:FAMILY_CONFIG.eventId,url:parsed.url});if(error)throw error;await refreshTiktoks();}
+    else{const next=[...tiktoks,parsed.url];if(!save('tiktoks',next))return;tiktoks=next;renderTiktoks();}
+    $('#tikUrl').value='';notify('TikTok added to the family playlist.');
+  }catch(error){console.error(error);notify(error.code==='23505'?'That video is already in the playlist.':'Could not save this TikTok. Please try again.');}
+  finally{button.disabled=false;}
+});
+renderTiktoks();
 </script>
 </body>
 </html>
