@@ -1,3 +1,26 @@
+# RSVP and caption fixes · current validation
+
+Validated October 21, 2026. The configured Supabase project was missing all five tables from the earlier family-planning migration. The reviewed migration was rehearsed locally, applied successfully through Supabase, and verified with the committed read-only `verify-shared-features.sql` query. The frontend PR remains unmerged.
+
+| Check | Result | Scope |
+| --- | --- | --- |
+| Database regression suite | **130 checks passed** | Real local PostgreSQL 17.10 with actual migrations, member RLS and grants; exact RSVP, caption-only and reaction upserts included |
+| Browser integration suite | **183 checks passed** | Chromium at 375, 430, 768, 1024 and 1440px with synthetic shared sessions and mocked Supabase/media |
+| Missing-setup diagnosis and recovery | Passed | Live table metadata confirmed the missing schema; browser tests reproduce disabled controls for missing tables and restore them after setup and refresh |
+| Production setup | Applied and verified | All four active shared-feature tables exist with RLS, member SELECT/write grants and no anonymous SELECT grant; existing member/content records were not read or modified by the additive migration |
+| Family Plans removal | Passed | Section, navigation, forms and handlers removed; no schedule requests during join, refresh, reload or local preview; NFL Games stays last |
+| RSVP flow | Passed | Includes self by default; add, edit without duplication, separate households/counts, invalid travel dates, failed-save retry, decline, remove and reload |
+| Captions | Passed | One input only; add, update by another member, clear and retry a failed save; escaped text, no name/date display in album or TV, historical metadata retained |
+| Emoji reactions | Passed | Add, change and remove; independent members; failed save is retryable and never displayed as successful |
+| Existing behavior | Passed | Menu capacity/concurrency, invitation routing without input activation, gallery, uploads, game voting, TikTok skipping, TV controls and disconnect |
+| Syntax/whitespace | Passed | Inline app script, feature script, test scripts and `git diff --check` |
+
+The production check is schema/grant verification, not an end-to-end family login or live member CRUD test. Attempts to run an additional rolled-back synthetic write check through the connector returned `Invalid or expired requestState`; no successful live write test is claimed. Local PostgreSQL covers actual RLS/constraints, while browser integration covers the UI separately. Live Storage, real TikTok playback and physical mobile/TV devices are outside these results.
+
+Supabase advisors were reviewed after installation. The application intentionally uses invitation-gated anonymous Auth sessions; every new table policy also checks server-side family membership. Advisor notices about [anonymous Auth policies](https://supabase.com/docs/guides/database/database-advisors?queryGroups=lint&lint=0012_auth_allow_anonymous_sign_ins), the existing [privileged membership RPCs](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable), and [protected membership/invite tables without client policies](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy) were checked against that access model. Existing password-auth settings were outside this change; [password protection guidance](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection).
+
+The records below describe earlier releases and their state at the time; the production setup status above supersedes historical statements that the migration was unapplied.
+
 # Lineup and media update validation record
 
 Validated October 21, 2026. This presentation/interaction update has no new schema migration and does not apply SQL or merge/deploy the page.

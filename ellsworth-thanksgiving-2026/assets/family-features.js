@@ -3,10 +3,6 @@
 function initFamilyFeatures(){
   const eventId=FAMILY_CONFIG.eventId,localUser='preview-device';
   const builtinKeys={Spades:'builtin-spades',UNO:'builtin-uno','Name That Tune':'builtin-name-that-tune'};
-  const seeds=[
-    {id:'00000000-2026-4000-8000-000000000001',title:'Thanksgiving dinner',day:'2026-11-26',kind:'dinner',is_seed:true,start_time:null,note:'Time to be confirmed by the family.'},
-    {id:'00000000-2026-4000-8000-000000000002',title:'Family game night',day:'2026-11-26',kind:'games',is_seed:true,start_time:null,note:'We’ll add the time and game lineup later.'}
-  ];
   // Verified 2026-10-21 against NFL.com. Stored Central wall times, not viewer-local times.
   const nflSource='https://www.nfl.com/news/thanksgiving-2026-nfl-schedule-release';
   const football=[
@@ -16,19 +12,17 @@ function initFamilyFeatures(){
   ].map(p=>({...p,kind:'football'}));
   const config={
     rsvps:{table:'thanksgiving_rsvps',columns:'event_id,user_id,household_name,response,adults,children,arrival_date,arrival_time,departure_date,departure_time,note'},
-    plans:{table:'thanksgiving_schedule',columns:'id,event_id,created_by,is_seed,title,day,start_time,end_time,kind,location,note'},
     votes:{table:'thanksgiving_game_votes',columns:'game_key,user_id'},
-    details:{table:'thanksgiving_photo_details',columns:'photo_id,caption,people_names,date_taken,edited_by'},
+    details:{table:'thanksgiving_photo_details',columns:'photo_id,caption,edited_by'},
     reactions:{table:'thanksgiving_photo_reactions',columns:'photo_id,user_id,reaction'}
   };
   const state={},ready={},failed={},requests={},busy=new Set();
   let activeUser=isShared?memberUserId:null,tvOpen=false,tvTrigger=null,tvWasFullscreen=false;
-  for(const key of Object.keys(config)){state[key]=configured?[]:load('planning_'+key,key==='plans'?seeds:[]);ready[key]=!configured;}
+  for(const key of Object.keys(config)){state[key]=configured?[]:load('planning_'+key,[]);ready[key]=!configured;}
   const who=()=>isShared?memberUserId:localUser;
   const current=user=>!configured||(isShared&&user===memberUserId);
   const editable=key=>!configured||(isShared&&ready[key]);
   const dateText=date=>date?new Intl.DateTimeFormat('en-US',{timeZone:'UTC',weekday:'short',month:'short',day:'numeric'}).format(new Date(date.slice(0,10)+'T12:00:00Z')):'';
-  const photoDateText=date=>date?new Intl.DateTimeFormat('en-US',{timeZone:'UTC',month:'short',day:'numeric',year:'numeric'}).format(new Date(date.slice(0,10)+'T12:00:00Z')):'';
   const clock=time=>time?new Intl.DateTimeFormat('en-US',{timeZone:'UTC',hour:'numeric',minute:'2-digit'}).format(new Date('2000-01-01T'+time.slice(0,5)+':00Z')):'';
   const field=(id,label,type,value='',attrs='')=>`<div class="form-field"><label for="${id}">${label}</label><input id="${id}" type="${type}" value="${esc(value??'')}" ${attrs}></div>`;
   const formError=message=>{$('#featureFormError').textContent=message;};
@@ -94,34 +88,8 @@ function initFamilyFeatures(){
     });
     $('#removeRsvp')?.addEventListener('click',()=>{if(!guard('rsvps'))return;submitForm(form,()=>isShared?changed(sb.from(config.rsvps.table).delete().eq('event_id',eventId).eq('user_id',who()).select('user_id')):saveLocal('rsvps',state.rsvps.filter(r=>r.user_id!==who())),'rsvps','Your RSVP has been removed.');});
   }
-  function renderSchedule(){
-    const plans=(!configured||isShared)?state.plans:seeds;
-    const entries=plans.slice().sort((a,b)=>a.day.localeCompare(b.day)||(a.start_time||'99').localeCompare(b.start_time||'99'));
-    $('#scheduleStatus').textContent=showStatus('plans','the shared family schedule');
-    $('#addScheduleBtn').disabled=configured&&isShared&&!ready.plans;
-    $('#scheduleList').innerHTML=[...new Set(entries.map(e=>e.day))].map(day=>`<section class="schedule-day"><h3>${esc(dateText(day))}</h3>${entries.filter(p=>p.day===day).map(p=>{
-      const canEdit=editable('plans')&&(p.is_seed||p.created_by===who());
-      return `<article class="schedule-entry" data-plan-id="${esc(p.id)}"><div class="schedule-time">${p.start_time?esc(clock(p.start_time))+(p.end_time?' – '+esc(clock(p.end_time)):'')+' CT':'Time to be confirmed'}</div><div><span class="response-chip">${p.kind==='games'?'Family games':p.kind==='dinner'?'At the table':p.kind==='outing'?'Outing':'Family plan'}</span><h4>${esc(p.title)}</h4>${p.location?`<p>${esc(p.location)}</p>`:''}${p.note?`<p>${esc(p.note)}</p>`:''}</div>${canEdit?`<button type="button" class="btn ghost small" data-edit-plan="${esc(p.id)}">Edit plan</button>`:''}</article>`;
-    }).join('')}</section>`).join('')||'<p class="feature-empty">No plans yet. Add something for the family to look forward to.</p>';
-  }
   function renderFootball(){
     $('#nflGamesList').innerHTML=football.map(p=>`<article class="schedule-entry football" data-plan-id="${p.id}"><div class="schedule-time">${esc(clock(p.start_time))} CT</div><div><h3>${esc(p.title)}</h3><p>${esc(p.network)}</p></div></article>`).join('');
-  }
-  function openPlan(id){
-    if(!guard('plans'))return;
-    const own=id?state.plans.find(p=>p.id===id):null;if(id&&(!own||!own.is_seed&&own.created_by!==who()))return;
-    const p=own||{day:'2026-11-26',kind:'other'};
-    openModal(`<h3 id="modalTitle">${own?'Update':'Add'} a weekend plan</h3><p>All times are Central. Leave the time blank while plans are still coming together.</p><form id="scheduleForm">${field('planTitle','Plan name','text',p.title,'required maxlength="100"')}<div class="form-grid">${field('planDay','Date','date',p.day,'required')}<div class="form-field"><label for="planKind">Type of plan</label><select id="planKind"><option value="dinner">Dinner / meal</option><option value="games">Family games</option><option value="outing">Outing</option><option value="other">Other</option></select></div>${field('planStart','Start time (optional)','time',p.start_time?.slice(0,5))}${field('planEnd','End time (optional)','time',p.end_time?.slice(0,5))}</div>${field('planLocation','Where? (optional)','text',p.location,'maxlength="100"')}<div class="form-field"><label for="planNote">Details (optional)</label><textarea id="planNote" maxlength="300" rows="2">${esc(p.note||'')}</textarea></div>${formTail}${own&&!own.is_seed?'<button type="button" class="btn ghost small" id="removePlan">Remove this plan</button>':''}</form>`);
-    $('#planKind').value=p.kind;const form=$('#scheduleForm');
-    form.addEventListener('submit',event=>{
-      event.preventDefault();if(!guard('plans'))return;
-      const start_time=$('#planStart').value||null,end_time=$('#planEnd').value||null;
-      if(end_time&&(!start_time||end_time<=start_time))return formError('Choose an end time after the start time.');
-      if(!$('#planTitle').value.trim())return formError('Please enter a plan name.');
-      const row={title:$('#planTitle').value.trim(),day:$('#planDay').value,kind:$('#planKind').value,start_time,end_time,location:$('#planLocation').value.trim(),note:$('#planNote').value.trim()};
-      submitForm(form,()=>isShared?(own?changed(sb.from(config.plans.table).update(row).eq('event_id',eventId).eq('id',own.id).select('id')):checked(sb.from(config.plans.table).insert({...row,event_id:eventId}))):saveLocal('plans',own?state.plans.map(p=>p.id===own.id?{...p,...row}:p):state.plans.concat({...row,id:uid(),created_by:who(),is_seed:false})),'plans','The weekend plan is saved.');
-    });
-    $('#removePlan')?.addEventListener('click',()=>{if(!guard('plans'))return;submitForm(form,()=>isShared?changed(sb.from(config.plans.table).delete().eq('event_id',eventId).eq('id',own.id).select('id')):saveLocal('plans',state.plans.filter(p=>p.id!==own.id)),'plans','The plan has been removed.');});
   }
   function gameKey(g){return g.id||builtinKeys[g.name];}
   function renderGames(){
@@ -145,24 +113,24 @@ function initFamilyFeatures(){
     finally{busy.delete(tag);renderGames();if(current(user))document.querySelector(`[data-vote="${CSS.escape(key)}"]`)?.focus({preventScroll:true});}
   }
   const extra=document.createElement('div');extra.id='photoExtras';extra.className='photo-extra';$('#photoCaption').after(extra);
-  const photoInfo=photo=>{const detail=state.details.find(d=>d.photo_id===photo?.id);return {caption:detail?detail.caption:photo?.caption||'',people:detail?.people_names||'',date:detail?.date_taken||''};};
+  const photoInfo=photo=>{const detail=state.details.find(d=>d.photo_id===photo?.id);return {caption:detail?detail.caption:photo?.caption||''};};
   function renderPhoto(){
     const photo=photos[slideIndex];extra.hidden=!photo;
     if(!photo){extra.innerHTML='';if(tvOpen)closeTv();return;}
     const info=photoInfo(photo),own=state.reactions.find(r=>r.photo_id===photo.id&&r.user_id===who());
     $('#photoCaption').textContent=info.caption||'A little family love.';
-    $('#memoryFrame .active-photo')?.setAttribute('alt',info.caption||info.people||`Family photo ${slideIndex+1}`);
-    extra.innerHTML=`<p class="photo-people">${esc([info.people,photoDateText(info.date)].filter(Boolean).join(' · '))}</p><div class="photo-reactions">${[['heart','❤️','Love'],['laugh','😄','Laugh'],['clap','👏','Applause']].map(([key,emoji,label])=>`<button type="button" data-react="${key}" aria-label="${label}" aria-pressed="${own?.reaction===key}" ${!photo.id||busy.has('reaction')||configured&&isShared&&!ready.reactions?'disabled':''}>${emoji} ${state.reactions.filter(r=>r.photo_id===photo.id&&r.reaction===key).length}</button>`).join('')}</div><div class="photo-extra-actions"><button class="btn secondary small" type="button" id="editPhotoDetails" ${!photo.id||configured&&isShared&&!ready.details?'disabled':''}>Edit caption, names & date</button><button class="btn secondary small" type="button" id="startTv">TV slideshow ↗</button></div><p class="helper">${esc(showStatus('details','photo captions')||showStatus('reactions','photo reactions'))}</p>`;
+    $('#memoryFrame .active-photo')?.setAttribute('alt',info.caption||`Family photo ${slideIndex+1}`);
+    extra.innerHTML=`<div class="photo-reactions">${[['heart','❤️','Love'],['laugh','😄','Laugh'],['clap','👏','Applause']].map(([key,emoji,label])=>`<button type="button" data-react="${key}" aria-label="${label}" aria-pressed="${own?.reaction===key}" ${!photo.id||busy.has('reaction')||configured&&isShared&&!ready.reactions?'disabled':''}>${emoji} ${state.reactions.filter(r=>r.photo_id===photo.id&&r.reaction===key).length}</button>`).join('')}</div><div class="photo-extra-actions"><button class="btn secondary small" type="button" id="editPhotoDetails" ${!photo.id||configured&&isShared&&!ready.details?'disabled':''}>Edit caption</button><button class="btn secondary small" type="button" id="startTv">TV slideshow ↗</button></div><p class="helper">${esc(showStatus('details','photo captions')||showStatus('reactions','photo reactions'))}</p>`;
     $('#editPhotoDetails').addEventListener('click',()=>openPhotoDetails(photo.id));$('#startTv').addEventListener('click',openTv);
     if(tvOpen)renderTv();
   }
   function openPhotoDetails(id){
     if(!guard('details'))return;const photo=photos.find(p=>p.id===id);if(!photo)return;const info=photoInfo(photo);
-    openModal(`<h3 id="modalTitle">The story behind this photo</h3><p>Help the family remember who, when, and what made it special. Family members can update these details.</p><form id="photoDetailsForm">${field('photoDetailCaption','Caption','text',info.caption,'maxlength="150"')}${field('photoPeople','Who’s in the photo? (optional)','text',info.people,'maxlength="250"')}${field('photoDate','Date taken (optional)','date',info.date)}${formTail}</form>`);
+    openModal(`<h3 id="modalTitle">Edit photo caption</h3><p>Add a few words about this memory. Family members can update the caption.</p><form id="photoDetailsForm">${field('photoDetailCaption','Caption','text',info.caption,'maxlength="150"')}${formTail}</form>`);
     const form=$('#photoDetailsForm');form.addEventListener('submit',event=>{
       event.preventDefault();if(!guard('details'))return;
-      const row={event_id:eventId,photo_id:id,caption:$('#photoDetailCaption').value.trim(),people_names:$('#photoPeople').value.trim(),date_taken:$('#photoDate').value||null,edited_by:who()};
-      submitForm(form,()=>isShared?checked(sb.from(config.details.table).upsert(row,{onConflict:'photo_id'})):saveLocal('details',state.details.filter(d=>d.photo_id!==id).concat(row)),'details','Photo details are saved.');
+      const row={event_id:eventId,photo_id:id,caption:$('#photoDetailCaption').value.trim(),edited_by:who()};
+      submitForm(form,()=>isShared?checked(sb.from(config.details.table).upsert(row,{onConflict:'photo_id'})):saveLocal('details',state.details.filter(d=>d.photo_id!==id).concat(row)),'details','Photo caption is saved.');
     });
   }
   async function react(reaction){
@@ -180,8 +148,7 @@ function initFamilyFeatures(){
   function renderTv(){
     const photo=photos[slideIndex];if(!photo)return;const info=photoInfo(photo);
     if($('#tvImage').getAttribute('src')!==photo.url)$('#tvImage').src=photo.url;
-    $('#tvImage').alt=info.caption||info.people||`Family photo ${slideIndex+1}`;$('#tvCaption').textContent=info.caption;
-    $('#tvPeople').textContent=[info.people,photoDateText(info.date)].filter(Boolean).join(' · ');
+    $('#tvImage').alt=info.caption||`Family photo ${slideIndex+1}`;$('#tvCaption').textContent=info.caption;
     $('#tvCount').textContent=`${slideIndex+1} / ${photos.length}`;$('#tvPause').textContent=playing?'Pause slideshow':'Play slideshow';
   }
   function openTv(){
@@ -195,11 +162,10 @@ function initFamilyFeatures(){
     document.body.style.overflow='';if(document.fullscreenElement===$('#tvSlideshow'))document.exitFullscreen?.().catch(()=>{});
     (tvTrigger?.isConnected?tvTrigger:$('#startTv'))?.focus({preventScroll:true});tvWasFullscreen=false;
   }
-  function render(){renderRsvps();renderSchedule();renderFootball();renderGames();renderPhoto();}
-  $('#editRsvpBtn').addEventListener('click',openRsvp);$('#addScheduleBtn').addEventListener('click',()=>openPlan());
-  $('#scheduleList').addEventListener('click',e=>{const button=e.target.closest('[data-edit-plan]');if(button)openPlan(button.dataset.editPlan);});
+  function render(){renderRsvps();renderFootball();renderGames();renderPhoto();}
+  $('#editRsvpBtn').addEventListener('click',openRsvp);
   $('#gameSort').addEventListener('change',renderGames);
-  $('#refreshPlanningBtn').addEventListener('click',()=>{if(assertFamilyAccess())refresh();});
+  $('#refreshRsvpsBtn').addEventListener('click',()=>{if(assertFamilyAccess())refresh();});
   $('#gamesGrid').addEventListener('click',e=>{const button=e.target.closest('[data-vote]');if(button)vote(button.dataset.vote);});
   extra.addEventListener('click',e=>{const button=e.target.closest('[data-react]');if(button)react(button.dataset.react);});
   $('#tvExit').addEventListener('click',closeTv);$('#tvPrev').addEventListener('click',()=>moveSlide(-1));$('#tvNext').addEventListener('click',()=>moveSlide(1));
