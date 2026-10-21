@@ -1,21 +1,49 @@
-# Ellsworth Family Thanksgiving 2026 · Version 2.0
+# Ellsworth Family Thanksgiving 2026 · Family planning release
 
 This is an enhancement of the existing vanilla HTML/CSS/JavaScript application in `ellsworth-thanksgiving-2026/`. The personal website at the repository root is independent. No framework or production build step is required.
 
 The existing GitHub Pages deployment keeps the `/ellsworth-thanksgiving-2026/` path under its current Pages base URL.
-GitHub Pages serves the static page; Supabase supplies family authentication, shared records and private photo storage. **Do not merge/publish V2 until the reviewed menu migration is applied and the release checks below are coordinated.**
+GitHub Pages serves the static page; Supabase supplies family authentication, shared records and private photo storage. **Apply the reviewed family-planning migration before merging this frontend release.**
+
+## Family planning additions
+
+- Household RSVPs have Coming / Maybe / Can’t make it responses, adult and child counts, arrival/departure dates and optional times, and a short note. Counts include the person submitting. Confirmed and possible guests are reported separately; declined households count as zero. Members can update or remove only their own RSVP.
+- The weekend agenda combines family plans with six NFL entries: the five holiday games plus the Saints’ Sunday game. It supports NFL-only and family-only filters. All displayed and entered times use **America/Chicago (Central)**, including when the visitor’s device uses a different zone. Dinner and family game night start without invented times. All family members can update those two shared placeholders; custom outings/plans are editable and removable by their creator.
+- Each browser account can vote once for each built-in or suggested game and remove its own vote. Most-popular sorting uses shared counts, with original order as the tie breaker. Votes do not set the actual game-night schedule.
+- Photo captions, names and dates are a collaborative overlay: members can improve details on both old and new uploads, while the original photo record and caption remain intact. Each account can choose one reaction per photo, change it or remove it.
+- TV slideshow offers large photos and captions, previous/next, pause/play, keyboard arrows, focus containment and Escape. It requests native fullscreen when supported and remains usable as a full-window overlay when unavailable. It uses the existing private-photo signed URLs. Disconnect clears the private state and closes the viewer.
+- Unconfigured previews save these additions on the current browser only. A configured board never falls back to local writes when shared reads fail. New feature buttons use the existing invitation-instructions route without activating a text input.
+
+### Deploying this release to an existing board
+
+1. Confirm the earlier `20261021051504_shared_dish_signups.sql` migration is already installed. If not, follow the original V2 installation section below first. Never rerun the baseline or an already-installed migration.
+2. Review and rehearse **`migrations/20261021175039_family_planning.sql`**, then apply it once to the existing project through the Supabase SQL Editor. This additive transaction creates five tables and two untimed family plans; it leaves existing dishes, games, photos, membership and private Storage policies unchanged. A lock timeout or failure rolls back the transaction.
+3. Verify the five new tables have RLS enabled and explicit `authenticated` grants; the migration revokes inherited anonymous and TRUNCATE access. Keep the existing exposed-schema configuration and private bucket. No new secrets, scheduled jobs, external APIs or Realtime setup are required.
+4. Merge the frontend PR through the existing GitHub Pages flow. Test with two family sessions: independent RSVPs, shared seeded-plan updates, own custom-plan edits, one-vote/reaction limits, photo annotations, disconnect and the TV viewer on actual mobile/TV devices.
+
+The migration is included and tested locally; **this feature PR does not apply it to production or merge/deploy the page**. Existing V2 pages remain compatible with the additive tables. If a frontend rollback is necessary, retain the new tables so contributions are preserved; no destructive down-migration is provided.
+
+### Football sources
+
+The [official NFL Thanksgiving release](https://www.nfl.com/news/thanksgiving-2026-nfl-schedule-release) supplies the Nov. 25–27 holiday games; the [official Week 12 schedule](https://www.nfl.com/schedules/2026/by-week/week-12) supplies the Saints’ Nov. 29 matchup. Matchups, broadcasters and kickoffs were checked October 21, 2026 and converted from Eastern to Central time. These are a checked-in snapshot, **not a live feed**; the UI labels the verification date, warns that kickoffs can change and links to the full NFL schedule. No college games are included.
+
+### Shared data and ownership
+
+The new schema uses the existing server-checked family membership function and `auth.uid()` in RLS. A unique household key permits one RSVP per event/account; game votes and photo reactions have database-enforced account uniqueness. Ownership cannot be reassigned to another user. Schedule grants exclude identity, creator and seeded-plan fields; seeded plans can be edited, but cannot be created or deleted by browser clients. Photo-detail edits are collaborative and record the editing account. Concurrent caption edits use last-save-wins behavior; the original caption remains available in the underlying photo record.
+
+These are browser accounts, not verified individual identities. Rejoining on a different device can create a new account and an additional RSVP or vote; coordinate household names and contact the organizer to reconcile duplicates. Travel details and family activity are visible only to joined members; the public NFL snapshot and built-in game names remain visible to visitors. Refresh runs every 30 seconds in an active tab, and **Refresh plans** refreshes the new shared records immediately. Photo URLs retain the existing signed-URL lifetime.
 
 ## What changed
 
 - Rust and burnt orange accents, warm cream backgrounds and local SVG autumn leaves replace the green starburst branding. Leaf animations ignore pointer input and stop under `prefers-reduced-motion`; the photo slideshow starts paused for that preference.
 - Dishes show `0/3` through `3/3`, every contributor's name and individual note. Each account can claim one slot per dish, update its details or release its own slot. Custom dishes have the same capacity.
 - The property gallery keeps the original photos and displays the fifth genuine listing image that was previously only present in the lightbox array. Its viewer supports buttons, left/right arrow keys, Escape and horizontal touch swipes. Thumbnails load lazily.
-- TikToks form a single-video playlist, with explicit interaction before loading a player, no autoplay, completion-based Next and an explicit manual fallback.
+- TikToks form a single-video playlist with a directly available embedded player, no autoplay, completion-based Next and an explicit manual fallback.
 - The footer credits **Built by De’Juan Ellsworth · Family Developer/Engineer**.
 
-## Existing installation: migration and release order
+## Original V2 installation: menu migration and release order
 
-The live dish columns, policies and original `claim_ellsworth_dish` RPC were inspected read-only during implementation. No production records were read into fixtures and **the V2 migration has not been applied to production**.
+The live dish columns, policies and original `claim_ellsworth_dish` RPC were inspected read-only during the original V2 implementation. No production records were read into fixtures. These steps are retained for installations that still need the menu upgrade; check actual installation state before applying it.
 
 1. Review `migrations/20261021051504_shared_dish_signups.sql`. Export/backup the existing dishes, family data and schema through Supabase before making production changes. Rehearse on an isolated test project or database.
 2. Coordinate a brief menu editing pause. Existing V1 tabs cannot manage the normalized V2 menu; after the migration their old RPC returns an explicit reload error.
@@ -59,7 +87,7 @@ Prefer fixing forward. Keep the original columns and the new signups table: both
 
 ## Fresh installation
 
-1. Create a Supabase project. Run `supabase-setup.sql` **once**, then run the incremental migration above. This two-step path is tested for both new and existing installations.
+1. Create a Supabase project. Run `supabase-setup.sql` **once**, then `migrations/20261021051504_shared_dish_signups.sql`, then `migrations/20261021175039_family_planning.sql`, in that order. The complete path is tested locally for fresh installations.
 2. Enable **Authentication → Providers → Anonymous Sign-Ins**.
 3. Set a long random private invitation code in the Supabase SQL Editor only. The following is a placeholder, never the real family code:
 
