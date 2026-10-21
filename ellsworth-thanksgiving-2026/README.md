@@ -4,7 +4,7 @@
 
 A mobile-friendly, single-file Thanksgiving family website. The original design is preserved, with Ellsworth Family branding and a full optional GitHub Pages + Supabase shared-data setup.
 
-**Venue:** [Friscoville Mansion on Airbnb](https://www.airbnb.com/rooms/961414748638377724), Arabi, LA. Its listing photos are displayed from Airbnb's external image CDN. The site deliberately excludes the home's street address, door codes, and reservation details.
+**Venue:** [Airbnb] Its listing photos are displayed from Airbnb's external image CDN. The site deliberately excludes the home's street address, door codes, and reservation details.
 
 ## What is saved where?
 
