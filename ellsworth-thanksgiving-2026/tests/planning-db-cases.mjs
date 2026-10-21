@@ -18,6 +18,9 @@ export async function checkPlanningDatabase({admin,asUser,denied,check,ids,event
   check((await asUser(ids[0],rsvpSql,rsvp)).rowCount===1,'Member saves own RSVP');
   check((await asUser(ids[1],'select adults+children as guests from public.thanksgiving_rsvps')).rows[0].guests===3,'Other member can read household headcount');
   await denied(ids[0],rsvpSql,rsvp,'23505');
+  const rsvpUpsert=rsvpSql+' on conflict(event_id,user_id) do update set household_name=excluded.household_name,adults=excluded.adults,children=excluded.children';
+  check((await asUser(ids[0],rsvpUpsert,[...rsvp.slice(0,4),3,...rsvp.slice(5)])).rowCount===1,'Browser-style RSVP upsert updates own existing household');
+  check((await asUser(ids[0],'select * from public.thanksgiving_rsvps where user_id=$1',[ids[0]])).rowCount===1,'RSVP upsert preserves one household per account');
   await denied(ids[1],rsvpSql,rsvp);
   await denied(ids[6],rsvpSql,[event,ids[6],...rsvp.slice(2)]);
   await denied(null,rsvpSql,[event,ids[0],...rsvp.slice(2)]);
@@ -65,8 +68,13 @@ export async function checkPlanningDatabase({admin,asUser,denied,check,ids,event
   check((await asUser(ids[0],"select * from public.thanksgiving_game_votes where game_key='builtin-spades'")).rowCount===1,'Other member’s vote survives');
 
   const detailsSql='insert into public.thanksgiving_photo_details(photo_id,event_id,caption,people_names,date_taken,edited_by) values ($1,$2,$3,$4,$5,$6)';
-  check((await asUser(ids[0],detailsSql,[photo,event,'Family memories','Synthetic names','2024-11-28',ids[0]])).rowCount===1,'Member annotates existing photo');
-  check((await asUser(ids[1],'update public.thanksgiving_photo_details set caption=$1,edited_by=$2 where photo_id=$3',['Shared caption',ids[1],photo])).rowCount===1,'Another member can edit shared photo details');
+  const captionUpsert='insert into public.thanksgiving_photo_details(photo_id,event_id,caption,edited_by) values ($1,$2,$3,$4) on conflict(photo_id) do update set caption=excluded.caption,edited_by=excluded.edited_by';
+  check((await asUser(ids[0],captionUpsert,[photo,event,'Family memories',ids[0]])).rowCount===1,'Member saves caption without names or date');
+  const initialDetails=(await asUser(ids[0],'select people_names,date_taken from public.thanksgiving_photo_details where photo_id=$1',[photo])).rows[0];
+  check(initialDetails.people_names===''&&initialDetails.date_taken===null,'Caption-only insert uses optional metadata defaults');
+  await admin.query('update public.thanksgiving_photo_details set people_names=$1,date_taken=$2 where photo_id=$3',['Historical names','2024-11-28',photo]);
+  check((await asUser(ids[1],captionUpsert,[photo,event,'Shared caption',ids[1]])).rowCount===1,'Another member can upsert a shared caption');
+  check((await asUser(ids[1],'select people_names from public.thanksgiving_photo_details where photo_id=$1',[photo])).rows[0].people_names==='Historical names','Caption-only upsert preserves stored historical metadata');
   await denied(ids[1],'update public.thanksgiving_photo_details set edited_by=$1 where photo_id=$2',[ids[0],photo]);
   await denied(ids[6],detailsSql,['10000000-0000-4000-8000-000000000002',event,'Blocked','','2024-11-28',ids[6]]);
   await denied(ids[0],detailsSql,['10000000-0000-4000-8000-000000000002',event,'Missing photo','','2024-11-28',ids[0]],'23503');
@@ -81,7 +89,8 @@ export async function checkPlanningDatabase({admin,asUser,denied,check,ids,event
   await denied(ids[1],reactionSql,['10000000-0000-4000-8000-000000000002',event,ids[1],'heart'],'23503');
   check((await asUser(ids[1],reactionSql,[photo,event,ids[1],'laugh'])).rowCount===1,'Second member reacts independently');
   check((await asUser(ids[1],"update public.thanksgiving_photo_reactions set reaction='clap' where user_id=$1",[ids[0]])).rowCount===0,'Cannot edit another reaction');
-  check((await asUser(ids[0],"update public.thanksgiving_photo_reactions set reaction='clap' where user_id=$1",[ids[0]])).rowCount===1,'Own reaction can change without adding count');
+  check((await asUser(ids[0],reactionSql+' on conflict(photo_id,user_id) do update set reaction=excluded.reaction',[photo,event,ids[0],'clap'])).rowCount===1,'Browser-style emoji upsert changes own reaction');
+  check((await asUser(ids[0],'select * from public.thanksgiving_photo_reactions where photo_id=$1 and user_id=$2',[photo,ids[0]])).rowCount===1,'Emoji upsert preserves one reaction per photo/account');
   await denied(ids[0],'update public.thanksgiving_photo_reactions set user_id=$1 where user_id=$2',[ids[2],ids[0]]);
   check((await asUser(ids[0],'delete from public.thanksgiving_photo_reactions where user_id=$1',[ids[0]])).rowCount===1,'Own reaction can be removed');
   check((await asUser(ids[0],'select * from public.thanksgiving_photo_reactions')).rowCount===1,'Other member’s reaction survives');
