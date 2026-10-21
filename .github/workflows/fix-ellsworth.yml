@@ -1,0 +1,63 @@
+name: Organize Ellsworth Thanksgiving website
+'on':
+  push:
+    paths: ['.github/workflows/fix-ellsworth.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  organize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Move family site, connect Supabase, and restore homepage
+        shell: bash
+        env:
+          SUPABASE_URL: https://czlepxbftytqryhdduhm.supabase.co
+          SUPABASE_PUBLISHABLE_KEY: sb_publishable_l-QXOLYaH4kbqqDnC9Pwww_MBbxnLNV
+        run: |
+          set -euo pipefail
+          mkdir -p ellsworth-thanksgiving-2026
+          if [ ! -f ellsworth-thanksgiving-2026/index.html ]; then
+            test -f index.html && test -f README.md && test -f supabase-setup.sql
+            grep -q "The Ellsworth Family" index.html
+            cp index.html ellsworth-thanksgiving-2026/index.html
+            cp README.md ellsworth-thanksgiving-2026/README.md
+            cp supabase-setup.sql ellsworth-thanksgiving-2026/supabase-setup.sql
+          fi
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          p=Path('ellsworth-thanksgiving-2026/index.html')
+          content=p.read_text()
+          old="  url: '',\n  publishableKey: '',"
+          url=os.environ['SUPABASE_URL']
+          key=os.environ['SUPABASE_PUBLISHABLE_KEY']
+          new=f"  url: '{url}',\n  publishableKey: '{key}',"
+          if old in content:
+              content=content.replace(old,new,1)
+          elif new not in content:
+              raise SystemExit('Cannot locate website Supabase configuration; no changes committed')
+          p.write_text(content)
+          guide=Path('ellsworth-thanksgiving-2026/README.md')
+          note=(
+            '> This website lives in ellsworth-thanksgiving-2026/ of '
+            'yeauxdejuan/dejuanellsworth.github.io. Its Supabase URL and '
+            'publishable key are already configured; keep the invitation code private.\n\n'
+          )
+          text=guide.read_text()
+          if note not in text:
+              guide.write_text(note+text)
+          PY
+          git show 03eab7e0b0441650c3d4ada503583a78ad19f394:index.html > index.html
+          git show 03eab7e0b0441650c3d4ada503583a78ad19f394:README.md > README.md
+          rm -f supabase-setup.sql
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m 'Move Ellsworth Thanksgiving to its own folder and restore homepage'
+            git push
+          fi
