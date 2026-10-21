@@ -5,6 +5,12 @@ This is an enhancement of the existing vanilla HTML/CSS/JavaScript application i
 The existing GitHub Pages deployment keeps the `/ellsworth-thanksgiving-2026/` path under its current Pages base URL.
 GitHub Pages serves the static page; Supabase supplies family authentication, shared records and private photo storage. This update removes Family Plans and makes photo editing caption-only. The earlier shared-feature migration was missing from the configured project, which caused RSVP, caption and emoji controls to stay disabled. That existing migration was applied on October 21, 2026; its tables, RLS and member grants were verified. **Do not reapply it to this project.** No additional schema migration is needed for this UI update.
 
+## Reloading after a release
+
+The page requests its feature script and stylesheet with content-versioned URLs. GitHub Pages caches these assets for ten minutes; using an unversioned URL allowed the latest HTML to run the previous script, which referenced the removed Family Plans controls and stopped initialization before rendering RSVPs. Versioned URLs bypass that stale response without clearing browser storage or changing a family account.
+
+Whenever `assets/family-features.js` or `assets/family-features.css` changes, update its `?v=` value in `index.html` to the first 12 characters of the file's SHA-256 hash. The browser suite checks those values and exercises saved RSVPs across repeated reloads with the old unversioned script cached.
+
 ## Shared family features
 
 - Household RSVPs have Coming / Maybe / Can’t make it responses, adult and child counts, arrival/departure dates and optional times, and a short note. Counts include the person submitting. Confirmed and possible guests are reported separately; declined households count as zero. Members can update or remove only their own RSVP.

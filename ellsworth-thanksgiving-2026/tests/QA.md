@@ -1,4 +1,20 @@
-# RSVP and caption fixes · current validation
+# RSVP reload fix · current validation
+
+Validated October 21, 2026. Loading the current page with the actual previous feature script reproduced the screenshot: `Cannot read properties of null (reading 'addEventListener')`, an uninitialized feature module, empty RSVP summary/status/list, and the default Add my RSVP label. The previous script still referenced the removed Family Plans button. The published script response has `Cache-Control: max-age=600`, so an unchanged script URL could reuse that version after an HTML update.
+
+The page now uses content-versioned feature-script and stylesheet URLs. Their first-12-character SHA-256 values are enforced by the browser suite. No authentication, RSVP persistence, database schema or permissions changed.
+
+| Check | Result | Scope |
+| --- | --- | --- |
+| Browser integration | **207 checks passed** | Existing application regressions plus stale-script and asset-version checks, across 375, 430, 768, 1024 and 1440px |
+| Returning-member RSVPs | Passed | At 375px touch/mobile and 1440px, create RSVP, restore the same account across two page reloads, retain list/count/travel details, refresh the board, reopen for editing, avoid duplicates and remove own RSVP |
+| Stale asset recovery | Passed | An incompatible previous script is available at its cached unversioned URL; the updated HTML bypasses it and initializes the shared features |
+| Production verification | Read-only | RSVP table, RLS and member SELECT policy/grants remain installed; a boolean existence query confirms saved RSVPs are present without retrieving household details |
+| Syntax/whitespace | Passed | Browser runner and `git diff --check`; feature code is unchanged |
+
+Supabase/Auth/Storage and media remain mocked in the browser suite. Physical Safari and live family-login behavior are not claimed. The database suite was not rerun because this fix changes only asset URLs and the regression harness. No production records were written or altered. The UI fix awaits PR merge and the existing Pages publishing flow.
+
+# Prior RSVP and caption fixes
 
 Validated October 21, 2026. The configured Supabase project was missing all five tables from the earlier family-planning migration. The reviewed migration was rehearsed locally, applied successfully through Supabase, and verified with the committed read-only `verify-shared-features.sql` query. The frontend PR remains unmerged.
 
