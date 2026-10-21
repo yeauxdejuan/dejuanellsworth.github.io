@@ -1,4 +1,23 @@
-# V2 validation record
+# Family planning validation record
+
+Validated October 21, 2026. This PR does not apply `20261021175039_family_planning.sql` to production, merge the PR, or deploy the page.
+
+| Check | Result | Scope |
+| --- | --- | --- |
+| Local database suite | **125 checks passed** | PostgreSQL 17.10; actual baseline, menu migration and additive planning migration; synthetic auth/storage fixtures |
+| Browser integration suite | **165 checks passed** | Chromium; mocked Supabase/Auth/Storage, photo sources and TikTok |
+| New data enforcement | Passed | Member-only reads, anonymous/TRUNCATE denial, own RSVP/plan/vote/reaction writes, protected seed fields, unique votes/reactions, FK/count/date constraints, preservation of old menu/photo records and fresh installation |
+| New family flows | Passed | Independent households, invalid/failed saves, confirmed vs. possible headcounts, shared seed times, own plan removal, NFL filters and Central-time display, popular voting, shared caption/name/date edits and safe text rendering |
+| TV slideshow | Passed in Chromium | Native fullscreen and exit, rejected-fullscreen fallback, captions/people/year, previous/next, keyboard navigation, automatic advancement, play/pause, focus restoration and disconnect while open |
+| Session/device behavior | Passed | Invitation instructions without input activation, cleared private state after disconnect, shared reload, local preview persistence; a second test session uses Asia/Tokyo to check that displayed times remain Central |
+| Responsive layout | Passed | Populated features at 375, 430, 768, 1024 and 1440px; screenshots use synthetic records and placeholder media |
+| JavaScript syntax and whitespace | Passed | Inline app script, feature script, test scripts and `git diff --check` |
+
+The existing menu capacity/race tests, gallery/touch controls, upload/compression, TikTok URL/playback-message rules, mobile navigation and reduced-motion checks still run in the same suites. Browser fixtures verify UI behavior; the real local Postgres tests verify RLS and SQL constraints separately. Neither suite writes to a production API.
+
+Before deployment, apply the reviewed additive migration as described in README.md, then test real family sign-in, Storage, physical mobile keyboards, actual TV browser/fullscreen support and real TikTok playback. NFL entries are a snapshot verified against official sources on October 21, 2026; recheck kickoffs near the event. These real-device and production checks are not claimed by the automated results.
+
+## Original V2 validation record
 
 Validated October 21, 2026. Production migration remains **unapplied**. No production data writes, merge or deployment were performed.
 

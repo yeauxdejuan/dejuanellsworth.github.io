@@ -3,6 +3,8 @@
 -- 1. Run this baseline ONCE in a NEW project (never rerun on production).
 -- 2. Run migrations/20261021051504_shared_dish_signups.sql before using V2.
 -- Existing installations: run ONLY that incremental migration.
+-- FAMILY-PLANNING RELEASE: after the menu migration, also apply
+-- migrations/20261021175039_family_planning.sql once. See README.md for release order.
 -- Keep these steps separate so legacy records are migrated with the same tested path.
 -- IMPORTANT: This schema does not contain the family invitation code.
 -- Set the private code in Supabase SQL Editor using the command in README.md.

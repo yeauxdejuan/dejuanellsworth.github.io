@@ -5,12 +5,15 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import EmbeddedPostgres from 'embedded-postgres';
 import pg from 'pg';
+import {checkPlanningDatabase} from './planning-db-cases.mjs';
 const directory=await mkdtemp(join(tmpdir(),'ellsworth-v2-'));
 const instance=new EmbeddedPostgres({databaseDir:join(directory,'db'),user:'postgres',password:'local-test-only',port:55432,persistent:false,onLog:()=>{},onError:()=>{}});
 const root=new URL('../',import.meta.url);
 const baseline=await readFile(new URL('supabase-setup.sql',root),'utf8');
 const migrationName=(await readdir(new URL('migrations/',root))).find(n=>n.endsWith('_shared_dish_signups.sql'));
 const migration=await readFile(new URL(`migrations/${migrationName}`,root),'utf8');
+const planningName=(await readdir(new URL('migrations/',root))).find(n=>n.endsWith('_family_planning.sql'));
+const planningMigration=await readFile(new URL(`migrations/${planningName}`,root),'utf8');
 const event='ellsworth-thanksgiving-2026';
 const ids=Array.from({length:7},(_,i)=>`00000000-0000-4000-8000-${String(i+1).padStart(12,'0')}`);
 let admin,checks=0;
@@ -122,10 +125,11 @@ try{
   }finally{await a.query('rollback');await b.query('rollback');await a.end();await b.end();}
   // A repeated migration must fail before backfill; it cannot resurrect released rows.
   await assert.rejects(()=>admin.query(migration),/already installed/);await admin.query('rollback');checks++;
+  await checkPlanningDatabase({admin,asUser,denied,check,ids,event,migration:planningMigration});
   // Fresh installation follows the same baseline + migration path, without fixtures.
   await admin.query('create database ellsworth_fresh');const fresh=client('ellsworth_fresh');await fresh.connect();
   const freshBootstrap=bootstrap.replace('create role anon nologin; create role authenticated nologin;','');
-  try{await fresh.query(freshBootstrap);await fresh.query(baseline);await fresh.query(migration);check((await fresh.query('select count(*)::int as n from public.thanksgiving_dish_signups')).rows[0].n===0,'Fresh install');}
+  try{await fresh.query(freshBootstrap);await fresh.query(baseline);await fresh.query(migration);await fresh.query(planningMigration);check((await fresh.query('select count(*)::int as n from public.thanksgiving_dish_signups')).rows[0].n===0,'Fresh install');check((await fresh.query('select count(*)::int as n from public.thanksgiving_schedule')).rows[0].n===2,'Fresh install includes editable family-plan placeholders');}
   finally{await fresh.end();}
   console.log(`PASS: ${checks} database checks on PostgreSQL ${(await admin.query('show server_version')).rows[0].server_version}; legacy preservation, capacity, ownership, RLS, grants, concurrency, fresh install.`);
 }finally{
