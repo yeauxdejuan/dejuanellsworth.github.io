@@ -3,13 +3,13 @@
 This is an enhancement of the existing vanilla HTML/CSS/JavaScript application in `ellsworth-thanksgiving-2026/`. The personal website at the repository root is independent. No framework or production build step is required.
 
 The existing GitHub Pages deployment keeps the `/ellsworth-thanksgiving-2026/` path under its current Pages base URL.
-GitHub Pages serves the static page; Supabase supplies family authentication, shared records and private photo storage. **Apply the reviewed family-planning migration before merging this frontend release.**
+GitHub Pages serves the static page; Supabase supplies family authentication, shared records and private photo storage. This presentation update uses the existing family-planning schema; **no new database migration is required**. Installation instructions for the earlier shared features are retained below.
 
 ## Family planning additions
 
 - Household RSVPs have Coming / Maybe / Can’t make it responses, adult and child counts, arrival/departure dates and optional times, and a short note. Counts include the person submitting. Confirmed and possible guests are reported separately; declined households count as zero. Members can update or remove only their own RSVP.
-- The weekend agenda combines family plans with six NFL entries: the five holiday games plus the Saints’ Sunday game. It supports NFL-only and family-only filters. All displayed and entered times use **America/Chicago (Central)**, including when the visitor’s device uses a different zone. Dinner and family game night start without invented times. All family members can update those two shared placeholders; custom outings/plans are editable and removable by their creator.
-- Each browser account can vote once for each built-in or suggested game and remove its own vote. Most-popular sorting uses shared counts, with original order as the tie breaker. Votes do not set the actual game-night schedule.
+- The family agenda contains editable dinner, game-night and outing plans. A separate **NFL Games** section is the last section of the app and shows only the three Thanksgiving Thursday games. All displayed and entered times use **America/Chicago (Central)**, including when the visitor’s device uses a different zone. Dinner and family game night start without invented times. All family members can update those two shared placeholders; custom outings/plans are editable and removable by their creator.
+- The built-in lineup is Spades, UNO and Name That Tune. Charades, Family Feud and Dominoes are hidden from the lineup, including previously cached or shared suggestions; existing records and votes are retained. Stable vote keys are preserved for remaining games. Each browser account can vote once for each built-in or suggested game and remove its own vote. Most-popular sorting uses shared counts, with original order as the tie breaker. Votes do not set the actual game-night schedule.
 - Photo captions, names and dates are a collaborative overlay: members can improve details on both old and new uploads, while the original photo record and caption remain intact. Each account can choose one reaction per photo, change it or remove it.
 - TV slideshow offers large photos and captions, previous/next, pause/play, keyboard arrows, focus containment and Escape. It requests native fullscreen when supported and remains usable as a full-window overlay when unavailable. It uses the existing private-photo signed URLs. Disconnect clears the private state and closes the viewer.
 - Unconfigured previews save these additions on the current browser only. A configured board never falls back to local writes when shared reads fail. New feature buttons use the existing invitation-instructions route without activating a text input.
@@ -25,7 +25,7 @@ The migration is included and tested locally; **this feature PR does not apply i
 
 ### Football sources
 
-The [official NFL Thanksgiving release](https://www.nfl.com/news/thanksgiving-2026-nfl-schedule-release) supplies the Nov. 25–27 holiday games; the [official Week 12 schedule](https://www.nfl.com/schedules/2026/by-week/week-12) supplies the Saints’ Nov. 29 matchup. Matchups, broadcasters and kickoffs were checked October 21, 2026 and converted from Eastern to Central time. These are a checked-in snapshot, **not a live feed**; the UI labels the verification date, warns that kickoffs can change and links to the full NFL schedule. No college games are included.
+The [official NFL Thanksgiving release](https://www.nfl.com/news/thanksgiving-2026-nfl-schedule-release) supplies the three Thursday, Nov. 26 games. Wednesday, Friday and Sunday games are excluded. Matchups, broadcasters and kickoffs were checked October 21, 2026 and converted from Eastern to Central time. These are a checked-in snapshot, **not a live feed**; the UI labels the verification date, warns that kickoffs can change and links to the official NFL source. No college games are included.
 
 ### Shared data and ownership
 
@@ -38,7 +38,7 @@ These are browser accounts, not verified individual identities. Rejoining on a d
 - Rust and burnt orange accents, warm cream backgrounds and local SVG autumn leaves replace the green starburst branding. Leaf animations ignore pointer input and stop under `prefers-reduced-motion`; the photo slideshow starts paused for that preference.
 - Dishes show `0/3` through `3/3`, every contributor's name and individual note. Each account can claim one slot per dish, update its details or release its own slot. Custom dishes have the same capacity.
 - The property gallery keeps the original photos and displays the fifth genuine listing image that was previously only present in the lightbox array. Its viewer supports buttons, left/right arrow keys, Escape and horizontal touch swipes. Thumbnails load lazily.
-- TikToks form a single-video playlist with a directly available embedded player, no autoplay, completion-based Next and an explicit manual fallback.
+- TikToks form a single-video playlist with a directly available embedded player, no autoplay and immediate skipping using Next.
 - The footer credits **Built by De’Juan Ellsworth · Family Developer/Engineer**.
 
 ## Original V2 installation: menu migration and release order
@@ -118,17 +118,17 @@ Photo uploads retain the existing JPEG compression and private bucket, with memb
 
 ## TikTok playback and limitations
 
-The implementation follows [TikTok's Embed Player documentation](https://developers.tiktok.com/docs/en/embed-player): `/player/v1/{id}`, `autoplay=0`, `loop=0`, and `onStateChange` value `0` for ended. The host accepts messages only from `https://www.tiktok.com` **and** the current iframe window, with the documented player marker. It requires a playing event before an ended event can unlock Next. There are no duration guesses or completion timers.
+The implementation follows [TikTok's Embed Player documentation](https://developers.tiktok.com/docs/en/embed-player): `/player/v1/{id}`, `autoplay=0`, and `loop=0`. The embedded player is directly available as the section approaches the viewport. Visitors press Play inside the video or use **Next at any time**, including before playback, while paused or when a clip is unavailable. Navigation wraps to the first clip; a one-item playlist offers Reload video. There is no completion gate or separate blocked/unlocked fallback panel.
 
-The embedded player loads as the TikTok section approaches the viewport, so visitors press Play directly inside the video without a separate loading button. Next loads the next embedded player with autoplay disabled. Replacing a video destroys its old iframe; background polling retains the active one. Hiding the tab sends a pause request.
+Replacing a video destroys its old iframe and audio context. Background polling preserves the active iframe and error feedback; hiding the tab sends a pause request. Error messages are accepted only from `https://www.tiktok.com`, from the current iframe window, and with the documented player marker. Messages from retired frames are ignored. Skipping clears the prior clip’s error and keeps autoplay disabled.
 
-Availability, privacy settings, deleted videos, content restrictions and browser embed blocking remain outside this app's control. If playback fails or completion events do not arrive, **Video blocked or Next hasn’t unlocked? → Use manual navigation** removes the player and enables Next with a visible explanation that completion cannot be verified. This is an explicit fallback; the app does not claim strict end-of-video enforcement in manual mode. Opening TikTok in another tab is controlled by TikTok/the browser. Full HTTPS `tiktok.com/@creator/video/ID` links are supported; short links must first be expanded by the person sharing them. New submissions strip tracking parameters; stored URLs are preserved.
+TikTok privacy settings, deleted clips, browser restrictions and availability remain outside the app’s control. The existing Open TikTok link remains available. Full HTTPS `tiktok.com/@creator/video/ID` links are supported; short links must first be expanded by the person sharing them. New submissions strip tracking parameters; stored URLs are preserved.
 
 ## Property photographs
 
-All five photo identifiers were verified against image links on the original listing during implementation. Four thumbnails were already visible, and the fifth was already in the source's lightbox array. V2 makes all five visible. Additional distinct original listing images could not be retrieved reliably; no image IDs were invented or unrelated interiors substituted. The original listing link remains available, and the guest-capacity/restrictions paragraph beneath its button was removed.
+The gallery contains **eight distinct photos of the exterior and main living area only**: one exterior, three living-area views, three patio views and one backyard view. The original [Airbnb listing](https://www.airbnb.com/rooms/961414748638377724) exposes its full photo-tour data in the public HTML. The selected URLs and room labels were extracted from that data on October 21, 2026; their published 720px images returned HTTP 200 and were visually reviewed. Repeated outdoor images were omitted. Kitchen, bedroom, bathroom, dining and laundry photos are excluded.
 
-The listing exposes no reliable image descriptions through the available text response, and its image CDN could not be inspected in this environment. The gallery therefore uses honest numbered listing-photo labels rather than invented room descriptions. An organizer can improve the alt text after viewing the actual photographs. CDN availability remains an external dependency. Property names, specific locations, street addresses, access instructions and reservation details are deliberately omitted from this README.
+Five thumbnails remain in the main mosaic; **View 3 more outdoor photos** expands the remaining thumbnails. All eight are available in the existing keyboard/swipe lightbox. Descriptive alt text and lightbox captions use the source’s room labels. Image files remain hosted by Airbnb’s CDN, whose availability is an external dependency; no property binaries or private booking details are committed.
 
 ## Testing and troubleshooting
 
@@ -145,7 +145,7 @@ CHROMIUM_PATH=/path/to/chromium npm run test:browser
 
 The test database emulates Supabase's auth UID and storage schema interfaces; it runs the actual baseline and migration. Tests cover legacy and ownerless assignments, first/second/third signups, fourth/duplicate rejection, own update/release/reclaim, unauthorized writes and reads, event isolation, slot/FK constraints, fresh installation and genuinely overlapping transactions racing for the final slot. PostgreSQL needs local port 55432 available.
 
-The Chromium integration suite mocks Supabase/Auth/Storage and external media using synthetic data. It checks database-confirmed UI feedback, multiple independent browser sessions, session restoration, full/removed/reclaimed states, custom dishes, responsive overflow at **375, 430, 768, 1024 and 1440px**, gallery controls and synthetic touch events, modal focus, photo upload/compression, photo links/slideshow, games, URL validation, trusted/untrusted playback messages, player retention on refresh, manual fallback, navigation and reduced motion. Screenshots are written to ignored `tests/artifacts/` with placeholder media.
+The Chromium integration suite mocks Supabase/Auth/Storage and external media using synthetic data. It checks database-confirmed UI feedback, multiple independent browser sessions, session restoration, full/removed/reclaimed states, custom dishes, responsive overflow at **375, 430, 768, 1024 and 1440px**, gallery controls and synthetic touch events, modal focus, photo upload/compression, photo links/slideshow, games, URL validation, trusted/untrusted playback messages, player retention on refresh, skipping before playback, navigation and reduced motion. Screenshots are written to ignored `tests/artifacts/` with placeholder media.
 
 See `tests/QA.md` for the recorded results and outstanding release checks. **Physical iOS Safari/Android, real TikTok playback, production sign-in and real Storage upload/signed URL behavior have not been validated by this automated suite.**
 
@@ -153,6 +153,6 @@ See `tests/QA.md` for the recorded results and outstanding release checks. **Phy
 - A dish fills while a form is open: the database returns `full`; refresh and choose another item. No success is shown before confirmation.
 - An old page reports an upgrade error: reload after V2 is published. Coordinate the short migration/frontend release window with the organizer.
 - A missing photo: verify the external host or private bucket policy and refresh signed URLs. Do not make the private bucket public.
-- TikTok Next stays locked: let the video end, or explicitly switch to manual navigation if the embed cannot report playback.
+- A TikTok cannot play: use Next immediately or the Open TikTok link. No completion event is required to move on.
 
 Implementation references: [Supabase database functions](https://supabase.com/docs/guides/database/functions), [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security), [Data API grant changes](https://supabase.com/changelog/45329-breaking-change-tables-not-exposed-to-data-and-graphql-api-automatically), [anonymous sign-in](https://supabase.com/docs/guides/auth/auth-anonymous), and [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
