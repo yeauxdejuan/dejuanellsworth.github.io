@@ -58,9 +58,29 @@ async function newPage(width=1440,options={}){
 }
 async function join(p){await p.locator('#familyPortal').waitFor({state:'visible'});await p.fill('#familyCode','synthetic-test-code-only-2026');await p.click('#joinFamilyBtn');await p.waitForFunction(()=>isShared&&menuReady);}
 async function signup(p,name,dish='mac'){await p.locator(`[data-dish-id="${dish}"]`).click();await p.fill('#claimName',name);await p.fill('#claimNote','Synthetic test note');await p.locator('#claimForm button[type=submit]').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});}
+async function checkInvitationRouting(p){
+ let pickers=0;const onPicker=()=>pickers++;p.on('filechooser',onPicker);
+ const expectCode=async label=>{
+  check(await p.locator('#familyCode').evaluate(el=>el===document.activeElement),`${label} focuses invitation code`);
+  check(await p.locator('#modalBackdrop').isHidden(),`${label} leaves contribution forms closed`);
+ };
+ for(const label of await p.locator('label[for="photoUpload"]').all()){
+  await label.click();await expectCode('Photo picker click');
+  for(const key of ['Enter','Space']){await label.focus();await label.press(key);await expectCode(`Photo picker ${key}`);}
+ }
+ check(pickers===0,'Logged-out photo actions never open the file picker');p.off('filechooser',onPicker);
+ await p.click('#addPhotoUrlBtn');await expectCode('Photo link');
+ await p.click('#addGameBtn');await expectCode('Game suggestion');
+ for(const value of ['', 'not-a-url', 'https://www.tiktok.com/@test/video/1234567890123456789']){
+  await p.fill('#tikUrl',value);await p.locator('#tikForm button').click();await expectCode(`TikTok button with ${value?'entered':'empty'} URL`);
+ }
+ await p.fill('#tikUrl','');await p.locator('#tikUrl').press('Enter');await expectCode('TikTok keyboard submit');
+ check(uploads===0&&tables.thanksgiving_photos.length===0&&tables.thanksgiving_tiktoks.length===0&&tables.thanksgiving_games.length===0,'Logged-out attempts do not save contributions');
+}
 try{
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
- const a=await newPage();await join(a);
+ const a=await newPage();await checkInvitationRouting(a);await join(a);
+ await a.locator('#tikForm button').click();check(await a.locator('#tikUrl').evaluate(el=>el===document.activeElement&&!el.validity.valid),'Joined TikTok form still validates empty URLs');
  let release;holdClaim=new Promise(r=>release=r);await a.locator('[data-dish-id="mac"]').click();await a.fill('#claimName','Test cook A');await a.locator('#claimForm button[type=submit]').click();
  check(!(await a.locator('#toast').innerText()).includes('sign-up is saved'),'No success before database confirmation');check(await a.locator('#claimForm button[type=submit]').isDisabled(),'Double submission disabled');release();await a.locator('#modalBackdrop').waitFor({state:'hidden'});
  check((await a.locator('[data-dish-id="mac"]').locator('..').innerText()).includes('1/3 assigned'),'First signup count');
@@ -88,6 +108,8 @@ try{
  await a.evaluate(()=>document.querySelector('#tikPlayer').dataset.retained='yes');await a.evaluate(()=>refreshTiktoks());check(await a.locator('#tikPlayer').getAttribute('data-retained')==='yes','Refresh preserves player');await send('onStateChange',0);check(await a.locator('#tikNext').isEnabled(),'Completion unlocks Next');await a.click('#tikNext');check(await a.locator('#tikPlayer').count()===0,'Next unloads previous frame');check(await a.locator('#tikNext').isDisabled(),'New video starts locked');await a.locator('.tik-fallback summary').click();await a.click('#tikManual');check(await a.locator('#tikNext').isEnabled(),'Manual navigation unlocks Next');check((await a.locator('#tikStatus').innerText()).includes('cannot be verified'),'Manual limitation visible');
  await a.click('#menuToggle');check(await a.locator('#navLinks').isVisible(),'Mobile nav opens');await a.locator('.nav-link[href="#menu"]').click();check(await a.locator('#navLinks').isHidden(),'Mobile nav closes');
  const reduced=await newPage(430,{reducedMotion:'reduce'});check(await reduced.locator('.falling-leaves').evaluate(el=>getComputedStyle(el).display==='none'),'Reduced motion hides leaves');check(await reduced.evaluate(()=>playing===false),'Reduced motion pauses slideshow');
- await a.click('#leaveFamilyBtn');check(await a.locator('#familyPortal').isVisible(),'Disconnect shows family access');check(await a.locator('#tiktokGrid iframe').count()===0,'Disconnect unloads video');check(!errors.length,`No browser exceptions: ${errors.join(', ')}`);
+ await a.click('#leaveFamilyBtn');check(await a.locator('#familyPortal').isVisible(),'Disconnect shows family access');check(await a.locator('#tiktokGrid iframe').count()===0,'Disconnect unloads video');
+ await a.fill('#tikUrl','');await a.locator('#tikForm button').click();check(await a.locator('#familyCode').evaluate(el=>el===document.activeElement),'Disconnect restores TikTok invitation routing');
+ check(!errors.length,`No browser exceptions: ${errors.join(', ')}`);
  console.log(`PASS: ${checks} Chromium checks at 375, 430, 768, 1024 and 1440px. Supabase/media mocked; no physical mobile-browser or live playback validation.`);
 }finally{if(browser)await browser.close();await new Promise(resolve=>server.close(resolve));}
