@@ -1,4 +1,12 @@
-# Exterior feature and categorized property gallery · current validation
+# Single photo-gallery dropdown · current validation
+
+Validated October 22, 2026. The additional gallery starts with one closed **Explore house photos** control. Opening it reveals seven category controls; opening a category reveals its photos. Opening the parent alone does not request category thumbnails. Closing the parent hides the full category list.
+
+**288 Chromium checks passed** across 375, 430, 768, 1024 and 1440px, including the new parent control, hidden category state, keyboard collapse, lazy loading, nested mobile photo access and all existing app regressions. Closed, category-list and photo-expanded views were captured at mobile and desktop widths with actual listing photos; no overflow or browser exceptions occurred. Inline JavaScript syntax, stylesheet content hash and `git diff --check` passed.
+
+The photo URLs and database behavior are unchanged; database tests and external URL checks were not repeated. Browser integration continues to mock Supabase/media and does not claim physical Safari/Android validation. The UI change awaits PR review and Pages deployment.
+
+# Prior exterior feature and categorized property gallery
 
 Validated October 22, 2026. The Holiday Home feature now uses the listing’s exterior photo. The five-photo preview remains, and a separate gallery groups the remaining 21 photos into seven collapsed dropdowns. All 26 source photo IDs are retained without duplicate gallery indices. No SQL, authentication or family-record behavior changed.
 
