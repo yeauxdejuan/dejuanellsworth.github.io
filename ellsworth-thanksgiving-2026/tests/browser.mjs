@@ -18,7 +18,7 @@ const stub=`window.supabase={createClient(){
 const session=()=>JSON.parse(localStorage.getItem('testSession')||'null');
 const request=async(body)=>{try{return await (await fetch('/__test',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...body,user:session()?.user.id})})).json();}catch{return {data:null,error:{message:'Network error'}};}};
 return {auth:{async getSession(){return {data:{session:session()},error:null};},async signInAnonymously(){const s={user:{id:crypto.randomUUID()}};localStorage.setItem('testSession',JSON.stringify(s));return {data:{session:s},error:null};},async signOut(){localStorage.removeItem('testSession');localStorage.removeItem('testMember');return {error:null};}},
-async rpc(name,args){if(name==='is_ellsworth_member')return {data:localStorage.getItem('testMember')==='yes',error:null};if(name==='join_ellsworth_family'){localStorage.setItem('testMember','yes');return {data:true,error:null};}return request({operation:'rpc',args});},
+async rpc(name,args){if(name==='is_ellsworth_member')return {data:localStorage.getItem('testMember')==='yes',error:null};if(name==='join_ellsworth_family'){if(args.p_code==='synthetic-rejected-code-2026')return {data:false,error:null};if(args.p_code==='synthetic-network-error-2026')return {data:null,error:{message:'Synthetic connection error'}};localStorage.setItem('testMember','yes');return {data:true,error:null};}return request({operation:'rpc',args});},
 from(table){let operation='select',value=null,filters=[],conflict=null;const q={select(){return q;},eq(k,v){filters.push([k,v]);return q;},order(){return q;},insert(v){operation='insert';value=v;return q;},upsert(v,options){operation='upsert';value=v;conflict=options?.onConflict;return q;},update(v){operation='update';value=v;return q;},delete(){operation='delete';return q;},then(ok,bad){return request({operation,table,value,filters,conflict}).then(ok,bad);}};return q;},
 storage:{from(){return {async upload(){return request({operation:'upload'});},async createSignedUrl(){return {data:{signedUrl:${JSON.stringify(image)}},error:null};}};}}};}};`;
 const server=createServer(async(req,res)=>{
@@ -75,6 +75,35 @@ async function newPage(width=1440,options={}){
  const p=await context.newPage();p.on('pageerror',e=>errors.push(e.message));await p.goto(url);return p;
 }
 async function join(p){await p.locator('#familyPortal').waitFor({state:'visible'});await p.fill('#familyCode','synthetic-test-code-only-2026');await p.click('#joinFamilyBtn');await p.waitForFunction(()=>isShared&&menuReady);}
+async function checkFamilyWelcome(){
+ for(const width of [375,1440]){
+  const p=await newPage(width,{isMobile:width===375,hasTouch:width===375});
+  check(await p.locator('#familyWelcome').count()===0,'Visitors see no join celebration');
+  for(const code of ['synthetic-rejected-code-2026','synthetic-network-error-2026']){
+   await p.fill('#familyCode',code);await p.click('#joinFamilyBtn');await p.waitForFunction(()=>!document.querySelector('#joinFamilyBtn').disabled);
+   check(await p.evaluate(()=>!isShared&&!document.querySelector('#familyWelcome')&&!localStorage.getItem('thanksgiving26_welcomeCelebrated')),'Rejected or unavailable code never celebrates or records success');
+  }
+  await join(p);
+  check(await p.locator('.family-confetti').count()===28,'First successful join displays a brief confetti burst');
+  check(await p.locator('.family-confetti').allTextContents().then(items=>items.includes('🦃')&&items.includes('Ellsworth')),'Confetti includes turkeys and Ellsworth text');
+  check(await p.locator('#familyWelcome').evaluate(el=>el.getAttribute('aria-hidden')==='true'&&getComputedStyle(el).pointerEvents==='none'),'Decorative celebration ignores pointer input and screen readers');
+  check(await p.evaluate(()=>localStorage.getItem('thanksgiving26_welcomeCelebrated')==='true'&&document.body.style.overflow!=='hidden'&&document.activeElement?.id!=='familyCode'),'Welcome is remembered without locking scrolling or focusing the code input');
+  await mkdir(new URL('artifacts/',import.meta.url),{recursive:true});await p.screenshot({path:new URL(`artifacts/welcome-${width}.png`,import.meta.url).pathname});
+  await p.locator('#familyWelcome').waitFor({state:'detached',timeout:6500});check(true,'Welcome automatically cleans up');
+  await p.reload();await p.waitForFunction(()=>isShared&&menuReady);check(await p.locator('#familyWelcome').count()===0,'Returning session never replays welcome');
+  await p.click('#leaveFamilyBtn');await join(p);check(await p.locator('#familyWelcome').count()===0,'Reentering the code in the same browser does not replay welcome');
+  await p.context().close();
+ }
+ const reduced=await newPage(430,{reducedMotion:'reduce'});await join(reduced);
+ check(await reduced.locator('.family-welcome-greeting').isVisible()&&await reduced.locator('.family-confetti').count()===0,'Reduced motion gets a still welcome with no confetti particles');
+ check(await reduced.locator('.family-welcome-greeting').evaluate(el=>getComputedStyle(el).animationName==='none'),'Reduced-motion greeting does not animate');
+ await reduced.locator('#familyWelcome').waitFor({state:'detached',timeout:4500});check(true,'Reduced-motion welcome automatically cleans up');await reduced.context().close();
+ const blocked=await newPage(430);await blocked.evaluate(()=>{const set=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(key==='thanksgiving26_welcomeCelebrated')throw new DOMException('Blocked','SecurityError');return set.call(this,key,value);};});await join(blocked);
+ check(await blocked.locator('#familyWelcome').isVisible()&&!(await blocked.locator('#toast').innerText()).includes('Storage is full'),'Unavailable preference storage does not interrupt joining or show an unrelated error');
+ await blocked.click('#leaveFamilyBtn');check(await blocked.locator('#familyWelcome').count()===0,'Disconnect works during confetti and clears it');await join(blocked);check(await blocked.locator('#familyWelcome').count()===0,'In-memory preference prevents repeats when storage is blocked');await blocked.context().close();
+ const existing=await newPage();await existing.evaluate(()=>{localStorage.setItem('testSession',JSON.stringify({user:{id:crypto.randomUUID()}}));localStorage.setItem('testMember','yes');});await existing.reload();await existing.waitForFunction(()=>isShared&&menuReady);
+ check(await existing.locator('#familyWelcome').count()===0,'An existing member without a prior celebration preference is not treated as a new join');await existing.click('#leaveFamilyBtn');await join(existing);check(await existing.locator('#familyWelcome').count()===0,'An existing member reentering the code is still a returning member');await existing.context().close();
+}
 async function signup(p,name,dish='mac'){await p.locator(`[data-dish-id="${dish}"]`).click();await p.fill('#claimName',name);await p.fill('#claimNote','Synthetic test note');await p.locator('#claimForm button[type=submit]').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});}
 async function checkFeatureAssetVersions(p){
  for(const [path,selector,attribute] of [['assets/family-features.js','script[src*="family-features.js"]','src'],['assets/family-features.css','link[href*="family-features.css"]','href']]){
@@ -220,6 +249,7 @@ async function checkLocalPlanning(){
 }
 try{
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+ await checkFamilyWelcome();
  await checkRsvpRefreshWithCachedAssets(375);await checkRsvpRefreshWithCachedAssets(1440);
  const mobile=await newPage(375,{isMobile:true,hasTouch:true});await checkInvitationRouting(mobile);await mobile.context().close();
  const a=await newPage();await checkFeatureAssetVersions(a);await checkRequestedLayout(a);await checkInvitationRouting(a);await join(a);
