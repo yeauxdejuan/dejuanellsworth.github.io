@@ -1,4 +1,20 @@
-# Family rollout polish · current validation
+# Exterior feature and categorized property gallery · current validation
+
+Validated October 22, 2026. The Holiday Home feature now uses the listing’s exterior photo. The five-photo preview remains, and a separate gallery groups the remaining 21 photos into seven collapsed dropdowns. All 26 source photo IDs are retained without duplicate gallery indices. No SQL, authentication or family-record behavior changed.
+
+| Check | Result | Scope |
+| --- | --- | --- |
+| Browser integration | **283 checks passed** | Chromium at 375, 430, 768, 1024 and 1440px; mocked Supabase/media; existing family flows retained |
+| Category gallery | Passed | Seven groups with correct labels/counts, all initially collapsed, no thumbnail request before expansion, pointer opening and keyboard collapse, one button for each of 26 images |
+| Feature photo | Passed | Exterior source ID used at the top; five-photo house preview and a link to the new gallery |
+| Larger-image viewer | Passed | Last categorized photo opens, wraps to the exterior, swipes to the next photo, traps focus and restores it to its category thumbnail on Escape |
+| Real image availability | **53/53 URLs HTTP 200** | 26 downloaded 720px thumbnails, 26 full-size 1440px URLs, and the 1200px exterior feature URL |
+| Real-photo visual review | Passed | All previously generic additional photos inspected to assign room categories; actual exterior feature and expanded gallery reviewed at 375px and 1440px, with no horizontal overflow or browser exceptions |
+| Syntax/asset versions | Passed | Inline JavaScript, browser runner, stylesheet content hash and `git diff --check` |
+
+The database suite was not repeated because the schema and data paths are unchanged. Browser integration uses synthetic family data; focused gallery screenshots use the original listing photographs. Physical mobile browsers, real TikTok playback and live family authentication remain outside this automated verification. Photos remain hosted on Airbnb’s CDN. The UI change awaits PR review and the existing Pages publishing flow.
+
+# Prior family rollout polish
 
 Validated October 22, 2026. Adds the approved compact FAQ, optional food allergies/dietary needs, persistent RSVP save confirmation, and clearer copy. The group-chat guide and physical two-device rehearsal remain with the organizer, as requested.
 

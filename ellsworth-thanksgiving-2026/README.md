@@ -135,9 +135,23 @@ TikTok privacy settings, deleted clips, browser restrictions and availability re
 
 ## Property photographs
 
-The gallery contains **eight distinct photos of the exterior and main living area only**: one exterior, three living-area views, three patio views and one backyard view. The original [Airbnb listing](https://www.airbnb.com/rooms/961414748638377724) exposes its full photo-tour data in the public HTML. The selected URLs and room labels were extracted from that data on October 21, 2026; their published 720px images returned HTTP 200 and were visually reviewed. Repeated outdoor images were omitted. Kitchen, bedroom, bathroom, dining and laundry photos are excluded.
+The **Ellsworth Holiday Home feature image uses the exterior photo** of Friscoville Mansion. The five-photo house preview remains in place, with a link to a separate gallery for the **remaining 21 listing photos**. Across both sections, all 26 listing URLs have one gallery button and are available in the shared larger-image viewer.
 
-Five thumbnails remain in the main mosaic; **View 3 more outdoor photos** expands the remaining thumbnails. All eight are available in the existing keyboard/swipe lightbox. Descriptive alt text and lightbox captions use the source’s room labels. Image files remain hosted by Airbnb’s CDN, whose availability is an external dependency; no property binaries or private booking details are committed.
+The additional gallery has seven collapsed dropdowns:
+
+| Category | Photos |
+| --- | ---: |
+| Bedrooms | 4 |
+| Bathrooms | 6 |
+| Kitchen | 1 |
+| Dining area | 1 |
+| Outdoor areas | 6 |
+| Laundry | 1 |
+| Hallways & landing | 2 |
+
+Photo IDs and public source room labels come from the original [Airbnb listing](https://www.airbnb.com/rooms/961414748638377724), extracted October 21, 2026. Photos labeled generically as “Additional photos” in the source were visually checked and given descriptive room categories/captions. Category counts refer to photos, not numbers of rooms. All 26 thumbnail and full-size URLs plus the exterior feature image returned HTTP 200 on October 22, 2026.
+
+Category thumbnails are requested on first expansion; closed categories do not fetch their images. Native disclosure controls support pointer and keyboard use, and the viewer retains keyboard arrows, touch/swipe navigation, wraparound, focus containment and Escape. Thumbnails have alt text and visible captions. Images remain on Airbnb’s CDN; no property binaries, booking details or family photos are committed. No database migration is needed for this presentation update.
 
 ## Testing and troubleshooting
 
