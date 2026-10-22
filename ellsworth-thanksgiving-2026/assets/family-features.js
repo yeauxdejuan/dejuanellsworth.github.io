@@ -11,7 +11,7 @@ function initFamilyFeatures(){
     {id:'nfl-chiefs-bills',day:'2026-11-26',start_time:'19:20',title:'Kansas City Chiefs at Buffalo Bills',network:'NBC / Peacock',source:nflSource}
   ].map(p=>({...p,kind:'football'}));
   const config={
-    rsvps:{table:'thanksgiving_rsvps',columns:'event_id,user_id,household_name,response,adults,children,arrival_date,arrival_time,departure_date,departure_time,note'},
+    rsvps:{table:'thanksgiving_rsvps',columns:'event_id,user_id,household_name,response,adults,children,arrival_date,arrival_time,departure_date,departure_time,note,dietary_needs,updated_at'},
     votes:{table:'thanksgiving_game_votes',columns:'game_key,user_id'},
     details:{table:'thanksgiving_photo_details',columns:'photo_id,caption,edited_by'},
     reactions:{table:'thanksgiving_photo_reactions',columns:'photo_id,user_id,reaction'}
@@ -24,6 +24,7 @@ function initFamilyFeatures(){
   const editable=key=>!configured||(isShared&&ready[key]);
   const dateText=date=>date?new Intl.DateTimeFormat('en-US',{timeZone:'UTC',weekday:'short',month:'short',day:'numeric'}).format(new Date(date.slice(0,10)+'T12:00:00Z')):'';
   const clock=time=>time?new Intl.DateTimeFormat('en-US',{timeZone:'UTC',hour:'numeric',minute:'2-digit'}).format(new Date('2000-01-01T'+time.slice(0,5)+':00Z')):'';
+  const savedTime=value=>{const date=new Date(value);return value&&!Number.isNaN(date.getTime())?new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}).format(date)+' CT':'';};
   const field=(id,label,type,value='',attrs='')=>`<div class="form-field"><label for="${id}">${label}</label><input id="${id}" type="${type}" value="${esc(value??'')}" ${attrs}></div>`;
   const formError=message=>{$('#featureFormError').textContent=message;};
   const formTail='<p id="featureFormError" class="feature-form-error" role="alert"></p><div class="modal-actions"><button class="btn" type="submit">Save changes</button></div>';
@@ -65,15 +66,18 @@ function initFamilyFeatures(){
     $('#rsvpStatus').textContent=showStatus('rsvps','RSVPs and arrival details');
     $('#editRsvpBtn').textContent=rows.some(r=>r.user_id===who())?'Edit my RSVP':'+ Add my RSVP';
     $('#editRsvpBtn').disabled=configured&&isShared&&!ready.rsvps;
+    const own=rows.find(r=>r.user_id===who()),saved=$('#rsvpSavedStatus');
+    saved.hidden=!own;
+    saved.textContent=own?[!configured?'Your RSVP is saved on this device.':ready.rsvps?'Your RSVP is saved.':'Your last saved RSVP is shown below.',savedTime(own.updated_at)?'Last updated '+savedTime(own.updated_at)+'.':''].filter(Boolean).join(' '):'';
     const labels={coming:'Coming',maybe:'Maybe',declined:'Can’t make it'};
-    $('#rsvpList').innerHTML=rows.length?rows.slice().sort((a,b)=>a.household_name.localeCompare(b.household_name)).map(r=>`<article class="rsvp-card"><span class="response-chip ${esc(r.response)}">${labels[r.response]}</span><h3>${esc(r.household_name)}${r.user_id===who()?' · you':''}</h3>${r.response!=='declined'?`<p>${r.adults} adult${r.adults===1?'':'s'} · ${r.children} child${r.children===1?'':'ren'}</p><p>Arrives: ${r.arrival_date?esc(dateText(r.arrival_date))+(r.arrival_time?' · '+esc(clock(r.arrival_time))+' CT':''):'To be confirmed'}</p><p>Departs: ${r.departure_date?esc(dateText(r.departure_date))+(r.departure_time?' · '+esc(clock(r.departure_time))+' CT':''):'To be confirmed'}</p>`:''}${r.note?`<p>${esc(r.note)}</p>`:''}</article>`).join(''):(!configured||isShared&&ready.rsvps)?'<p class="feature-empty">Be the first to let the family know your plans.</p>':'';
+    $('#rsvpList').innerHTML=rows.length?rows.slice().sort((a,b)=>a.household_name.localeCompare(b.household_name)).map(r=>`<article class="rsvp-card"><span class="response-chip ${esc(r.response)}">${labels[r.response]}</span><h3>${esc(r.household_name)}${r.user_id===who()?' · you':''}</h3>${r.response!=='declined'?`<p>${r.adults} adult${r.adults===1?'':'s'} · ${r.children} child${r.children===1?'':'ren'}</p><p>Arrives: ${r.arrival_date?esc(dateText(r.arrival_date))+(r.arrival_time?' · '+esc(clock(r.arrival_time))+' CT':''):'To be confirmed'}</p><p>Departs: ${r.departure_date?esc(dateText(r.departure_date))+(r.departure_time?' · '+esc(clock(r.departure_time))+' CT':''):'To be confirmed'}</p>${r.dietary_needs?`<p><strong>Food allergies / dietary needs:</strong> ${esc(r.dietary_needs)}</p>`:''}`:''}${r.note?`<p>${esc(r.note)}</p>`:''}</article>`).join(''):(!configured||isShared&&ready.rsvps)?'<p class="feature-empty">Be the first to let the family know your plans.</p>':'';
   }
   function openRsvp(){
     if(!guard('rsvps'))return;
     const own=state.rsvps.find(r=>r.user_id===who()),r=own||{response:'coming',adults:1,children:0};
-    openModal(`<h3 id="modalTitle">Your family RSVP</h3><p>Count everyone in your household, including yourself. Arrival and departure times are Central.</p><form id="rsvpForm">${field('rsvpName','Your name / household','text',r.household_name,'required maxlength="75"')}<div class="form-field"><label for="rsvpResponse">Will you join us?</label><select id="rsvpResponse"><option value="coming">Coming</option><option value="maybe">Maybe</option><option value="declined">Can’t make it</option></select></div><div id="rsvpTravel"><div class="form-grid">${field('rsvpAdults','Adults (including you)','number',r.adults,'min="0" max="50" required')}${field('rsvpChildren','Children','number',r.children,'min="0" max="50" required')}${field('rsvpArrival','Arrival date','date',r.arrival_date)}${field('rsvpArrivalTime','Arrival time (optional, Central)','time',r.arrival_time?.slice(0,5))}${field('rsvpDeparture','Departure date','date',r.departure_date)}${field('rsvpDepartureTime','Departure time (optional, Central)','time',r.departure_time?.slice(0,5))}</div></div><div class="form-field"><label for="rsvpNote">Anything the family should know? (optional)</label><textarea id="rsvpNote" maxlength="250" rows="2">${esc(r.note||'')}</textarea></div>${formTail}${own?'<button type="button" class="btn ghost small" id="removeRsvp">Remove my RSVP</button>':''}</form>`);
+    openModal(`<h3 id="modalTitle">Your family RSVP</h3><p>Count everyone in your household, including yourself. Arrival and departure times are Central.</p><form id="rsvpForm">${field('rsvpName','Your name or household name','text',r.household_name,'required maxlength="75"')}<div class="form-field"><label for="rsvpResponse">Will you join us?</label><select id="rsvpResponse"><option value="coming">Coming</option><option value="maybe">Maybe</option><option value="declined">Can’t make it</option></select></div><div id="rsvpTravel"><div class="form-grid">${field('rsvpAdults','Adults (including you)','number',r.adults,'min="0" max="50" required')}${field('rsvpChildren','Children','number',r.children,'min="0" max="50" required')}${field('rsvpArrival','Arrival date','date',r.arrival_date)}${field('rsvpArrivalTime','Arrival time (optional, Central)','time',r.arrival_time?.slice(0,5))}${field('rsvpDeparture','Departure date','date',r.departure_date)}${field('rsvpDepartureTime','Departure time (optional, Central)','time',r.departure_time?.slice(0,5))}</div><div class="form-field"><label for="rsvpDietary">Food allergies or dietary needs (optional)</label><textarea id="rsvpDietary" maxlength="250" rows="2" aria-describedby="rsvpDietaryHelp" placeholder="For example, a nut allergy or vegetarian meals">${esc(r.dietary_needs||'')}</textarea><p id="rsvpDietaryHelp" class="helper">Visible to joined family members to help plan the meal.</p></div></div><div class="form-field"><label for="rsvpNote">Anything the family should know? (optional)</label><textarea id="rsvpNote" maxlength="250" rows="2">${esc(r.note||'')}</textarea></div>${formTail}${own?'<button type="button" class="btn ghost small" id="removeRsvp">Remove my RSVP</button>':''}</form>`);
     $('#rsvpResponse').value=r.response;
-    const update=()=>{$('#rsvpTravel').hidden=$('#rsvpResponse').value==='declined';$('#rsvpTravel').querySelectorAll('input').forEach(el=>el.disabled=$('#rsvpTravel').hidden);};update();$('#rsvpResponse').addEventListener('change',update);
+    const update=()=>{$('#rsvpTravel').hidden=$('#rsvpResponse').value==='declined';$('#rsvpTravel').querySelectorAll('input,textarea').forEach(el=>el.disabled=$('#rsvpTravel').hidden);};update();$('#rsvpResponse').addEventListener('change',update);
     const form=$('#rsvpForm');
     form.addEventListener('submit',event=>{
       event.preventDefault();if(!guard('rsvps'))return;
@@ -82,11 +86,19 @@ function initFamilyFeatures(){
       if(!$('#rsvpName').value.trim())return formError('Please enter your household name.');
       if(!declined&&(adults+children<1||adults+children>50))return formError('Include between 1 and 50 guests, counting yourself.');
       if(arrival_time&&!arrival_date||departure_time&&!departure_date)return formError('Add the date for each travel time.');
-      if(arrival_date&&departure_date&&(departure_date<arrival_date||departure_date===arrival_date&&arrival_time&&departure_time&&departure_time<arrival_time))return formError('Departure must be after arrival.');
-      const row={event_id:eventId,user_id:who(),household_name:$('#rsvpName').value.trim(),response,adults,children,arrival_date,arrival_time,departure_date,departure_time,note:$('#rsvpNote').value.trim()};
-      submitForm(form,()=>isShared?checked(sb.from(config.rsvps.table).upsert(row,{onConflict:'event_id,user_id'})):saveLocal('rsvps',state.rsvps.filter(x=>x.user_id!==row.user_id).concat(row)),'rsvps','Your RSVP is saved.');
+      if(arrival_date&&departure_date&&(departure_date<arrival_date||departure_date===arrival_date&&arrival_time&&departure_time&&departure_time<arrival_time))return formError('Departure cannot be before arrival.');
+      const row={event_id:eventId,user_id:who(),household_name:$('#rsvpName').value.trim(),response,adults,children,arrival_date,arrival_time,departure_date,departure_time,note:$('#rsvpNote').value.trim(),dietary_needs:declined?'':$('#rsvpDietary').value.trim()};
+      submitForm(form,async()=>{
+        if(!isShared)return saveLocal('rsvps',state.rsvps.filter(x=>x.user_id!==row.user_id).concat({...row,updated_at:new Date().toISOString()}));
+        const [saved]=await changed(sb.from(config.rsvps.table).upsert(row,{onConflict:'event_id,user_id'}).select(config.rsvps.columns));
+        if(current(row.user_id))state.rsvps=state.rsvps.filter(x=>x.user_id!==row.user_id).concat(saved);
+      },'rsvps','Your RSVP is saved.');
     });
-    $('#removeRsvp')?.addEventListener('click',()=>{if(!guard('rsvps'))return;submitForm(form,()=>isShared?changed(sb.from(config.rsvps.table).delete().eq('event_id',eventId).eq('user_id',who()).select('user_id')):saveLocal('rsvps',state.rsvps.filter(r=>r.user_id!==who())),'rsvps','Your RSVP has been removed.');});
+    $('#removeRsvp')?.addEventListener('click',()=>{if(!guard('rsvps'))return;const user=who();submitForm(form,async()=>{
+      if(!isShared)return saveLocal('rsvps',state.rsvps.filter(r=>r.user_id!==user));
+      await changed(sb.from(config.rsvps.table).delete().eq('event_id',eventId).eq('user_id',user).select('user_id'));
+      if(current(user))state.rsvps=state.rsvps.filter(r=>r.user_id!==user);
+    },'rsvps','Your RSVP has been removed.');});
   }
   function renderFootball(){
     $('#nflGamesList').innerHTML=football.map(p=>`<article class="schedule-entry football" data-plan-id="${p.id}"><div class="schedule-time">${esc(clock(p.start_time))} CT</div><div><h3>${esc(p.title)}</h3><p>${esc(p.network)}</p></div></article>`).join('');

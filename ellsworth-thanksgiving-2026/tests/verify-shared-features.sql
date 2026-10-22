@@ -20,3 +20,11 @@ from required r
 left join pg_namespace n on n.nspname = 'public'
 left join pg_class c on c.relnamespace = n.oid and c.relname = r.table_name
 order by r.table_name;
+
+-- RSVP rollout fields: all three results must be true as well.
+select exists(select 1 from information_schema.columns where table_schema='public'
+         and table_name='thanksgiving_rsvps' and column_name='dietary_needs') as dietary_field_installed,
+       exists(select 1 from information_schema.columns where table_schema='public'
+         and table_name='thanksgiving_rsvps' and column_name='updated_at') as save_time_installed,
+       exists(select 1 from pg_trigger where tgrelid=to_regclass('public.thanksgiving_rsvps')
+         and tgname='thanksgiving_rsvps_updated_at' and tgenabled='O' and not tgisinternal) as server_timestamp_trigger;

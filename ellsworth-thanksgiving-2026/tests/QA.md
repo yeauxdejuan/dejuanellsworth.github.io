@@ -1,4 +1,23 @@
-# RSVP reload fix · current validation
+# Family rollout polish · current validation
+
+Validated October 22, 2026. Adds the approved compact FAQ, optional food allergies/dietary needs, persistent RSVP save confirmation, and clearer copy. The group-chat guide and physical two-device rehearsal remain with the organizer, as requested.
+
+| Check | Result | Scope |
+| --- | --- | --- |
+| Database suite | **146 checks passed** | Real local PostgreSQL 17.10; migration preservation, optional dietary defaults/length, member reads, own-only edits, authoritative timestamps, failed-write preservation, private trigger privileges and fresh installation |
+| Browser suite | **244 checks passed** | Chromium at 375, 430, 768, 1024 and 1440px with mocked Supabase/Auth/Storage/media; existing app regressions retained |
+| FAQ | Passed | Six native disclosures, pointer/keyboard operation, group-chat guidance for confirmed travel/contact details; NFL Games remains last |
+| Dietary needs | Passed | Optional field, visibility explanation, save/reopen/clear, shared member display, safe text rendering, reload and device-only preview |
+| Save reassurance | Passed | Persistent own-RSVP confirmation, server time displayed in Central even for a Tokyo device, unchanged time after reload, no success on failed save, safe last-confirmed state after failed refresh, removal/disconnect clearing, and unknown historical timestamps |
+| Visual review | Passed | Focused mobile RSVP/expanded FAQ and desktop RSVP screenshots with synthetic records; no browser exceptions |
+| Production setup | Applied and verified | `20261022151147_rsvp_dietary_and_updated_at.sql` installed; new fields and trigger present; existing RLS/member grants retained; trigger is private, security-invoker, has an empty search path, and is not callable by browser roles |
+| Syntax/asset versions | Passed | Inline and feature JavaScript, browser runner, content-matching script/CSS hashes and `git diff --check` |
+
+The migration adds columns without changing existing RSVP values, policies or grants. Old records retain a null historical timestamp until their next save. Existing security-advisor findings are unchanged; the membership-gated anonymous Auth design and its advisory links are documented in the earlier validation record below. No new advisor finding was introduced by this migration.
+
+Production verification used schema/privilege queries, not live member CRUD or real family content. Local PostgreSQL checks the actual writes and access policies; browser fixtures check the UI separately. Physical Safari/Android, real TikTok playback and real Storage remain outside these automated results. The frontend PR is unmerged; publish through the existing Pages flow after review. Do not reapply the migration to the configured project.
+
+# Prior RSVP reload fix
 
 Validated October 21, 2026. Loading the current page with the actual previous feature script reproduced the screenshot: `Cannot read properties of null (reading 'addEventListener')`, an uninitialized feature module, empty RSVP summary/status/list, and the default Add my RSVP label. The previous script still referenced the removed Family Plans button. The published script response has `Cache-Control: max-age=600`, so an unchanged script URL could reuse that version after an HTML update.
 
