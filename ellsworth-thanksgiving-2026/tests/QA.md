@@ -1,3 +1,11 @@
+# First-time family welcome · current validation
+
+Validated October 22, 2026. A successful first family-code entry starts a short turkey-and-“Ellsworth” confetti shower. The browser remembers the welcome; session restoration and repeat joins do not replay it. Failed or rejected joins never celebrate. Reduced motion uses only a still welcome message. No database, authentication API or family-record changes are required.
+
+**316 Chromium checks passed** across 375, 430, 768, 1024 and 1440px with synthetic Supabase/media fixtures. New coverage verifies both confetti types, cleanup, returning sessions (including existing members without the new preference), rejected/unavailable codes, reduced motion, blocked preference storage, nonblocking pointer behavior, and disconnect during the effect. Existing application checks remain passing.
+
+Focused mobile and desktop visual review also confirmed both confetti types falling through the viewport without horizontal overflow (**4 additional checks**). Inline JavaScript syntax, browser-runner syntax, stylesheet content hash and `git diff --check` passed. The database suite was not repeated because data paths are unchanged. Physical Safari/Android and live family authentication are outside this verification. The change awaits PR review and Pages deployment.
+
 # Single photo-gallery dropdown · current validation
 
 Validated October 22, 2026. The additional gallery starts with one closed **Explore house photos** control. Opening it reveals seven category controls; opening a category reveals its photos. Opening the parent alone does not request category thumbnails. Closing the parent hides the full category list.

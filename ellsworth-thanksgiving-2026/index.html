@@ -42,7 +42,7 @@
     @media(max-width:490px){.dish-row{grid-template-columns:minmax(0,1fr) auto}.property-mosaic{grid-template-rows:repeat(4,85px)}.tik-card iframe{height:530px}.hero-leaf{left:0}.hero h1{font-size:clamp(45px,13vw,54px)}}
     @media(prefers-reduced-motion:reduce){.falling-leaves{display:none}}
   </style>
-  <link rel="stylesheet" href="assets/family-features.css?v=bc5318fb945a">
+  <link rel="stylesheet" href="assets/family-features.css?v=2d1c61f53db6">
 </head>
 <body>
   <div class="topline">THE ELLSWORTH FAMILY <span><span class="leaf-mark" aria-hidden="true"></span></span> THANKSGIVING 2026</div>
@@ -308,6 +308,27 @@ let photos=[...SHARED_FAMILY_PHOTOS],slideIndex=0,playing=!window.matchMedia('(p
 if(configured){menuItems=[];games=[...STARTER_GAMES];tiktoks=[...DEFAULT_TIKTOKS];}
 const toast=$('#toast');let toastTimer;
 function notify(message){toast.textContent=message;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),4000);}
+let familyWelcomeSeen=load('welcomeCelebrated',false)===true,welcomeTimer;
+function rememberFamilyWelcome(){
+  familyWelcomeSeen=true;
+  // Celebration preferences must never interrupt joining when storage is unavailable.
+  try{localStorage.setItem('thanksgiving26_welcomeCelebrated','true');}catch{}
+}
+function clearFamilyWelcome(){clearTimeout(welcomeTimer);$('#familyWelcome')?.remove();}
+function celebrateFamilyWelcome(){
+  if(familyWelcomeSeen)return;
+  rememberFamilyWelcome();clearFamilyWelcome();
+  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const layer=document.createElement('div');layer.id='familyWelcome';layer.className='family-welcome';layer.setAttribute('aria-hidden','true');
+  const greeting=document.createElement('div');greeting.className='family-welcome-greeting';greeting.textContent='🦃 Welcome, Ellsworth family!';layer.append(greeting);
+  if(!reduced)for(let i=0;i<28;i++){
+    const piece=document.createElement('span');piece.className='family-confetti'+(i%2?' family-confetti-name':'');piece.textContent=i%2?'Ellsworth':'🦃';
+    piece.style.setProperty('--left',`${(i+.5)*100/28}%`);piece.style.setProperty('--drift',`${Math.round((Math.random()-.5)*180)}px`);
+    piece.style.setProperty('--spin',`${Math.round((Math.random()-.5)*180)}deg`);piece.style.setProperty('--duration',`${3+Math.random()}s`);piece.style.setProperty('--delay',`${Math.random()*.6}s`);layer.append(piece);
+  }
+  document.body.append(layer);welcomeTimer=setTimeout(clearFamilyWelcome,reduced?3000:5000);
+}
+window.addEventListener('pagehide',clearFamilyWelcome);
 function assertFamilyAccess(){if(!configured)return true;if(isShared)return true;notify('Enter the Ellsworth Family code before contributing.');$('#familyPortal').focus({preventScroll:true});$('#familyPortal').scrollIntoView({behavior:'instant',block:'start'});return false;}
 function familyAccessUI(){
   $('#familyPortal').hidden=!configured||isShared;
@@ -324,7 +345,7 @@ async function connectExistingMember(){
   const {data:{session},error}=await sb.auth.getSession();
   if(error||!session?.user)return;
   const {data:member,error:memberError}=await sb.rpc('is_ellsworth_member');
-  if(!memberError&&member){isShared=true;memberUserId=session.user.id;familyAccessUI();await loadFamilyShared();}
+  if(!memberError&&member){isShared=true;memberUserId=session.user.id;rememberFamilyWelcome();familyAccessUI();await loadFamilyShared();}
 }
 $('#familyJoinForm').addEventListener('submit',async event=>{
   event.preventDefault();if(!sb){notify('Configure Supabase before inviting the family.');return;}
@@ -338,12 +359,13 @@ $('#familyJoinForm').addEventListener('submit',async event=>{
     if(error)throw error;
     if(!joined){$('#familyPortalStatus').textContent='That code doesn’t match. Please check the family group chat.';return;}
     memberUserId=session.user.id;isShared=true;$('#familyCode').value='';
-    familyAccessUI();await loadFamilyShared();notify('You’re in! The Ellsworth Family board is now shared.');
+    familyAccessUI();celebrateFamilyWelcome();await loadFamilyShared();notify('You’re in! The Ellsworth Family board is now shared.');
   }catch(error){console.error(error);$('#familyPortalStatus').textContent='Family access is unavailable. Check the configuration or your connection.';}
   finally{button.disabled=false;button.textContent='Join the family board ↗';}
 });
 $('#leaveFamilyBtn').addEventListener('click',async()=>{
   if(!sb)return;
+  clearFamilyWelcome();
   try{await sb.auth.signOut();}catch(error){console.error(error);}
   isShared=false;memberUserId=null;menuReady=false;menuItems=[];games=[...STARTER_GAMES];tiktoks=[...DEFAULT_TIKTOKS];photos=[...SHARED_FAMILY_PHOTOS];
   familyAccessUI();renderMenu();renderGames();renderTiktoks();renderPhotos();notify('This browser is disconnected. Rejoining will require the code.');

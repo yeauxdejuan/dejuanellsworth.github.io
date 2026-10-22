@@ -15,3 +15,11 @@
 
 .property-gallery-toggle{border:1px solid var(--line);border-radius:14px;background:var(--paper);overflow:hidden}.property-gallery-toggle>summary{position:relative;display:flex;justify-content:space-between;align-items:center;gap:16px;cursor:pointer;list-style:none;padding:22px 50px 22px 22px;font-weight:700;color:var(--primary)}.property-gallery-toggle>summary::-webkit-details-marker{display:none}.property-gallery-toggle>summary:after{content:'+';position:absolute;right:22px;top:50%;transform:translateY(-50%);font-size:24px;font-weight:400}.property-gallery-toggle[open]>summary:after{content:'−'}.property-gallery-toggle>summary:focus-visible{outline:3px solid var(--gold);outline-offset:-4px}.property-gallery-toggle>.property-categories{padding:0 16px 16px}
 @media(max-width:490px){.property-gallery-toggle>summary{align-items:flex-start;flex-direction:column;gap:4px;padding:18px 44px 18px 16px}.property-gallery-toggle>summary:after{right:16px}.property-gallery-toggle>.property-categories{padding:0 10px 10px}}
+.family-welcome{position:fixed;inset:0;z-index:85;overflow:hidden;pointer-events:none;user-select:none}
+.family-welcome-greeting{position:absolute;top:calc(env(safe-area-inset-top,0px) + 110px);left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);padding:14px 20px;border:1px solid #d5aa63;border-radius:20px;background:#fff7e9;color:#963e29;box-shadow:0 8px 28px #45291b26;font:700 clamp(16px,3vw,22px)/1.4 Georgia,serif;text-align:center;animation:family-welcome-greeting 4.7s both}
+.family-confetti{position:absolute;top:-70px;left:var(--left);font-size:30px;line-height:1.2;animation:family-confetti-fall var(--duration) var(--delay) linear both;will-change:transform,opacity}
+.family-confetti-name{font:italic 700 clamp(16px,2.5vw,23px)/1.2 Georgia,serif;color:#963e29;text-shadow:0 1px 2px #fff7e9}
+.family-confetti-name:nth-child(4n){color:#a66c14}
+@keyframes family-confetti-fall{0%{transform:translate(-50%,-20px) rotate(0);opacity:0}8%{opacity:1}85%{opacity:1}100%{transform:translate(calc(-50% + var(--drift)),calc(100dvh + 140px)) rotate(var(--spin));opacity:0}}
+@keyframes family-welcome-greeting{0%,100%{opacity:0}10%,80%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.family-confetti{display:none}.family-welcome-greeting{animation:none}}
