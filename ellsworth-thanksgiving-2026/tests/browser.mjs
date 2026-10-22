@@ -50,8 +50,8 @@ try{
   res.setHeader('Content-Type','application/json');res.end(JSON.stringify({data,error}));return;
  }
  const path=req.url==='/'?'index.html':req.url.slice(1).split('?')[0];
- if(!['index.html','assets/autumn-leaf.svg','assets/family-features.js','assets/family-features.css'].includes(path)){res.writeHead(404);res.end();return;}
- res.setHeader('Content-Type',path.endsWith('svg')?'image/svg+xml':path.endsWith('.js')?'application/javascript':path.endsWith('.css')?'text/css':'text/html');res.end(await readFile(new URL(path,root)));
+ if(!['index.html','assets/autumn-leaf.svg','assets/family-features.js','assets/family-features.css','assets/family-sound.js','assets/i-love-it.mp3'].includes(path)){res.writeHead(404);res.end();return;}
+ res.setHeader('Content-Type',path.endsWith('svg')?'image/svg+xml':path.endsWith('.js')?'application/javascript':path.endsWith('.css')?'text/css':path.endsWith('.mp3')?'audio/mpeg':'text/html');res.end(await readFile(new URL(path,root)));
 }catch(e){res.writeHead(500);res.end(String(e));}
 });
 await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
@@ -59,10 +59,22 @@ const url=`http://127.0.0.1:${server.address().port}`;
 let browser;
 const errors=[];
 async function newPage(width=1440,options={}){
- const {localPreview=false,staleFeatureCache=false,...contextOptions}=options;
+ const {localPreview=false,staleFeatureCache=false,soundProbe=false,...contextOptions}=options;
  const context=await browser.newContext({viewport:{width,height:1000},...contextOptions});
+ if(soundProbe)await context.addInitScript(mode=>{
+  window.soundProbe={starts:0,stops:0,resumes:0,decodes:0,durations:[]};
+  const Native=window.AudioContext;
+  if(mode==='unsupported'){window.AudioContext=undefined;window.webkitAudioContext=undefined;return;}
+  window.AudioContext=class extends Native{
+   resume(){window.soundProbe.resumes++;return mode==='blocked'?Promise.reject(new Error('Playback blocked')):super.resume();}
+   decodeAudioData(...args){return mode==='decode-error'?Promise.reject(new Error('Invalid audio')):super.decodeAudioData(...args).then(buffer=>{window.soundProbe.decodes++;return buffer;});}
+   createBufferSource(){const source=super.createBufferSource(),start=source.start.bind(source),stop=source.stop.bind(source);source.start=(...args)=>{if(mode==='blocked')throw new Error('Playback blocked');start(...args);window.soundProbe.starts++;window.soundProbe.durations.push(source.buffer.duration);};source.stop=(...args)=>{stop(...args);window.soundProbe.stops++;};return source;}
+  };
+ },soundProbe);
  await context.route('**/*',async route=>{
   const u=route.request().url();if(localPreview&&u===url+'/'){const html=(await readFile(new URL('index.html',root),'utf8')).replace(/url: 'https:\/\/[^']+\.supabase.co'/,"url: ''");return route.fulfill({contentType:'text/html',body:html});}
+  if(soundProbe==='missing-file'&&u.includes('/assets/i-love-it.mp3'))return route.fulfill({status:404,body:'Not found'});
+  if(soundProbe==='missing-script'&&u.includes('/assets/family-sound.js'))return route.fulfill({contentType:'application/javascript',body:''});
   // The previous release attached a listener to the now-removed Family Plans button.
   // A returning browser may still have that response cached at the unversioned URL.
   if(staleFeatureCache&&u===url+'/assets/family-features.js')return route.fulfill({contentType:'application/javascript',body:"function initFamilyFeatures(){document.querySelector('#addScheduleBtn').addEventListener('click',()=>{});}"});
@@ -75,6 +87,61 @@ async function newPage(width=1440,options={}){
  const p=await context.newPage();p.on('pageerror',e=>errors.push(e.message));await p.goto(url);return p;
 }
 async function join(p){await p.locator('#familyPortal').waitFor({state:'visible'});await p.fill('#familyCode','synthetic-test-code-only-2026');await p.click('#joinFamilyBtn');await p.waitForFunction(()=>isShared&&menuReady);}
+async function checkSaveSounds(){
+ const p=await newPage(375,{isMobile:true,hasTouch:true,soundProbe:true});
+ const count=()=>p.evaluate(()=>window.soundProbe.starts);
+ let expected=0;
+ const sounded=async message=>{expected++;await p.waitForFunction(n=>window.soundProbe.starts===n,expected);check(await count()===expected,message);};
+ const quiet=async message=>check(await count()===expected,message);
+ check(await p.locator('[data-sound-toggle]').getAttribute('aria-pressed')==='true','Save sounds start enabled with a visible mute control');await quiet('Page loads without autoplay');
+ await p.fill('#familyCode','synthetic-rejected-code-2026');await p.click('#joinFamilyBtn');await p.waitForFunction(()=>!document.querySelector('#joinFamilyBtn').disabled);await quiet('Rejected code is silent');
+ await join(p);await sounded('First successful code entry plays the approved MP3 once');
+ check(await p.evaluate(()=>window.soundProbe.durations[0]>2&&window.soundProbe.durations[0]<2.4),'Real browser decodes the shipped short MP3');
+ await p.evaluate(()=>loadFamilyShared());await quiet('Refreshing all family records is silent');
+ await p.click('[data-sound-toggle]');await quiet('Muting does not play a clip');check(await p.locator('[data-sound-toggle]').getAttribute('aria-pressed')==='false','Mute control exposes its state');
+ await p.click('#addDishBtn');await p.fill('#newDishName','Sound test dish');await p.locator('#dishForm button').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});await quiet('A muted menu addition still saves and stays silent');
+ await p.reload();await p.waitForFunction(()=>isShared&&menuReady);expected=0;await quiet('Restoring an existing member does not play the welcome sound');check(await p.locator('[data-sound-toggle]').getAttribute('aria-pressed')==='false','Mute preference survives a reload');
+ await p.click('[data-sound-preview]');await quiet('Preview respects mute');check((await p.locator('[data-sound-status]').innerText()).includes('Turn sound on'),'Muted preview explains how to listen');
+ await p.click('[data-sound-toggle]');await quiet('Enabling sounds alone is silent');await p.click('[data-sound-preview]');await sounded('Explicit preview plays the same clip');
+ const dish=tables.thanksgiving_dishes.find(d=>d.label==='Sound test dish');
+ let release;holdClaim=new Promise(resolve=>release=resolve);await p.locator(`[data-dish-id="${dish.id}"]`).click();await p.fill('#claimName','Sound test cook');await p.locator('#claimForm button[type=submit]').click();await quiet('Pending database confirmation is silent');release();await p.locator('#modalBackdrop').waitFor({state:'hidden'});await sounded('Confirmed dish reservation sounds once');
+ await p.locator(`[data-dish-id="${dish.id}"]`).click();await p.fill('#claimNote','Updated details');await p.locator('#claimForm button[type=submit]').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});await sounded('Confirmed reservation edits sound once');
+ failClaim=true;await p.locator(`[data-dish-id="${dish.id}"]`).click();await p.locator('#claimForm button[type=submit]').click();await p.waitForFunction(()=>document.querySelector('#toast').textContent.includes('Could not save'));await quiet('Rejected reservation saves are silent');await p.click('#modalClose');
+ await p.locator(`[data-dish-id="${dish.id}"]`).click();await p.click('#releaseDish');await p.locator('#modalBackdrop').waitFor({state:'hidden'});await quiet('Removing a dish reservation is silent');
+ await p.click('#addDishBtn');await p.fill('#newDishName','Audible new dish');await p.locator('#dishForm button').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});await sounded('Confirmed new menu items sound once');
+ await p.click('#editRsvpBtn');await p.fill('#rsvpName','Sound test household');await p.locator('#rsvpForm button[type=submit]').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});await sounded('Confirmed RSVP sounds once');
+ await p.click('#editRsvpBtn');await p.fill('#rsvpNote','Sound test edit');failReadTable='thanksgiving_rsvps';await p.locator('#rsvpForm button[type=submit]').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});await sounded('Confirmed RSVP update sounds even if its following refresh fails');await p.click('#refreshRsvpsBtn');await p.waitForFunction(()=>!document.querySelector('#editRsvpBtn').disabled);
+ await p.click('#editRsvpBtn');failWriteTable='thanksgiving_rsvps';await p.locator('#rsvpForm button[type=submit]').click();await p.waitForFunction(()=>document.querySelector('#featureFormError').textContent.includes('Could not save'));await quiet('Failed RSVP save is silent');await p.click('#modalClose');
+ await p.click('#editRsvpBtn');await p.click('#removeRsvp');await p.locator('#modalBackdrop').waitFor({state:'hidden'});await quiet('Removing an RSVP is silent');
+ await p.locator('[data-vote="builtin-uno"]').click();await p.waitForFunction(()=>document.querySelector('[data-vote="builtin-uno"]').getAttribute('aria-pressed')==='true');await sounded('Adding a game vote sounds once');
+ await p.locator('[data-vote="builtin-uno"]').click();await p.waitForFunction(()=>document.querySelector('[data-vote="builtin-uno"]').getAttribute('aria-pressed')==='false');await quiet('Removing a vote is silent');
+ await p.click('#addPhotoUrlBtn');await p.fill('#photoUrl','https://example.test/sound-test.jpg');await p.locator('#photoUrlForm button').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});await sounded('Adding a photo link sounds once');
+ await p.click('#editPhotoDetails');await p.fill('#photoDetailCaption','Sound test caption');await p.locator('#photoDetailsForm button[type=submit]').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});await sounded('Saving a caption sounds once');
+ await p.locator('[data-react="heart"]').click();await p.waitForFunction(()=>document.querySelector('[data-react="heart"]').getAttribute('aria-pressed')==='true');await sounded('Adding a photo reaction sounds once');
+ await p.locator('[data-react="laugh"]').click();await p.waitForFunction(()=>document.querySelector('[data-react="laugh"]').getAttribute('aria-pressed')==='true');await sounded('Changing a photo reaction sounds once');
+ await p.locator('[data-react="laugh"]').click();await p.waitForFunction(()=>document.querySelector('[data-react="laugh"]').getAttribute('aria-pressed')==='false');await quiet('Removing a reaction is silent');
+ const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/uPgAAAAASUVORK5CYII=','base64');
+ await p.setInputFiles('#photoUpload',[{name:'sound-one.png',mimeType:'image/png',buffer:png},{name:'sound-two.png',mimeType:'image/png',buffer:png}]);await p.waitForFunction(()=>document.querySelector('#toast').textContent.includes('2 Ellsworth family photos saved'));await sounded('A batch of two photo uploads plays only one clip');
+ failWriteTable='thanksgiving_photos';await p.setInputFiles('#photoUpload',{name:'failed-sound.png',mimeType:'image/png',buffer:png});await p.waitForFunction(()=>document.querySelector('#toast').textContent.includes('could not be uploaded'));await quiet('Uploaded bytes without a successful photo record are silent');
+ await p.click('#addGameBtn');await p.fill('#gameName','Sound test game');await p.locator('#gameForm button').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});await sounded('Adding a game suggestion sounds once');
+ const video='https://www.tiktok.com/@test/video/7777777777777777777';await p.fill('#tikUrl',video);await p.locator('#tikForm button').click();await p.waitForFunction(()=>document.querySelector('#tikUrl').value==='');await sounded('Adding a TikTok sounds once');
+ await p.fill('#tikUrl',video);await p.locator('#tikForm button').click();await quiet('Duplicate TikTok validation is silent');
+ await p.evaluate(()=>{const set=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(key==='thanksgiving26_soundsEnabled')throw new DOMException('Blocked','SecurityError');return set.call(this,key,value);};});await p.click('[data-sound-toggle]');check(await p.locator('[data-sound-toggle]').getAttribute('aria-pressed')==='false','Mute still works when preference storage is blocked');
+ for(const width of [375,1440]){await p.setViewportSize({width,height:1000});await p.locator('#familySoundControls').scrollIntoViewIfNeeded();check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`Sound controls fit at ${width}px`);await p.screenshot({animations:'disabled',path:new URL(`artifacts/sound-controls-${width}.png`,import.meta.url).pathname});}
+ await p.context().close();
+ for(const mode of ['missing-file','decode-error','blocked','unsupported','missing-script']){
+  const dishId='sound-fallback-'+mode;tables.thanksgiving_dishes.push({id:dishId,label:'Audio fallback '+mode,category:'Other family favorites',event_id:'ellsworth-thanksgiving-2026',signups:[]});
+  const q=await newPage(430,{soundProbe:mode});await join(q);await signup(q,'Audio fallback '+mode,dishId);
+  check((await q.locator('#toast').innerText()).includes('sign-up is saved'),'Saving still succeeds with '+mode+' audio');check(await q.evaluate(()=>window.soundProbe.starts===0),'No playback succeeds with '+mode+' audio');
+  if(['unsupported','missing-script'].includes(mode))check(await q.locator('#familySoundControls').isHidden(),'Unavailable sound controls are hidden');
+  await q.context().close();
+ }
+ for(const action of ['mute','disconnect']){
+  const q=await newPage(430,{soundProbe:true});let releaseClip;const heldClip=new Promise(resolve=>releaseClip=resolve);await q.context().route('**/assets/i-love-it.mp3*',async route=>{await heldClip;await route.continue();});
+  await join(q);check(await q.evaluate(()=>window.soundProbe.starts===0),'Join sound waits for its audio download');await q.click(action==='mute'?'[data-sound-toggle]':'#leaveFamilyBtn');releaseClip();await q.waitForFunction(()=>window.soundProbe.decodes===1);
+  check(await q.evaluate(()=>window.soundProbe.starts===0),'A pending clip stays cancelled after '+action);await q.context().close();
+ }
+}
 async function checkFamilyWelcome(){
  for(const width of [375,1440]){
   const p=await newPage(width,{isMobile:width===375,hasTouch:width===375});
@@ -106,7 +173,7 @@ async function checkFamilyWelcome(){
 }
 async function signup(p,name,dish='mac'){await p.locator(`[data-dish-id="${dish}"]`).click();await p.fill('#claimName',name);await p.fill('#claimNote','Synthetic test note');await p.locator('#claimForm button[type=submit]').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});}
 async function checkFeatureAssetVersions(p){
- for(const [path,selector,attribute] of [['assets/family-features.js','script[src*="family-features.js"]','src'],['assets/family-features.css','link[href*="family-features.css"]','href']]){
+ for(const [path,selector,attribute] of [['assets/family-features.js','script[src*="family-features.js"]','src'],['assets/family-features.css','link[href*="family-features.css"]','href'],['assets/family-sound.js','script[src*="family-sound.js"]','src'],['assets/i-love-it.mp3','#familySoundControls','data-sound-src']]){
   const hash=createHash('sha256').update(await readFile(new URL(path,root))).digest('hex').slice(0,12);
   const assetUrl=new URL(await p.locator(selector).getAttribute(attribute),url);
   check(assetUrl.searchParams.get('v')===hash,`${path} URL matches its content so releases bypass stale cached assets`);
@@ -290,6 +357,7 @@ try{
  check(!requestedTables.has('thanksgiving_schedule'),'Removed Family Plans never fetches or writes schedule records');
  await a.click('#startTv');await a.evaluate(()=>document.querySelector('#leaveFamilyBtn').click());await a.waitForFunction(()=>!document.querySelector('#familyPortal').hidden);check(await a.locator('#familyPortal').isVisible(),'Disconnect shows family access');check(await a.locator('#tiktokGrid iframe').count()===0,'Disconnect unloads video');check(!(await a.locator('#rsvpList').innerText()).includes('Synthetic household'),'Disconnect clears private RSVPs');check(await a.locator('#rsvpSavedStatus').isHidden(),'Disconnect clears RSVP save status');check(await a.locator('#photoExtras').isHidden(),'Disconnect clears photo activity');check(await a.locator('#tvSlideshow').isHidden(),'Disconnect closes an active TV slideshow');
  await a.fill('#tikUrl','');await a.locator('#tikUrl').press('Enter');check(await a.locator('#familyPortal').evaluate(el=>el===document.activeElement),'Disconnect routes away from text inputs to invitation instructions');
+ await checkSaveSounds();
  check(!errors.length,`No browser exceptions: ${errors.join(', ')}`);
  console.log(`PASS: ${checks} Chromium checks at 375, 430, 768, 1024 and 1440px. Supabase/media mocked; no physical mobile-browser or live playback validation.`);
 }finally{if(browser)await browser.close();await new Promise(resolve=>server.close(resolve));}
