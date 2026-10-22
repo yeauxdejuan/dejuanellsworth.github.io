@@ -93,18 +93,18 @@ async function checkSaveSounds(){
  let expected=0;
  const sounded=async message=>{expected++;await p.waitForFunction(n=>window.soundProbe.starts===n,expected);check(await count()===expected,message);};
  const quiet=async message=>check(await count()===expected,message);
- check(await p.locator('[data-sound-toggle]').getAttribute('aria-pressed')==='true','Save sounds start enabled with a visible mute control');await quiet('Page loads without autoplay');
+ check(await p.locator('#familySoundControls, [data-sound-toggle], [data-sound-preview], [data-sound-status]').count()===0,'No sound controls or test button reveal the surprise');
+ check(!/a little .i love it.|sound on|sound off|preview sound/i.test(await p.locator('body').innerText()),'Visible page copy does not describe or announce the sound');await quiet('Page loads without autoplay');
  await p.fill('#familyCode','synthetic-rejected-code-2026');await p.click('#joinFamilyBtn');await p.waitForFunction(()=>!document.querySelector('#joinFamilyBtn').disabled);await quiet('Rejected code is silent');
  await join(p);await sounded('First successful code entry plays the approved MP3 once');
  check(await p.evaluate(()=>Math.abs(window.soundProbe.durations[0]-1.7)<.01),'Real browser decodes the trimmed 1.7-second MP3');
- check(await p.locator('[data-sound-preview], [data-sound-status]').count()===0,'Sound test button and preview status are removed');
  await p.evaluate(()=>loadFamilyShared());await quiet('Refreshing all family records is silent');
- await p.click('[data-sound-toggle]');await quiet('Muting does not play a clip');check(await p.locator('[data-sound-toggle]').getAttribute('aria-pressed')==='false','Mute control exposes its state');
- await p.click('#addDishBtn');await p.fill('#newDishName','Sound test dish');await p.locator('#dishForm button').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});await quiet('A muted menu addition still saves and stays silent');
- await p.reload();await p.waitForFunction(()=>isShared&&menuReady);expected=0;await quiet('Restoring an existing member does not play the welcome sound');check(await p.locator('[data-sound-toggle]').getAttribute('aria-pressed')==='false','Mute preference survives a reload');
- await p.click('[data-sound-toggle]');await quiet('Enabling sounds alone is silent');
+ await p.click('#addDishBtn');await p.fill('#newDishName','Sound test dish');await p.locator('#dishForm button').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});await sounded('A confirmed menu addition plays the surprise without a sound control');
+ await p.evaluate(()=>localStorage.setItem('thanksgiving26_soundsEnabled','false'));
+ await p.reload();await p.waitForFunction(()=>isShared&&menuReady);expected=0;await quiet('Restoring an existing member does not play the welcome sound');
  const dish=tables.thanksgiving_dishes.find(d=>d.label==='Sound test dish');
  let release;holdClaim=new Promise(resolve=>release=resolve);await p.locator(`[data-dish-id="${dish.id}"]`).click();await p.fill('#claimName','Sound test cook');await p.locator('#claimForm button[type=submit]').click();await quiet('Pending database confirmation is silent');release();await p.locator('#modalBackdrop').waitFor({state:'hidden'});await sounded('Confirmed dish reservation sounds once');
+ check(await p.evaluate(()=>localStorage.getItem('thanksgiving26_soundsEnabled')==='false'),'The retired mute flag cannot silently disable the surprise after its control is removed');
  await p.locator(`[data-dish-id="${dish.id}"]`).click();await p.fill('#claimNote','Updated details');await p.locator('#claimForm button[type=submit]').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});await sounded('Confirmed reservation edits sound once');
  failClaim=true;await p.locator(`[data-dish-id="${dish.id}"]`).click();await p.locator('#claimForm button[type=submit]').click();await p.waitForFunction(()=>document.querySelector('#toast').textContent.includes('Could not save'));await quiet('Rejected reservation saves are silent');await p.click('#modalClose');
  await p.locator(`[data-dish-id="${dish.id}"]`).click();await p.click('#releaseDish');await p.locator('#modalBackdrop').waitFor({state:'hidden'});await quiet('Removing a dish reservation is silent');
@@ -123,22 +123,22 @@ async function checkSaveSounds(){
  const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/uPgAAAAASUVORK5CYII=','base64');
  await p.setInputFiles('#photoUpload',[{name:'sound-one.png',mimeType:'image/png',buffer:png},{name:'sound-two.png',mimeType:'image/png',buffer:png}]);await p.waitForFunction(()=>document.querySelector('#toast').textContent.includes('2 Ellsworth family photos saved'));await sounded('A batch of two photo uploads plays only one clip');
  failWriteTable='thanksgiving_photos';await p.setInputFiles('#photoUpload',{name:'failed-sound.png',mimeType:'image/png',buffer:png});await p.waitForFunction(()=>document.querySelector('#toast').textContent.includes('could not be uploaded'));await quiet('Uploaded bytes without a successful photo record are silent');
- await p.click('#addGameBtn');await p.fill('#gameName','Sound test game');await p.locator('#gameForm button').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});await sounded('Adding a game suggestion sounds once');
+ await p.evaluate(()=>{const get=Storage.prototype.getItem,set=Storage.prototype.setItem;Storage.prototype.getItem=function(key){if(key==='thanksgiving26_soundsEnabled')throw new DOMException('Blocked','SecurityError');return get.call(this,key);};Storage.prototype.setItem=function(key,value){if(key==='thanksgiving26_soundsEnabled')throw new DOMException('Blocked','SecurityError');return set.call(this,key,value);};});
+ await p.click('#addGameBtn');await p.fill('#gameName','Sound test game');await p.locator('#gameForm button').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});await sounded('Adding a game suggestion sounds without accessing retired preference storage');
  const video='https://www.tiktok.com/@test/video/7777777777777777777';await p.fill('#tikUrl',video);await p.locator('#tikForm button').click();await p.waitForFunction(()=>document.querySelector('#tikUrl').value==='');await sounded('Adding a TikTok sounds once');
  await p.fill('#tikUrl',video);await p.locator('#tikForm button').click();await quiet('Duplicate TikTok validation is silent');
- await p.evaluate(()=>{const set=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(key==='thanksgiving26_soundsEnabled')throw new DOMException('Blocked','SecurityError');return set.call(this,key,value);};});await p.click('[data-sound-toggle]');check(await p.locator('[data-sound-toggle]').getAttribute('aria-pressed')==='false','Mute still works when preference storage is blocked');
- for(const width of [375,1440]){await p.setViewportSize({width,height:1000});await p.locator('#familySoundControls').scrollIntoViewIfNeeded();check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`Sound controls fit at ${width}px`);await p.screenshot({animations:'disabled',path:new URL(`artifacts/sound-controls-${width}.png`,import.meta.url).pathname});}
+ for(const width of [375,1440]){await p.setViewportSize({width,height:1000});await p.locator('#memberStrip').scrollIntoViewIfNeeded();check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`Family access fits without a sound settings row at ${width}px`);await p.screenshot({animations:'disabled',path:new URL(`artifacts/surprise-sound-${width}.png`,import.meta.url).pathname});}
  await p.context().close();
  for(const mode of ['missing-file','decode-error','blocked','unsupported','missing-script']){
   const dishId='sound-fallback-'+mode;tables.thanksgiving_dishes.push({id:dishId,label:'Audio fallback '+mode,category:'Other family favorites',event_id:'ellsworth-thanksgiving-2026',signups:[]});
   const q=await newPage(430,{soundProbe:mode});await join(q);await signup(q,'Audio fallback '+mode,dishId);
   check((await q.locator('#toast').innerText()).includes('sign-up is saved'),'Saving still succeeds with '+mode+' audio');check(await q.evaluate(()=>window.soundProbe.starts===0),'No playback succeeds with '+mode+' audio');
-  if(['unsupported','missing-script'].includes(mode))check(await q.locator('#familySoundControls').isHidden(),'Unavailable sound controls are hidden');
+  if(['unsupported','missing-script'].includes(mode))check(await q.locator('#familySoundControls, [data-sound-toggle]').count()===0,'Unsupported audio does not expose any controls');
   await q.context().close();
  }
- for(const action of ['mute','disconnect']){
+ for(const action of ['pagehide','disconnect']){
   const q=await newPage(430,{soundProbe:true});let releaseClip;const heldClip=new Promise(resolve=>releaseClip=resolve);await q.context().route('**/assets/i-love-it.mp3*',async route=>{await heldClip;await route.continue();});
-  await join(q);check(await q.evaluate(()=>window.soundProbe.starts===0),'Join sound waits for its audio download');await q.click(action==='mute'?'[data-sound-toggle]':'#leaveFamilyBtn');releaseClip();await q.waitForFunction(()=>window.soundProbe.decodes===1);
+  await join(q);check(await q.evaluate(()=>window.soundProbe.starts===0),'Join sound waits for its audio download');if(action==='disconnect')await q.click('#leaveFamilyBtn');else await q.evaluate(()=>window.dispatchEvent(new PageTransitionEvent('pagehide')));releaseClip();await q.waitForFunction(()=>window.soundProbe.decodes===1);
   check(await q.evaluate(()=>window.soundProbe.starts===0),'A pending clip stays cancelled after '+action);await q.context().close();
  }
 }
@@ -173,7 +173,7 @@ async function checkFamilyWelcome(){
 }
 async function signup(p,name,dish='mac'){await p.locator(`[data-dish-id="${dish}"]`).click();await p.fill('#claimName',name);await p.fill('#claimNote','Synthetic test note');await p.locator('#claimForm button[type=submit]').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});}
 async function checkFeatureAssetVersions(p){
- for(const [path,selector,attribute] of [['assets/family-features.js','script[src*="family-features.js"]','src'],['assets/family-features.css','link[href*="family-features.css"]','href'],['assets/family-sound.js','script[src*="family-sound.js"]','src'],['assets/i-love-it.mp3','#familySoundControls','data-sound-src']]){
+ for(const [path,selector,attribute] of [['assets/family-features.js','script[src*="family-features.js"]','src'],['assets/family-features.css','link[href*="family-features.css"]','href'],['assets/family-sound.js','script[src*="family-sound.js"]','src'],['assets/i-love-it.mp3','#familySoundScript','data-sound-src']]){
   const hash=createHash('sha256').update(await readFile(new URL(path,root))).digest('hex').slice(0,12);
   const assetUrl=new URL(await p.locator(selector).getAttribute(attribute),url);
   check(assetUrl.searchParams.get('v')===hash,`${path} URL matches its content so releases bypass stale cached assets`);
