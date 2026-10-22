@@ -137,7 +137,7 @@ TikTok privacy settings, deleted clips, browser restrictions and availability re
 
 The **Ellsworth Holiday Home feature image uses the exterior photo** of Friscoville Mansion. The five-photo house preview remains in place, with a link to a separate gallery for the **remaining 21 listing photos**. Across both sections, all 26 listing URLs have one gallery button and are available in the shared larger-image viewer.
 
-The additional gallery has seven collapsed dropdowns:
+The additional gallery initially shows one **Explore house photos** dropdown. Opening it reveals these seven category dropdowns; each category stays collapsed until selected:
 
 | Category | Photos |
 | --- | ---: |
