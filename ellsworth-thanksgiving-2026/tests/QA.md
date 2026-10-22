@@ -1,4 +1,12 @@
-# First-time family welcome · current validation
+# Contribution sound · current validation
+
+Validated October 22, 2026. Confirmed shared saves play the selected 2.2-second “I love it” excerpt, including the first successful code entry. Sound starts enabled with a browser-local mute preference and an explicit Preview sound button. Save callbacks are separate from notifications, reads and removals. No schema, authorization, API arguments or record behavior changed.
+
+**374 Chromium checks passed** across 375, 430, 768, 1024 and 1440px. Existing regressions remain passing; new checks cover every contribution type, edits, photo batches, failed/pending saves, confirmed saves followed by failed refreshes, rejected codes, restored sessions, silent removals, mute persistence, unavailable preference storage and pending-clip cancellation on mute/disconnect. Missing-file, invalid-audio, blocked-playback, unsupported-API and missing-module cases all retain working saves. Native Web Audio decoded the shipped MP3 and its playback starts were observed in Chromium; the database and external media remain synthetic fixtures.
+
+Mobile and desktop controls were visually reviewed with no horizontal overflow. Inline/feature/sound/browser JavaScript syntax, all four asset content hashes and `git diff --check` passed. The MP3 also passed FFmpeg decode validation. The database suite was not repeated because persistence behavior is unchanged. Audible review on physical Safari/Android and live family saves remain manual; headless playback checks do not establish speaker output or exact audible trim quality. The Preview sound control provides the same clip for that review after merge and Pages deployment.
+
+# Prior first-time family welcome
 
 Validated October 22, 2026. A successful first family-code entry starts a short turkey-and-“Ellsworth” confetti shower. The browser remembers the welcome; session restoration and repeat joins do not replay it. Failed or rejected joins never celebrate. Reduced motion uses only a still welcome message. No database, authentication API or family-record changes are required.
 

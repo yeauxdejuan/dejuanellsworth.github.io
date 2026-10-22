@@ -47,11 +47,12 @@ function initFamilyFeatures(){
     for(const key of Object.keys(config)){state[key]=[];ready[key]=!configured;failed[key]=false;requests[key]=(requests[key]||0)+1;}
     if(!isShared)closeTv();render();
   }
-  async function submitForm(form,write,refreshKey,success){
+  async function submitForm(form,write,refreshKey,success,audible=true){
     if(form.dataset.saving)return;form.dataset.saving='true';
     const user=who(),buttons=[...form.querySelectorAll('button')];buttons.forEach(button=>button.disabled=true);formError('');
     try{
       await write();if(!current(user))return;
+      if(audible)playSavedSound(user);
       if(isShared)await refreshGroup(refreshKey);else render();
       if(!current(user))return;closeModal();notify(success);
     }catch(error){console.error('Family board save failed:',error);if(current(user))formError('Could not save your changes. Please try again.');}
@@ -98,7 +99,7 @@ function initFamilyFeatures(){
       if(!isShared)return saveLocal('rsvps',state.rsvps.filter(r=>r.user_id!==user));
       await changed(sb.from(config.rsvps.table).delete().eq('event_id',eventId).eq('user_id',user).select('user_id'));
       if(current(user))state.rsvps=state.rsvps.filter(r=>r.user_id!==user);
-    },'rsvps','Your RSVP has been removed.');});
+    },'rsvps','Your RSVP has been removed.',false);});
   }
   function renderFootball(){
     $('#nflGamesList').innerHTML=football.map(p=>`<article class="schedule-entry football" data-plan-id="${p.id}"><div class="schedule-time">${esc(clock(p.start_time))} CT</div><div><h3>${esc(p.title)}</h3><p>${esc(p.network)}</p></div></article>`).join('');
@@ -118,7 +119,7 @@ function initFamilyFeatures(){
     if(!guard('votes')||busy.has('vote:'+key))return;const user=who(),tag='vote:'+key;
     const own=state.votes.some(v=>v.game_key===key&&v.user_id===user);busy.add(tag);renderGames();
     try{
-      if(isShared){if(own)await changed(sb.from(config.votes.table).delete().eq('event_id',eventId).eq('game_key',key).eq('user_id',user).select('game_key'));else await checked(sb.from(config.votes.table).insert({event_id:eventId,game_key:key,user_id:user}));if(current(user))await refreshGroup('votes');}
+      if(isShared){if(own)await changed(sb.from(config.votes.table).delete().eq('event_id',eventId).eq('game_key',key).eq('user_id',user).select('game_key'));else{await checked(sb.from(config.votes.table).insert({event_id:eventId,game_key:key,user_id:user}));playSavedSound(user);}if(current(user))await refreshGroup('votes');}
       else saveLocal('votes',own?state.votes.filter(v=>!(v.game_key===key&&v.user_id===user)):state.votes.concat({game_key:key,user_id:user}));
       if(current(user))notify(own?'Your vote was removed.':'Your vote is saved.');
     }catch(error){console.error(error);if(current(user))notify('Could not change your vote. Refresh and try again.');}
@@ -151,7 +152,7 @@ function initFamilyFeatures(){
     busy.add('reaction');renderPhoto();
     try{
       const row={photo_id:photo.id,event_id:eventId,user_id:user,reaction};
-      if(isShared){if(remove)await changed(sb.from(config.reactions.table).delete().eq('event_id',eventId).eq('photo_id',photo.id).eq('user_id',user).select('photo_id'));else await checked(sb.from(config.reactions.table).upsert(row,{onConflict:'photo_id,user_id'}));if(current(user))await refreshGroup('reactions');}
+      if(isShared){if(remove)await changed(sb.from(config.reactions.table).delete().eq('event_id',eventId).eq('photo_id',photo.id).eq('user_id',user).select('photo_id'));else{await checked(sb.from(config.reactions.table).upsert(row,{onConflict:'photo_id,user_id'}));playSavedSound(user);}if(current(user))await refreshGroup('reactions');}
       else saveLocal('reactions',state.reactions.filter(r=>!(r.photo_id===photo.id&&r.user_id===user)).concat(remove?[]:[row]));
       if(current(user))notify(remove?'Reaction removed.':'Reaction saved.');
     }catch(error){console.error(error);if(current(user))notify('Could not save your reaction. Please try again.');}

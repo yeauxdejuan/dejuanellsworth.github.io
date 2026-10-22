@@ -42,7 +42,7 @@
     @media(max-width:490px){.dish-row{grid-template-columns:minmax(0,1fr) auto}.property-mosaic{grid-template-rows:repeat(4,85px)}.tik-card iframe{height:530px}.hero-leaf{left:0}.hero h1{font-size:clamp(45px,13vw,54px)}}
     @media(prefers-reduced-motion:reduce){.falling-leaves{display:none}}
   </style>
-  <link rel="stylesheet" href="assets/family-features.css?v=2d1c61f53db6">
+  <link rel="stylesheet" href="assets/family-features.css?v=dc4c81498c23">
 </head>
 <body>
   <div class="topline">THE ELLSWORTH FAMILY <span><span class="leaf-mark" aria-hidden="true"></span></span> THANKSGIVING 2026</div>
@@ -62,6 +62,7 @@
     </div></section>
     <div class="ribbon"><span>THE ELLSWORTH FAMILY</span><i><span class="leaf-mark" aria-hidden="true"></span></i><span>ONE BIG TABLE</span><i><span class="leaf-mark" aria-hidden="true"></span></i><span>SO MANY MEMORIES</span><i><span class="leaf-mark" aria-hidden="true"></span></i><span>GOOD TIMES</span></div>
 
+    <div class="shell family-sound-controls" id="familySoundControls" data-sound-src="assets/i-love-it.mp3?v=99b903fbae40" hidden><span>A little “I love it” after you save.</span><button type="button" class="btn secondary small" data-sound-toggle aria-label="Save sounds" aria-pressed="true">Sound on</button><button type="button" class="btn secondary small" data-sound-preview>Preview sound</button><span class="sound-status" data-sound-status role="status"></span></div>
     <section class="family-portal" id="familyPortal" tabindex="-1" aria-labelledby="familyPortalTitle" hidden>
       <div class="shell family-portal-wrap">
         <div><div class="eyebrow">Ellsworth Family access</div><h2 id="familyPortalTitle">Welcome to the <em>family board.</em></h2><p>Enter the invitation code from the family group chat to see and save RSVPs, dishes, photos, game ideas, and TikToks. You’ll stay connected in this browser.</p><p class="portal-status" id="familyPortalStatus" role="status" aria-live="polite"></p></div>
@@ -114,7 +115,8 @@
   <div id="lightboxBackdrop" class="modal-backdrop" role="presentation"><div class="modal lightbox" role="dialog" aria-modal="true" aria-label="Airbnb photo viewer"><button class="close-modal" id="lightboxClose" aria-label="Close photo">×</button><img id="lightboxImage" alt="Full-size Airbnb listing photograph"><div class="lightbox-toolbar"><button class="icon-btn" id="housePrev" aria-label="Previous property photo">←</button><span class="lightbox-caption" id="housePhotoCaption" role="status"></span><button class="icon-btn" id="houseNext" aria-label="Next property photo">→</button></div></div></div>
   <div id="tvSlideshow" class="tv-slideshow" role="dialog" aria-modal="true" aria-label="Family photo slideshow" hidden><div class="tv-toolbar"><span id="tvCount"></span><button type="button" id="tvExit" class="btn light small">Exit slideshow ×</button></div><img id="tvImage" alt=""><div class="tv-caption"><h2 id="tvCaption"></h2></div><div class="tv-controls"><button class="btn light small" id="tvPrev" aria-label="Previous slideshow photo">← Previous</button><button class="btn light small" id="tvPause">Pause slideshow</button><button class="btn light small" id="tvNext" aria-label="Next slideshow photo">Next →</button></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
-<script src="assets/family-features.js?v=40b930984241"></script>
+<script src="assets/family-features.js?v=a73c91ceb650"></script>
+<script src="assets/family-sound.js?v=85ecca2e4b08"></script>
 <script>
 'use strict';
 /* ELLSWORTH FAMILY · GITHUB PAGES + SUPABASE
@@ -308,6 +310,8 @@ let photos=[...SHARED_FAMILY_PHOTOS],slideIndex=0,playing=!window.matchMedia('(p
 if(configured){menuItems=[];games=[...STARTER_GAMES];tiktoks=[...DEFAULT_TIKTOKS];}
 const toast=$('#toast');let toastTimer;
 function notify(message){toast.textContent=message;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),4000);}
+const familySound=window.initFamilySound?.()||{play(){},stop(){}};
+function playSavedSound(user){if(isShared&&memberUserId===user)familySound.play();}
 let familyWelcomeSeen=load('welcomeCelebrated',false)===true,welcomeTimer;
 function rememberFamilyWelcome(){
   familyWelcomeSeen=true;
@@ -317,6 +321,7 @@ function rememberFamilyWelcome(){
 function clearFamilyWelcome(){clearTimeout(welcomeTimer);$('#familyWelcome')?.remove();}
 function celebrateFamilyWelcome(){
   if(familyWelcomeSeen)return;
+  familySound.play();
   rememberFamilyWelcome();clearFamilyWelcome();
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const layer=document.createElement('div');layer.id='familyWelcome';layer.className='family-welcome';layer.setAttribute('aria-hidden','true');
@@ -366,6 +371,7 @@ $('#familyJoinForm').addEventListener('submit',async event=>{
 $('#leaveFamilyBtn').addEventListener('click',async()=>{
   if(!sb)return;
   clearFamilyWelcome();
+  familySound.stop();
   try{await sb.auth.signOut();}catch(error){console.error(error);}
   isShared=false;memberUserId=null;menuReady=false;menuItems=[];games=[...STARTER_GAMES];tiktoks=[...DEFAULT_TIKTOKS];photos=[...SHARED_FAMILY_PHOTOS];
   familyAccessUI();renderMenu();renderGames();renderTiktoks();renderPhotos();notify('This browser is disconnected. Rejoining will require the code.');
@@ -485,6 +491,7 @@ async function refreshMenu(showToast=false){
 }
 async function submitDish(d,assignee,note,action='claim'){
   if(!assertFamilyAccess()||(configured&&!menuReady))return false;
+  const soundUser=memberUserId;
   let result;
   try{
     if(isShared){
@@ -510,6 +517,7 @@ async function submitDish(d,assignee,note,action='claim'){
     }
     const messages={claimed:'Your sign-up is saved. Thank you for bringing a dish!',updated:'Your sign-up is updated.',removed:'Your sign-up was removed. A slot is open again.',already_assigned:'Your account is already signed up for this dish.',full:'This dish just filled up. All 3 slots are taken.',not_assigned:'Your sign-up is no longer on this dish. Refresh and try again.'};
     if(!messages[result])throw new Error('Unexpected signup response');
+    if(['claimed','updated'].includes(result))playSavedSound(soundUser);
     await refreshMenu();notify(messages[result]);
     return ['claimed','updated','removed'].includes(result);
   }catch(error){
@@ -540,9 +548,9 @@ $('#addDishBtn').addEventListener('click',()=>{
   $('#dishForm').addEventListener('submit',async ev=>{
     ev.preventDefault();const label=$('#newDishName').value.trim(),category=$('#newDishCategory').value;if(!label)return;
     const button=$('#dishForm button');button.disabled=true;
-    const d={id:uid(),label,category};
+    const d={id:uid(),label,category},soundUser=memberUserId;
     try{
-      if(isShared){const {error}=await sb.from('thanksgiving_dishes').insert({...d,event_id:FAMILY_CONFIG.eventId});if(error)throw error;await refreshMenu();}
+      if(isShared){const {error}=await sb.from('thanksgiving_dishes').insert({...d,event_id:FAMILY_CONFIG.eventId});if(error)throw error;playSavedSound(soundUser);await refreshMenu();}
       else if(!menuSaveLocal({...d,signups:[]})){button.disabled=false;return;}
       closeModal();notify('Dish added to the family menu.');
     }catch(error){console.error(error);notify('Could not add this dish. Please try again.');button.disabled=false;}
@@ -592,6 +600,7 @@ $('#photoUpload').addEventListener('click',event=>{if(!assertFamilyAccess())even
 $('#photoUpload').addEventListener('change',async event=>{
   if(!assertFamilyAccess()){event.target.value='';return;}
   const selected=[...event.target.files].slice(0,20);if(!selected.length)return;
+  const soundUser=memberUserId;
   let added=0;
   for(const file of selected){if(!file.type.startsWith('image/'))continue;
     try{
@@ -611,6 +620,7 @@ $('#photoUpload').addEventListener('change',async event=>{
     }catch(error){console.error(error);notify('One photo could not be uploaded. Try a smaller JPEG or PNG.');}
   }
   $('#photoUpload').value='';
+  if(added)playSavedSound(soundUser);
   if(isShared)await refreshPhotos();else{slideIndex=Math.max(0,photos.length-added);renderPhotos();resetSlideTimer();}
   if(added)notify(`${added} Ellsworth family photo${added===1?'':'s'} saved ${isShared?'for everyone':'in this browser'}.`);
 });
@@ -618,11 +628,12 @@ $('#addPhotoUrlBtn').addEventListener('click',()=>{
   if(!assertFamilyAccess())return;
   openModal(`<h3 id="modalTitle">Add an Ellsworth family photo link</h3><p>Use a direct image URL that your family is permitted to share.</p><form id="photoUrlForm"><div class="form-field"><label for="photoUrl">Direct image URL</label><input id="photoUrl" type="url" required placeholder="https://example.com/photo.jpg"></div><div class="form-field"><label for="photoAlt">Caption (optional)</label><input id="photoAlt" maxlength="100" placeholder="Ellsworth Thanksgiving 2024"></div><div class="modal-actions"><button type="submit" class="btn">Add picture</button></div></form>`);
   $('#photoUrlForm').addEventListener('submit',async event=>{
-    event.preventDefault();const url=$('#photoUrl').value.trim(),caption=$('#photoAlt').value.trim();
+    event.preventDefault();const url=$('#photoUrl').value.trim(),caption=$('#photoAlt').value.trim(),soundUser=memberUserId;
     try{const parsed=new URL(url);if(parsed.protocol!=='https:')throw Error();}catch{notify('Please enter a valid HTTPS image URL.');return;}
     if(isShared){
       const {error}=await sb.from('thanksgiving_photos').insert({event_id:FAMILY_CONFIG.eventId,external_url:url,caption});
       if(error){console.error(error);notify('Could not save this photo to the shared album.');return;}
+      playSavedSound(soundUser);
       await refreshPhotos();
     }else{
       const item={id:uid(),url,caption};const urls=load('photo_urls',[]);urls.push(item);save('photo_urls',urls);photos.push(item);slideIndex=photos.length-1;renderPhotos();resetSlideTimer();
@@ -642,7 +653,8 @@ $('#addGameBtn').addEventListener('click',()=>{
   openModal(`<h3 id="modalTitle">Suggest an Ellsworth family game</h3><p>What's a game we absolutely need to play?</p><form id="gameForm"><div class="form-field"><label for="gameName">Game name</label><input id="gameName" required maxlength="70" placeholder="e.g., Taboo"></div><div class="form-field"><label for="gameDesc">Why should we play it?</label><input id="gameDesc" maxlength="160" placeholder="A little friendly family competition"></div><div class="modal-actions"><button class="btn" type="submit">Add suggestion</button></div></form>`);
   $('#gameForm').addEventListener('submit',async event=>{
     event.preventDefault();const name=$('#gameName').value.trim(),desc=$('#gameDesc').value.trim()||'An Ellsworth family game suggestion.';if(!name)return;if(!gameInLineup({name})){notify('Please suggest a different game for this lineup.');return;}
-    if(isShared){const {error}=await sb.from('thanksgiving_games').insert({event_id:FAMILY_CONFIG.eventId,name,description:desc,icon:'✦'});if(error){console.error(error);notify('Could not save that game.');return;}await refreshGames();}
+    const soundUser=memberUserId;
+    if(isShared){const {error}=await sb.from('thanksgiving_games').insert({event_id:FAMILY_CONFIG.eventId,name,description:desc,icon:'✦'});if(error){console.error(error);notify('Could not save that game.');return;}playSavedSound(soundUser);await refreshGames();}
     else{games.push({id:uid(),name,desc,icon:'✦'});save('games',games);renderGames();}
     closeModal();notify('Ellsworth game suggestion saved!');
   });
@@ -706,9 +718,10 @@ $('#tikForm').addEventListener('submit',async event=>{
   event.preventDefault();if(!assertFamilyAccess())return;
   const parsed=parseTikTok($('#tikUrl').value.trim());if(!parsed){notify('Use a full HTTPS tiktok.com/@creator/video/NUMBER link.');return;}
   if(tiktoks.some(url=>parseTikTok(url)?.id===parsed.id)){notify('That video is already in the family playlist.');return;}
+  const soundUser=memberUserId;
   const button=$('#tikForm button');button.disabled=true;
   try{
-    if(isShared){const {error}=await sb.from('thanksgiving_tiktoks').insert({event_id:FAMILY_CONFIG.eventId,url:parsed.url});if(error)throw error;await refreshTiktoks();}
+    if(isShared){const {error}=await sb.from('thanksgiving_tiktoks').insert({event_id:FAMILY_CONFIG.eventId,url:parsed.url});if(error)throw error;playSavedSound(soundUser);await refreshTiktoks();}
     else{const next=[...tiktoks,parsed.url];if(!save('tiktoks',next))return;tiktoks=next;renderTiktoks();}
     $('#tikUrl').value='';notify('TikTok added to the family playlist.');
   }catch(error){console.error(error);notify(error.code==='23505'?'That video is already in the playlist.':'Could not save this TikTok. Please try again.');}
