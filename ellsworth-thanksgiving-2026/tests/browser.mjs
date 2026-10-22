@@ -96,13 +96,13 @@ async function checkSaveSounds(){
  check(await p.locator('[data-sound-toggle]').getAttribute('aria-pressed')==='true','Save sounds start enabled with a visible mute control');await quiet('Page loads without autoplay');
  await p.fill('#familyCode','synthetic-rejected-code-2026');await p.click('#joinFamilyBtn');await p.waitForFunction(()=>!document.querySelector('#joinFamilyBtn').disabled);await quiet('Rejected code is silent');
  await join(p);await sounded('First successful code entry plays the approved MP3 once');
- check(await p.evaluate(()=>window.soundProbe.durations[0]>2&&window.soundProbe.durations[0]<2.4),'Real browser decodes the shipped short MP3');
+ check(await p.evaluate(()=>Math.abs(window.soundProbe.durations[0]-1.7)<.01),'Real browser decodes the trimmed 1.7-second MP3');
+ check(await p.locator('[data-sound-preview], [data-sound-status]').count()===0,'Sound test button and preview status are removed');
  await p.evaluate(()=>loadFamilyShared());await quiet('Refreshing all family records is silent');
  await p.click('[data-sound-toggle]');await quiet('Muting does not play a clip');check(await p.locator('[data-sound-toggle]').getAttribute('aria-pressed')==='false','Mute control exposes its state');
  await p.click('#addDishBtn');await p.fill('#newDishName','Sound test dish');await p.locator('#dishForm button').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});await quiet('A muted menu addition still saves and stays silent');
  await p.reload();await p.waitForFunction(()=>isShared&&menuReady);expected=0;await quiet('Restoring an existing member does not play the welcome sound');check(await p.locator('[data-sound-toggle]').getAttribute('aria-pressed')==='false','Mute preference survives a reload');
- await p.click('[data-sound-preview]');await quiet('Preview respects mute');check((await p.locator('[data-sound-status]').innerText()).includes('Turn sound on'),'Muted preview explains how to listen');
- await p.click('[data-sound-toggle]');await quiet('Enabling sounds alone is silent');await p.click('[data-sound-preview]');await sounded('Explicit preview plays the same clip');
+ await p.click('[data-sound-toggle]');await quiet('Enabling sounds alone is silent');
  const dish=tables.thanksgiving_dishes.find(d=>d.label==='Sound test dish');
  let release;holdClaim=new Promise(resolve=>release=resolve);await p.locator(`[data-dish-id="${dish.id}"]`).click();await p.fill('#claimName','Sound test cook');await p.locator('#claimForm button[type=submit]').click();await quiet('Pending database confirmation is silent');release();await p.locator('#modalBackdrop').waitFor({state:'hidden'});await sounded('Confirmed dish reservation sounds once');
  await p.locator(`[data-dish-id="${dish.id}"]`).click();await p.fill('#claimNote','Updated details');await p.locator('#claimForm button[type=submit]').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});await sounded('Confirmed reservation edits sound once');

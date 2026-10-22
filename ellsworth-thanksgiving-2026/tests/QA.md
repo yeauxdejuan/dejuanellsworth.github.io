@@ -1,4 +1,10 @@
-# Contribution sound · current validation
+# Shorter contribution sound · current validation
+
+Validated October 22, 2026. Removed exactly 0.500 seconds from the beginning of the approved clip: decoded audio is now **1.700 seconds**, verified with FFmpeg sample counts and native browser decoding. A brief fade softens the new starting edge. The sound test button, preview status, listener and unused status styles are removed; the Sound on/off toggle and save-triggered playback remain. The README retains the organizer’s rollout-message reminder to turn phone media volume up and leave Sound on.
+
+**372 Chromium checks passed** across 375, 430, 768, 1024 and 1440px. Coverage verifies the new decoded duration, absence of preview controls, confirmed save playback, first-time joins, mute persistence, failed saves, audio failure handling and existing app behavior. Mobile controls were visually reviewed. JavaScript syntax, all four content-versioned asset URLs, FFmpeg decode and `git diff --check` passed. Supabase and external media are mocked; physical-device listening remains manual. No database or authentication changes are included. The update awaits PR merge and Pages deployment.
+
+# Prior contribution sound
 
 Validated October 22, 2026. Confirmed shared saves play the selected 2.2-second “I love it” excerpt, including the first successful code entry. Sound starts enabled with a browser-local mute preference and an explicit Preview sound button. Save callbacks are separate from notifications, reads and removals. No schema, authorization, API arguments or record behavior changed.
 
