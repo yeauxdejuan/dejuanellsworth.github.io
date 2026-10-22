@@ -42,7 +42,7 @@
     @media(max-width:490px){.dish-row{grid-template-columns:minmax(0,1fr) auto}.property-mosaic{grid-template-rows:repeat(4,85px)}.tik-card iframe{height:530px}.hero-leaf{left:0}.hero h1{font-size:clamp(45px,13vw,54px)}}
     @media(prefers-reduced-motion:reduce){.falling-leaves{display:none}}
   </style>
-  <link rel="stylesheet" href="assets/family-features.css?v=d50628181f4a">
+  <link rel="stylesheet" href="assets/family-features.css?v=2d1c61f53db6">
 </head>
 <body>
   <div class="topline">THE ELLSWORTH FAMILY <span><span class="leaf-mark" aria-hidden="true"></span></span> THANKSGIVING 2026</div>
@@ -62,7 +62,6 @@
     </div></section>
     <div class="ribbon"><span>THE ELLSWORTH FAMILY</span><i><span class="leaf-mark" aria-hidden="true"></span></i><span>ONE BIG TABLE</span><i><span class="leaf-mark" aria-hidden="true"></span></i><span>SO MANY MEMORIES</span><i><span class="leaf-mark" aria-hidden="true"></span></i><span>GOOD TIMES</span></div>
 
-    <div class="shell family-sound-controls" id="familySoundControls" data-sound-src="assets/i-love-it.mp3?v=7869193c2450" hidden><span>A little “I love it” after you save.</span><button type="button" class="btn secondary small" data-sound-toggle aria-label="Save sounds" aria-pressed="true">Sound on</button></div>
     <section class="family-portal" id="familyPortal" tabindex="-1" aria-labelledby="familyPortalTitle" hidden>
       <div class="shell family-portal-wrap">
         <div><div class="eyebrow">Ellsworth Family access</div><h2 id="familyPortalTitle">Welcome to the <em>family board.</em></h2><p>Enter the invitation code from the family group chat to see and save RSVPs, dishes, photos, game ideas, and TikToks. You’ll stay connected in this browser.</p><p class="portal-status" id="familyPortalStatus" role="status" aria-live="polite"></p></div>
@@ -116,7 +115,7 @@
   <div id="tvSlideshow" class="tv-slideshow" role="dialog" aria-modal="true" aria-label="Family photo slideshow" hidden><div class="tv-toolbar"><span id="tvCount"></span><button type="button" id="tvExit" class="btn light small">Exit slideshow ×</button></div><img id="tvImage" alt=""><div class="tv-caption"><h2 id="tvCaption"></h2></div><div class="tv-controls"><button class="btn light small" id="tvPrev" aria-label="Previous slideshow photo">← Previous</button><button class="btn light small" id="tvPause">Pause slideshow</button><button class="btn light small" id="tvNext" aria-label="Next slideshow photo">Next →</button></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
 <script src="assets/family-features.js?v=a73c91ceb650"></script>
-<script src="assets/family-sound.js?v=302c38652e59"></script>
+<script id="familySoundScript" src="assets/family-sound.js?v=63b6a219789e" data-sound-src="assets/i-love-it.mp3?v=7869193c2450"></script>
 <script>
 'use strict';
 /* ELLSWORTH FAMILY · GITHUB PAGES + SUPABASE

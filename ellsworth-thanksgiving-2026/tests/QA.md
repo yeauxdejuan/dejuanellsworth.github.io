@@ -1,4 +1,10 @@
-# Shorter contribution sound · current validation
+# Surprise contribution sound · current validation
+
+Validated October 22, 2026. Removed the entire sound settings row, its description and styles. The sound file is configured through a nonvisual script attribute; the controller no longer depends on visible controls or a stored mute flag. The existing 1.7-second clip plays on confirmed saves and first-time code entry. Device/browser volume controls playback. The internal rollout note asks relatives to turn sound on without announcing the effect.
+
+**368 Chromium checks passed** across 375, 430, 768, 1024 and 1440px. Checks verify no sound controls or descriptive copy, native decoding of the 1.7-second file, successful contribution playback without UI, silent refreshes/restored sessions/removals/failed saves, compatibility with a retired false mute flag and unavailable preference storage, audio failure fallbacks, and cancellation on disconnect/pagehide. Existing app regressions remain passing. Mobile family-access layout was visually reviewed without the sound row. JavaScript syntax, asset hashes and `git diff --check` passed. Database/media fixtures remain synthetic; physical listening is manual. No database, authentication or audio-file changes are included. The update awaits PR merge and Pages deployment.
+
+# Prior shorter contribution sound
 
 Validated October 22, 2026. Removed exactly 0.500 seconds from the beginning of the approved clip: decoded audio is now **1.700 seconds**, verified with FFmpeg sample counts and native browser decoding. A brief fade softens the new starting edge. The sound test button, preview status, listener and unused status styles are removed; the Sound on/off toggle and save-triggered playback remain. The README retains the organizer’s rollout-message reminder to turn phone media volume up and leave Sound on.
 
