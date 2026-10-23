@@ -313,6 +313,36 @@ async function checkRsvpSaveReadFailure(p){
  tables.thanksgiving_rsvps.find(r=>r.household_name==='Read failure household').updated_at=null;await p.click('#refreshRsvpsBtn');await p.waitForFunction(()=>!document.querySelector('#rsvpSavedStatus').textContent.includes('Last updated'));check((await p.locator('#rsvpSavedStatus').innerText()).includes('Your RSVP is saved.'),'Legacy RSVP without a historical timestamp confirms saving without inventing a date');
  await p.click('#editRsvpBtn');failReadTable='thanksgiving_rsvps';await p.click('#removeRsvp');await p.locator('#modalBackdrop').waitFor({state:'hidden'});check(await p.locator('#rsvpSavedStatus').isHidden()&&!(await p.locator('#rsvpList').innerText()).includes('Read failure household'),'Successful removal clears cached RSVP even if the following refresh fails');await p.click('#refreshRsvpsBtn');await p.waitForFunction(()=>!document.querySelector('#editRsvpBtn').disabled);
 }
+async function checkScrollIndicator(){
+ await mkdir(new URL('artifacts/',import.meta.url),{recursive:true});
+ for(const width of [320,375,430,768,1440]){
+  const p=await newPage(width,{isMobile:width<500,hasTouch:width<500});
+  const thumb=p.locator('.family-scroll-indicator');
+  check(await thumb.textContent()==='Ellsworth'&&await thumb.getAttribute('aria-hidden')==='true','Scroll thumb spells Ellsworth without announcing decorative scroll updates');
+  check(await thumb.evaluate(el=>getComputedStyle(el).opacity==='0'),'Scroll thumb starts hidden');
+  const pageWidth=await p.locator('main').evaluate(el=>el.getBoundingClientRect().width);
+  let previousTop=-1;
+  for(const progress of [.15,.5,1]){
+   await p.evaluate(async progress=>{window.scrollTo({top:(document.documentElement.scrollHeight-document.documentElement.clientHeight)*progress,behavior:'instant'});await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));},progress);
+   await p.waitForFunction(()=>getComputedStyle(document.querySelector('.family-scroll-indicator')).opacity==='1');
+   const geometry=await thumb.evaluate(el=>{const r=el.getBoundingClientRect(),shell=document.querySelector('#menu .shell'),s=shell.getBoundingClientRect(),v=visualViewport;return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height,contentRight:s.right-parseFloat(getComputedStyle(shell).paddingRight),headerBottom:document.querySelector('.site-header').getBoundingClientRect().bottom,viewportBottom:(v?.offsetTop||0)+(v?.height||innerHeight),clickThrough:document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)!==el};});
+   check(Math.abs(geometry.width-12)<.01&&Math.abs(geometry.height-98)<.01,'Ellsworth thumb keeps a fixed narrow size while scrolling');
+   check(geometry.left>=geometry.contentRight&&geometry.right<=width,`Scroll thumb stays inside the outer gutter at ${width}px`);
+   check(geometry.top>previousTop&&geometry.top>=geometry.headerBottom+11&&geometry.bottom<=geometry.viewportBottom-19,'Scroll progress moves the word down while keeping it within the visible page');previousTop=geometry.top;
+   check(geometry.clickThrough,'Scroll thumb never captures taps or clicks');
+   check(await thumb.evaluate(el=>{const r=el.getBoundingClientRect();return [...el.children].every(letter=>{const b=letter.getBoundingClientRect();return b.top>=r.top&&b.bottom<=r.bottom&&b.left>=r.left&&b.right<=r.right;});}),'Every letter fits inside the thumb without clipping');
+   check(await p.locator('main').evaluate(el=>el.getBoundingClientRect().width)===pageWidth&&await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Showing the word causes no layout shift or horizontal overflow');
+   if(progress===.5&&(width===375||width===1440))await p.screenshot({path:new URL(`artifacts/scroll-indicator-${width}.png`,import.meta.url).pathname});
+  }
+  await p.waitForFunction(()=>getComputedStyle(document.querySelector('.family-scroll-indicator')).opacity==='0');check(true,'Scroll thumb fades away after scrolling stops');
+  if(width===375){
+   check(await p.evaluate(()=>getComputedStyle(document.documentElement).scrollbarWidth==='none'),'Touch devices use the slim word instead of a second page scrollbar');
+   await p.locator('[data-house-photo="0"]').click();await p.waitForFunction(()=>getComputedStyle(document.querySelector('.family-scroll-indicator')).opacity==='0');check(true,'Photo viewer hides the page scroll decoration');await p.keyboard.press('Escape');
+   await p.focus('#familyCode');await p.evaluate(()=>window.scrollBy({top:100,behavior:'instant'}));await p.waitForFunction(()=>getComputedStyle(document.querySelector('.family-scroll-indicator')).opacity==='0');check(true,'Text entry keeps the scroll decoration hidden');
+  }
+  await p.context().close();
+ }
+}
 async function checkUpdatedLineups(){
  const event_id='ellsworth-thanksgiving-2026';
  const retiredDishes=[{event_id,id:'rice',label:'Rice / dirty rice',category:'The sides',signups:[{slot:1,user_id:'legacy-cook',assignee:'Old rice cook',note:'Retain this signup'}]},{event_id,id:'potatoes',label:'Mashed potatoes / gravy',category:'The sides',signups:[{slot:1,user_id:'legacy-cook',assignee:'Old potato cook',note:''}]}];
@@ -356,6 +386,7 @@ async function checkLocalPlanning(){
 }
 try{
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+ await checkScrollIndicator();
  await checkUpdatedLineups();
  await checkFamilyWelcome();
  await checkRsvpRefreshWithCachedAssets(375);await checkRsvpRefreshWithCachedAssets(1440);
