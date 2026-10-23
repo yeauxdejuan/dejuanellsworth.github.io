@@ -1,4 +1,10 @@
-# Photo actions below the image · current validation
+# Centered photo and mobile action groups · current validation
+
+Validated October 22, 2026. Centered the photo illustration, upload buttons/helper, caption, emoji reactions and Edit caption/TV slideshow actions within their columns. The layout review also identified and centered mobile RSVP buttons, menu header/footer action groups, game filter/suggestion controls and the stacked footer. These additional rules apply at widths up to 760px. No JavaScript, persistence or sound behavior changed.
+
+**373 existing Chromium regression checks passed**, plus **10 focused geometry checks** verifying centered photo groups and no horizontal overflow at 375, 430, 768, 1024 and 1440px. Mobile before/after previews and desktop photo previews were visually reviewed using synthetic images/data. Existing caption/reaction/slideshow interactions remain covered by the browser suite. The stylesheet content hash and `git diff --check` passed. Supabase/external media remain mocked, and physical Safari/Android remain outside these checks. The CSS update awaits PR merge and Pages deployment.
+
+# Prior photo actions below the image
 
 Validated October 22, 2026. The current family photo, caption, emoji reactions and Edit caption/TV slideshow actions now share one gallery column. The caption and action group follow the image in document order, so they appear underneath it on mobile and desktop. The photo upload controls remain with the section introduction. No data or event-handler behavior changed.
 
