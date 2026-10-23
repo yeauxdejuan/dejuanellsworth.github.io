@@ -1,4 +1,12 @@
-# Compact hero, property gallery and RSVP cards · current validation
+# Gold signature and centered hero · current validation
+
+Validated October 23, 2026. The hero headline is centered, and its introduction says “in New Orleans.” The selected footer style uses a larger Built by credit, a softly shimmering gold linked name, decorative swaying turkeys on both sides, and a separate Family Developer / Engineer line. The signature wraps at narrow phone widths. Motion-preference exceptions were removed throughout the site as requested: leaves, first-time confetti, footer animations, transitions and the slideshow’s playing default now behave consistently across device settings.
+
+**390 Chromium checks passed**, including the updated animation behavior with an emulated reduced-motion preference and all existing app regressions. **33 focused hero/footer checks passed** at 320, 375, 430, 768, 1024 and 1440px for alignment, copy, larger credit, two decorative turkeys, flanking layout, real animation movement and overflow. Phone/desktop hero and signature previews were visually reviewed. Inline/browser JavaScript syntax, stylesheet content hash and `git diff --check` passed.
+
+Supabase and external media remain mocked; physical Safari/Android are outside this verification. No persistence, authentication or sound changes are included. The update awaits PR merge and Pages deployment.
+
+# Prior compact hero, property gallery and RSVP cards
 
 Validated October 22, 2026. The hero facts occupy one three-column row. Removed the property listing/photo links, moved the categorized gallery immediately below the preview in the same photo column, and removed its separate heading/instructions. All 26 photos and category lazy loading remain available. The existing saved-confirmation node now belongs only to the member’s own RSVP card, directly after departure details (after the household name for declined RSVPs). No save/query, ownership, timestamp or sound behavior changed.
 
