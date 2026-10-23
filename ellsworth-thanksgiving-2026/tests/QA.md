@@ -1,4 +1,10 @@
-# Surprise contribution sound · current validation
+# Photo actions below the image · current validation
+
+Validated October 22, 2026. The current family photo, caption, emoji reactions and Edit caption/TV slideshow actions now share one gallery column. The caption and action group follow the image in document order, so they appear underneath it on mobile and desktop. The photo upload controls remain with the section introduction. No data or event-handler behavior changed.
+
+**373 Chromium checks passed** across 375, 430, 768, 1024 and 1440px. New geometry checks verify the caption, reactions and action buttons below the image at every width. Existing caption edits, multi-member reactions, failed-save recovery, photo navigation, TV slideshow and all app regressions remain passing. Mobile/desktop gallery screenshots were visually reviewed with synthetic photos. Inline/browser JavaScript syntax, stylesheet hash and `git diff --check` passed. Database/media fixtures are synthetic; physical Safari/Android remain outside these checks. No database, authentication or sound changes are included. The update awaits PR merge and Pages deployment.
+
+# Prior surprise contribution sound
 
 Validated October 22, 2026. Removed the entire sound settings row, its description and styles. The sound file is configured through a nonvisual script attribute; the controller no longer depends on visible controls or a stored mute flag. The existing 1.7-second clip plays on confirmed saves and first-time code entry. Device/browser volume controls playback. The internal rollout note asks relatives to turn sound on without announcing the effect.
 
