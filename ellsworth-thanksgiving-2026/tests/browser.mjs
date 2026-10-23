@@ -12,7 +12,7 @@ const tables={thanksgiving_dishes:[],thanksgiving_games:[],thanksgiving_tiktoks:
  {id:'00000000-2026-4000-8000-000000000002',event_id:'ellsworth-thanksgiving-2026',title:'Family game night',day:'2026-11-26',kind:'games',is_seed:true,start_time:null}
 ],thanksgiving_game_votes:[],thanksgiving_photo_details:[],thanksgiving_photo_reactions:[]};
 const unavailableTables=new Set(),requestedTables=new Set();
-let failClaim=false,holdClaim=null,failWriteTable=null,failReadTable=null,uploads=0,checks=0,rsvpWrites=0;
+let failClaim=false,holdClaim=null,holdUpload=null,failWriteTable=null,failReadTable=null,failReadUser=null,uploads=0,checks=0,rsvpWrites=0;
 const check=(v,m)=>{assert.ok(v,m);checks++;};
 const stub=`window.supabase={createClient(){
 const session=()=>JSON.parse(localStorage.getItem('testSession')||'null');
@@ -26,7 +26,7 @@ try{
  if(req.url==='/__test'){
   let text='';for await(const c of req)text+=c;const b=JSON.parse(text);let data=null,error=null;if(b.table)requestedTables.add(b.table);
   if(unavailableTables.has(b.table)){res.setHeader('Content-Type','application/json');res.end(JSON.stringify({data:null,error:{code:'PGRST205',message:'Table missing from schema cache'}}));return;}
-  if((b.table===failWriteTable&&['insert','upsert','update','delete'].includes(b.operation))||(b.table===failReadTable&&b.operation==='select')){
+  if((b.table===failWriteTable&&['insert','upsert','update','delete'].includes(b.operation))||(b.table===failReadTable&&b.operation==='select'&&(!failReadUser||b.user===failReadUser))){
    if(b.operation==='select')failReadTable=null;else failWriteTable=null;
    res.setHeader('Content-Type','application/json');res.end(JSON.stringify({data:null,error:{message:'Synthetic planning failure'}}));return;
   }
@@ -41,7 +41,7 @@ try{
     else if(own)data='already_assigned';else if(d.signups.length===3)data='full';
     else{d.signups.push({slot:[1,2,3].find(n=>!d.signups.some(s=>s.slot===n)),user_id:b.user,assignee:a.p_assignee,note:a.p_note});data='claimed';}
    }
-  }else if(b.operation==='upload'){uploads++;data={path:'synthetic.jpg'};}
+  }else if(b.operation==='upload'){if(holdUpload){const wait=holdUpload;holdUpload=null;await wait;}uploads++;data={path:'synthetic.jpg'};}
   else if(b.operation==='insert'){const row={...b.value,id:b.value.id||crypto.randomUUID()};if(b.table==='thanksgiving_dishes')row.signups=[];if(b.table==='thanksgiving_schedule'){row.created_by=b.user;row.is_seed=false;}tables[b.table].push(row);data=[row];}
   else if(b.operation==='upsert'){const value=b.table==='thanksgiving_rsvps'?{...b.value,updated_at:new Date(Date.UTC(2026,9,22,18,30)+60000*(++rsvpWrites)).toISOString()}:b.value;const keys=b.conflict.split(',');const row=tables[b.table].find(r=>keys.every(k=>r[k]===value[k]));if(row){Object.assign(row,value);data=[row];}else{tables[b.table].push({...value});data=[value];}}
   else if(b.operation==='update'){data=tables[b.table].filter(row=>b.filters.every(([k,v])=>row[k]===v));data.forEach(row=>Object.assign(row,b.value));}
@@ -50,8 +50,8 @@ try{
   res.setHeader('Content-Type','application/json');res.end(JSON.stringify({data,error}));return;
  }
  const path=req.url==='/'?'index.html':req.url.slice(1).split('?')[0];
- if(!['index.html','assets/autumn-leaf.svg','assets/family-features.js','assets/family-features.css','assets/family-sound.js','assets/i-love-it.mp3'].includes(path)){res.writeHead(404);res.end();return;}
- res.setHeader('Content-Type',path.endsWith('svg')?'image/svg+xml':path.endsWith('.js')?'application/javascript':path.endsWith('.css')?'text/css':path.endsWith('.mp3')?'audio/mpeg':'text/html');res.end(await readFile(new URL(path,root)));
+ if(!['index.html','assets/autumn-leaf.svg','assets/family-features.js','assets/family-features.css','assets/family-sound.js','assets/i-love-it.mp3','assets/ellsworth-thanksgiving-2026.ics'].includes(path)){res.writeHead(404);res.end();return;}
+ res.setHeader('Content-Type',path.endsWith('svg')?'image/svg+xml':path.endsWith('.js')?'application/javascript':path.endsWith('.css')?'text/css':path.endsWith('.mp3')?'audio/mpeg':path.endsWith('.ics')?'text/calendar; charset=utf-8':'text/html');res.end(await readFile(new URL(path,root)));
 }catch(e){res.writeHead(500);res.end(String(e));}
 });
 await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
@@ -121,7 +121,7 @@ async function checkSaveSounds(){
  await p.locator('[data-react="laugh"]').click();await p.waitForFunction(()=>document.querySelector('[data-react="laugh"]').getAttribute('aria-pressed')==='true');await sounded('Changing a photo reaction sounds once');
  await p.locator('[data-react="laugh"]').click();await p.waitForFunction(()=>document.querySelector('[data-react="laugh"]').getAttribute('aria-pressed')==='false');await quiet('Removing a reaction is silent');
  const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/uPgAAAAASUVORK5CYII=','base64');
- await p.setInputFiles('#photoUpload',[{name:'sound-one.png',mimeType:'image/png',buffer:png},{name:'sound-two.png',mimeType:'image/png',buffer:png}]);await p.waitForFunction(()=>document.querySelector('#toast').textContent.includes('2 Ellsworth family photos saved'));await sounded('A batch of two photo uploads plays only one clip');
+ await p.setInputFiles('#photoUpload',[{name:'sound-one.png',mimeType:'image/png',buffer:png},{name:'sound-two.png',mimeType:'image/png',buffer:png}]);await p.waitForFunction(()=>document.querySelector('#toast').textContent.includes('2 photos saved'));await sounded('A batch of two photo uploads plays only one clip');
  failWriteTable='thanksgiving_photos';await p.setInputFiles('#photoUpload',{name:'failed-sound.png',mimeType:'image/png',buffer:png});await p.waitForFunction(()=>document.querySelector('#toast').textContent.includes('could not be uploaded'));await quiet('Uploaded bytes without a successful photo record are silent');
  await p.evaluate(()=>{const get=Storage.prototype.getItem,set=Storage.prototype.setItem;Storage.prototype.getItem=function(key){if(key==='thanksgiving26_soundsEnabled')throw new DOMException('Blocked','SecurityError');return get.call(this,key);};Storage.prototype.setItem=function(key,value){if(key==='thanksgiving26_soundsEnabled')throw new DOMException('Blocked','SecurityError');return set.call(this,key,value);};});
  await p.click('#addGameBtn');await p.fill('#gameName','Sound test game');await p.locator('#gameForm button').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});await sounded('Adding a game suggestion sounds without accessing retired preference storage');
@@ -307,11 +307,68 @@ async function checkFamilyPlanning(a,b){
  for(const width of [375,430,768,1024,1440]){await a.setViewportSize({width,height:1000});check(await a.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`Populated family features fit at ${width}px`);check(await a.evaluate(()=>{const frame=document.querySelector('#memoryFrame').getBoundingClientRect(),caption=document.querySelector('#photoCaption').getBoundingClientRect(),extras=document.querySelector('#photoExtras').getBoundingClientRect();return caption.top>=frame.bottom&&extras.top>=caption.bottom&&[...document.querySelectorAll('#photoExtras button')].every(button=>button.getBoundingClientRect().top>=frame.bottom);}),`Caption, reactions and photo actions appear below the picture at ${width}px`);if(width===375||width===1440){await a.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));await a.screenshot({animations:'disabled',path:new URL(`artifacts/features-${width}.png`,import.meta.url).pathname,fullPage:true});await a.locator('.memory-gallery').screenshot({animations:'disabled',path:new URL(`artifacts/photo-actions-below-${width}.png`,import.meta.url).pathname});}}
 }
 async function checkRsvpSaveReadFailure(p){
+ // Target the fault to this member so another session’s background poll cannot consume it.
+ failReadUser=await p.evaluate(()=>memberUserId);
  await p.click('#editRsvpBtn');await p.fill('#rsvpName','Read failure household');await p.fill('#rsvpDietary','No dairy');failReadTable='thanksgiving_rsvps';await p.locator('#rsvpForm button[type=submit]').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});
  check((await p.locator('#rsvpList').innerText()).includes('Read failure household'),'Confirmed save remains visible if the following refresh fails');check((await p.locator('#rsvpSavedStatus').innerText()).includes('Your last saved RSVP'),'Failed refresh distinguishes the last confirmed save from a fresh read');
  await p.click('#refreshRsvpsBtn');await p.waitForFunction(()=>!document.querySelector('#editRsvpBtn').disabled);check((await p.locator('#rsvpSavedStatus').innerText()).includes('Your RSVP is saved.'),'Retry restores normal saved confirmation');
  tables.thanksgiving_rsvps.find(r=>r.household_name==='Read failure household').updated_at=null;await p.click('#refreshRsvpsBtn');await p.waitForFunction(()=>!document.querySelector('#rsvpSavedStatus').textContent.includes('Last updated'));check((await p.locator('#rsvpSavedStatus').innerText()).includes('Your RSVP is saved.'),'Legacy RSVP without a historical timestamp confirms saving without inventing a date');
- await p.click('#editRsvpBtn');failReadTable='thanksgiving_rsvps';await p.click('#removeRsvp');await p.locator('#modalBackdrop').waitFor({state:'hidden'});check(await p.locator('#rsvpSavedStatus').isHidden()&&!(await p.locator('#rsvpList').innerText()).includes('Read failure household'),'Successful removal clears cached RSVP even if the following refresh fails');await p.click('#refreshRsvpsBtn');await p.waitForFunction(()=>!document.querySelector('#editRsvpBtn').disabled);
+ await p.click('#editRsvpBtn');failReadTable='thanksgiving_rsvps';await p.click('#removeRsvp');await p.locator('#modalBackdrop').waitFor({state:'hidden'});check(await p.locator('#rsvpSavedStatus').isHidden()&&!(await p.locator('#rsvpList').innerText()).includes('Read failure household'),'Successful removal clears cached RSVP even if the following refresh fails');await p.click('#refreshRsvpsBtn');await p.waitForFunction(()=>!document.querySelector('#editRsvpBtn').disabled);failReadUser=null;
+}
+async function checkRolloutPolish(){
+ await mkdir(new URL('artifacts/',import.meta.url),{recursive:true});
+ const p=await newPage(375,{isMobile:true,hasTouch:true});
+ check(await p.locator('#myContributions').isHidden()&&await p.locator('#myContributionsBody').textContent()==='','My contributions starts hidden and empty for visitors');
+ check((await p.locator('#photoUploadHelp').innerText()).includes('Join the family board'),'Visitors see invitation guidance for photos');
+ const [download]=await Promise.all([p.waitForEvent('download'),p.locator('.calendar-link').click()]);
+ const calendar=await readFile(await download.path(),'utf8'),unfolded=calendar.replace(/\r\n /g,'');
+ check(download.suggestedFilename()==='Ellsworth-Thanksgiving-2026.ics','Calendar download has a recognizable family filename');
+ check(unfolded.includes('DTSTART;VALUE=DATE:20261126\r\n')&&unfolded.includes('DTEND;VALUE=DATE:20261127\r\n'),'Calendar is an all-day Thanksgiving event with an exclusive next-day end');
+ check(!calendar.replaceAll('\r\n','').includes('\n')&&calendar.split('\r\n').every(line=>Buffer.byteLength(line)<=75),'Calendar uses CRLF and correctly folded lines');
+ check(unfolded.includes('LOCATION:Arabi\\, Louisiana')&&unfolded.includes('Confirm dinner time')&&!unfolded.includes('TRIGGER:')&&!unfolded.includes('p_code'),'Calendar uses public location and confirmed date without invented times or private code');
+ for(const timezoneId of ['America/Chicago','America/Los_Angeles','Asia/Tokyo']){
+  const clockPage=await newPage(375,{timezoneId});
+  for(const [date,expected] of [['2026-11-24T18:00:00Z','2 days'],['2026-11-26T05:30:00Z','1 day'],['2026-11-26T06:30:00Z','Today!'],['2026-11-27T06:30:00Z','2026']]){
+   await clockPage.evaluate(date=>setCountdown(new Date(date)),date);check(await clockPage.locator('#daysLeft').innerText()===expected,`Countdown shows ${expected} in ${timezoneId}`);
+  }
+  await clockPage.clock.setFixedTime(new Date('2026-11-26T06:01:00Z'));await clockPage.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));check(await clockPage.locator('#daysLeft').innerText()==='Today!','Returning to the page updates the countdown after Central midnight');await clockPage.context().close();
+ }
+ await join(p);await p.waitForFunction(()=>!document.querySelector('#editRsvpBtn').disabled);await p.evaluate(()=>clearFamilyWelcome());
+ check(await p.locator('#myContributions').isVisible()&&!(await p.locator('#myContributionsDetails').evaluate(el=>el.open)),'Joined member gets one compact collapsed contribution dropdown');
+ check(!(await p.locator('#photoUploadHelp').innerText()).includes('Join')&&(await p.locator('#photoUploadHelp').innerText()).includes('20 photos'),'Joined photo instructions describe uploads and the batch limit');
+ await p.locator('#myContributionsTitle').click();check((await p.locator('#myContributionsBody').innerText()).includes('haven’t added your RSVP')&&(await p.locator('#myContributionsBody').innerText()).includes('haven’t signed up'),'New members see accurate empty contribution states');
+ await p.locator('#myContributionsBody a[href="#rsvp"]').click();await p.click('#editRsvpBtn');await p.fill('#rsvpName','Polish household');await p.fill('#rsvpAdults','2');await p.locator('#rsvpForm button[type=submit]').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});
+ await signup(p,'Polish cook','jambalaya');check((await p.locator('#myContributionsBody').innerText()).includes('Coming · 2 guests'),'My contributions updates after the RSVP is saved');
+ check(await p.locator('#myContributionsBody a[href="#dish-jambalaya"]').count()===1,'My contributions includes the member’s dish shortcut');await p.locator('#myContributions').screenshot({path:new URL('artifacts/polish-populated-contributions-375.png',import.meta.url).pathname});
+ await p.locator('#myContributionsBody a[href="#dish-jambalaya"]').click();await p.waitForFunction(()=>Math.abs(document.querySelector('#dish-jambalaya').getBoundingClientRect().top-92)<2);check(true,'Dish shortcut scrolls to the actual sign-up below the sticky header');
+ const q=await newPage(430);await join(q);await q.waitForFunction(()=>!document.querySelector('#editRsvpBtn').disabled);await signup(q,'Another household cook','turkey');
+ await p.evaluate(async()=>{await refreshMenu();await familyFeatures.refresh();});
+ check(await p.locator('#myContributionsBody a[href="#dish-turkey"]').count()===0&&!(await q.locator('#myContributionsBody').textContent()).includes('Coming · 2 guests'),'Independent members see only their own RSVP and dish contributions');
+ failReadTable='thanksgiving_rsvps';await p.click('#refreshRsvpsBtn');await p.waitForFunction(()=>document.querySelector('#rsvpStatus').textContent.includes('Could not load'));check((await p.locator('#myContributionsBody').innerText()).includes('Last saved: Coming'),'A failed RSVP read labels the retained contribution as last saved');
+ await p.click('#refreshRsvpsBtn');await p.waitForFunction(()=>!document.querySelector('#editRsvpBtn').disabled);
+ for(const width of [320,375,430,768,900]){
+  await p.setViewportSize({width,height:1000});
+  check(await p.evaluate(()=>[...document.querySelectorAll('button,.btn,[role=button]')].filter(el=>el.getClientRects().length).every(el=>{const r=el.getBoundingClientRect();return r.width>=43.9&&r.height>=43.9;})),`Mobile action targets are at least 44px at ${width}px`);
+  check(await p.locator('#familyCode').evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=16),'Mobile invitation input uses at least 16px text');
+  if(width===320){await p.click('#addPhotoUrlBtn');check(await p.evaluate(()=>{const close=document.querySelector('#modalClose').getBoundingClientRect(),range=document.createRange();range.selectNodeContents(document.querySelector('#modalTitle'));return [...range.getClientRects()].every(r=>r.right<=close.left||r.top>=close.bottom||r.bottom<=close.top);}), 'Large close button stays clear of long headings on narrow phones');await p.click('#modalClose');}
+  check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Contribution summary and larger controls do not create horizontal overflow');
+ }
+ await p.setViewportSize({width:375,height:1000});
+ await p.locator('[data-dish-id="jambalaya"]').click();await p.click('#releaseDish');await p.locator('#modalBackdrop').waitFor({state:'hidden'});check(await p.locator('#myContributionsBody a[href="#dish-jambalaya"]').count()===0,'Releasing a dish removes it from My contributions');
+ await p.click('#editRsvpBtn');await p.click('#removeRsvp');await p.locator('#modalBackdrop').waitFor({state:'hidden'});check((await p.locator('#myContributionsBody').innerText()).includes('haven’t added your RSVP'),'Removing an RSVP updates My contributions');
+ const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/uPgAAAAASUVORK5CYII=','base64'),file=name=>({name,mimeType:'image/png',buffer:png});
+ await p.setInputFiles('#photoUpload',Array.from({length:21},(_,i)=>file(`over-limit-${i}.png`)));check((await p.locator('#photoUploadStatus').innerText()).includes('You selected 21')&&tables.thanksgiving_photos.length===0,'An oversized photo batch is explained before any photo is uploaded');
+ let release;holdUpload=new Promise(resolve=>release=resolve);await p.setInputFiles('#photoUpload',[file('polish-one.png'),file('polish-two.png')]);await p.waitForFunction(()=>photoUploadBusy);
+ check(await p.locator('#photoUpload').isDisabled()&&await p.locator('label[for="photoUpload"]').evaluateAll(labels=>labels.every(l=>l.getAttribute('aria-disabled')==='true')),'Photo upload selectors are disabled during processing');
+ check((await p.locator('#photoUploadStatus').innerText()).includes('Uploading photo 1 of 2'),'A pending upload shows progress before server confirmation');release();await p.waitForFunction(()=>!photoUploadBusy);
+ check((await p.locator('#photoUploadStatus').innerText()).includes('2 photos saved')&&tables.thanksgiving_photos.length===2,'Completed batch reports the number saved and indexed');check(await p.locator('#photoUpload').isEnabled(),'Photo upload selectors are restored after success');
+ await p.setInputFiles('#photoUpload',[{name:'unreadable.png',mimeType:'image/png',buffer:Buffer.from('not an image')},file('polish-three.png')]);await p.waitForFunction(()=>!photoUploadBusy);
+ check((await p.locator('#photoUploadStatus').innerText()).includes('1 of 2 photos saved')&&(await p.locator('#photoUploadStatus').innerText()).includes('1 could not be uploaded'),'A partially failed batch reports success and failure separately');check(await p.locator('#photoUpload').isEnabled(),'Photo upload selectors recover after a decode failure');
+ await mkdir(new URL('artifacts/',import.meta.url),{recursive:true});await p.locator('#myContributions').screenshot({path:new URL('artifacts/polish-contributions-375.png',import.meta.url).pathname});await p.locator('#memories').screenshot({path:new URL('artifacts/polish-photos-375.png',import.meta.url).pathname});
+ holdUpload=new Promise(resolve=>release=resolve);await p.setInputFiles('#photoUpload',file('disconnect-pending.png'));await p.waitForFunction(()=>photoUploadBusy);await p.click('#leaveFamilyBtn');release();await p.waitForFunction(()=>!photoUploadBusy);
+ check(await p.locator('#photoUploadStatus').isHidden()&&tables.thanksgiving_photos.length===3,'Disconnect clears progress and prevents indexing the pending photo');
+ check(await p.locator('#myContributions').isHidden()&&await p.locator('#myContributionsBody').textContent()==='','Disconnect clears the private contribution summary');
+ await p.context().close();await q.context().close();for(const key of Object.keys(tables))if(key!=='thanksgiving_schedule')tables[key]=[];uploads=0;rsvpWrites=0;
 }
 async function checkScrollIndicator(){
  await mkdir(new URL('artifacts/',import.meta.url),{recursive:true});
@@ -386,6 +443,7 @@ async function checkLocalPlanning(){
 }
 try{
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+ await checkRolloutPolish();
  await checkScrollIndicator();
  await checkUpdatedLineups();
  await checkFamilyWelcome();

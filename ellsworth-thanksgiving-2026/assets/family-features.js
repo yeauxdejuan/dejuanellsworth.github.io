@@ -60,6 +60,17 @@ function initFamilyFeatures(){
   }
   async function checked(query){const result=await query;if(result.error)throw result.error;return result.data;}
   async function changed(query){const data=await checked(query);if(!data?.length)throw new Error('The record changed or is no longer editable.');return data;}
+  function renderContributions(){
+    const panel=$('#myContributions'),body=$('#myContributionsBody');panel.hidden=configured&&!isShared;
+    if(panel.hidden){body.innerHTML='';return;}
+    const own=state.rsvps.find(r=>r.user_id===who()),labels={coming:'Coming',maybe:'Maybe',declined:'Can’t make it'};
+    const guests=own?own.adults+own.children:0;
+    const rsvp=own?`${!ready.rsvps?'Last saved: ':''}${labels[own.response]}${own.response!=='declined'?` · ${guests} guest${guests===1?'':'s'}`:''}`:ready.rsvps?'You haven’t added your RSVP yet.':failed.rsvps?'Your RSVP is unavailable. Try Refresh RSVPs.':'Loading your RSVP…';
+    const dishes=combinedMenu().filter(d=>ownSignup(d));
+    const dishText=!menuReady?'Refresh the menu to load your dish sign-ups.':dishes.length?'Here’s what you’re bringing.':'You haven’t signed up for a dish yet.';
+    const html=`<div><h3>My RSVP</h3><p>${esc(rsvp)}</p><a class="btn secondary small" href="#rsvp">${own?'View my RSVP':ready.rsvps?'Add my RSVP':'View RSVPs'}</a></div><div><h3>My dishes</h3><p>${esc(dishText)}</p>${dishes.length?`<ul class="contribution-dishes">${dishes.map(d=>`<li><a href="#dish-${encodeURIComponent(d.id)}">${esc(d.label)}</a></li>`).join('')}</ul>`:'<a class="btn secondary small" href="#menu">Choose a dish</a>'}</div>`;
+    if(body.innerHTML!==html)body.innerHTML=html;
+  }
   function renderRsvps(){
     const rows=(!configured||isShared)?state.rsvps:[],coming=rows.filter(r=>r.response==='coming'),maybe=rows.filter(r=>r.response==='maybe');
     const guests=items=>items.reduce((sum,r)=>sum+r.adults+r.children,0);
@@ -178,7 +189,7 @@ function initFamilyFeatures(){
     document.body.style.overflow='';if(document.fullscreenElement===$('#tvSlideshow'))document.exitFullscreen?.().catch(()=>{});
     (tvTrigger?.isConnected?tvTrigger:$('#startTv'))?.focus({preventScroll:true});tvWasFullscreen=false;
   }
-  function render(){renderRsvps();renderFootball();renderGames();renderPhoto();}
+  function render(){renderRsvps();renderContributions();renderFootball();renderGames();renderPhoto();}
   $('#editRsvpBtn').addEventListener('click',openRsvp);
   $('#gameSort').addEventListener('change',renderGames);
   $('#refreshRsvpsBtn').addEventListener('click',()=>{if(assertFamilyAccess())refresh();});
@@ -204,5 +215,5 @@ function initFamilyFeatures(){
     const urls=load('photo_urls',[]).map(p=>({...p,id:p.id||uid()}));if(urls.length)save('photo_urls',urls);
   }
   render();if(isShared)refresh();
-  return {refresh,accessChanged,renderGames,renderPhoto};
+  return {refresh,accessChanged,renderGames,renderPhoto,renderContributions};
 }

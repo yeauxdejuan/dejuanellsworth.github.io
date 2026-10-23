@@ -1,4 +1,20 @@
-# Ellsworth scroll indicator · current validation
+# Approved family rollout polish · current validation
+
+Validated October 23, 2026. The organizer approved enabling Heads Up voting and the mobile/copy/upload polish, My contributions and Add to calendar. The 30-minute photo refresh interval, game/photo-link submission handlers, and disconnect identity handler remain unchanged. No group-chat preview metadata or sound controls/description were added.
+
+The explicitly approved `heads_up_voting` migration was applied once to the configured project, recorded as `20261023201050`. Read-only policy verification reports the Heads Up key enabled and both membership and ownership checks retained. Existing game keys, records, grants and other policies were preserved. **Do not reapply this migration.** The migration had already passed the 160-check disposable PostgreSQL suite; it was not changed. Post-deployment security advisors retain the existing notices about intentionally anonymous member accounts, membership RPCs and private membership tables. See the [Supabase RLS guidance](https://supabase.com/docs/guides/database/postgres/row-level-security). No production family rows were read or changed.
+
+The new compact My contributions dropdown uses already-loaded data to show only the current account's RSVP and dishes. Links reach the existing RSVP section and the actual dish row below the sticky header. The summary updates after saves/removals, labels a retained RSVP after read failure and clears on disconnect. The all-day calendar download uses November 26 with November 27 as its exclusive end; it has CRLF/folded lines, a stable UID and a public city, with no invented dinner time, reminder or private code/address.
+
+Mobile actions now have 44px targets and form controls use at least 16px text. Short mobile navigation can scroll, and long modal headings leave room for the larger close button. The countdown uses Central calendar dates, correct singular wording, periodic visible updates and a refresh on returning to the tab. Photo helper copy changes after joining, and the FAQ accurately points to house photos.
+
+Uploads show per-photo progress and accurate saved/failed totals. More than 20 selected files are explained before any write. File selection is temporarily disabled, restored after success/decoding failure, and the progress state clears on disconnect. Pending storage uploads do not proceed to indexing as a different session. The existing sound still follows confirmed writes once per batch.
+
+**567 Chromium checks passed**, including 56 new rollout checks for the actual calendar download, Central countdown across Chicago/Los Angeles/Tokyo, midnight return, independent contribution summaries, saved-state failure handling, dish anchors, removal/disconnect cleanup, mobile geometry at 320/375/430/768/900px, long modal headings, rejected oversized batches, held-upload progress, partial failure and upload cancellation. The read-failure fixture now targets the member under test so another session's background poll cannot consume that injected failure. Existing photo/vote/RSVP/TikTok/audio/scroll-indicator regressions also pass.
+
+Mobile contribution and photo previews were visually reviewed. Inline/feature/browser JavaScript syntax, content-versioned JS/CSS, ICS line endings/folding and staged/unstaged `git diff --check` passed. Browser services/media remain mocked; physical Safari/Android and live family writes were not exercised. The database policy fix is live; the frontend changes await PR merge and Pages deployment.
+
+# Prior Ellsworth scroll indicator
 
 Validated October 23, 2026. A 12px-wide indicator spells Ellsworth with vertically stacked letters, moves with page scroll progress and fades after an 850ms pause. It stays inside the existing mobile gutter with no width animation, content shift, horizontal overflow or interception of taps. Its range follows the visible viewport below the sticky header. It hides during text entry, pinch zoom and open navigation/form/photo/TV overlays. Touch devices hide the root scrollbar only after the custom indicator initializes; native desktop scrollbar dragging remains available.
 

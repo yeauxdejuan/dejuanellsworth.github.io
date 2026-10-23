@@ -1,0 +1,18 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Ellsworth Family//Thanksgiving 2026//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:ellsworth-thanksgiving-2026@yeauxdejuan.github.io
+DTSTAMP:20261023T201429Z
+DTSTART;VALUE=DATE:20261126
+DTEND;VALUE=DATE:20261127
+SUMMARY:Ellsworth Family Thanksgiving 2026
+LOCATION:Arabi\, Louisiana
+DESCRIPTION:Thanksgiving with the Ellsworth family. Confirm dinner time and
+  travel details in the family group chat.
+URL:https://yeauxdejuan.github.io/dejuanellsworth.github.io/ellsworth-thank
+ sgiving-2026/
+END:VEVENT
+END:VCALENDAR

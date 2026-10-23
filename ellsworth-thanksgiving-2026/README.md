@@ -11,7 +11,17 @@ GitHub Pages serves the static page; Supabase supplies family authentication, sh
 
 Heads Up replaces Spades, and Jambalaya replaces Rice / dirty rice and Mashed potatoes / gravy. Returning previews receive the new built-in game without losing other suggestions or existing UNO/Name That Tune votes. Removed dishes and games stay hidden even when saved previously; their stored reservations and votes are retained and never reassigned to the replacements.
 
-**Deployment prerequisite:** `migrations/20261023181122_heads_up_voting.sql` adds `builtin-heads-up` to the existing game-vote INSERT policy. It retains membership, account ownership, existing keys and stored-suggestion checks; it changes no data, grants or other policies. The migration passed the disposable PostgreSQL tests but **has not been applied to the configured project**: automatic approval review requires explicit approval for this live policy change. Apply it once after approval and before merging/publishing the frontend, then run `tests/verify-shared-features.sql`, including its `heads_up_voting_enabled` check. Without it, shared Heads Up votes will be rejected. Jambalaya uses the existing signup RPC and needs no database change. Earlier migrations must not be reapplied.
+**Installed October 23, 2026:** `migrations/20261023181122_heads_up_voting.sql` adds `builtin-heads-up` to the existing game-vote INSERT policy. The organizer explicitly approved deployment, and the configured project now reports `heads_up_voting_enabled = true`, with member and ownership checks retained. The applied migration is recorded as `20261023201050_heads_up_voting`. **Do not reapply it to the configured project.** For a separate installation, apply the checked-in migration once after the earlier feature migrations and verify with `tests/verify-shared-features.sql`. Existing votes and other game keys remain intact. Jambalaya uses the existing signup RPC and needs no database change.
+
+## Final family rollout polish
+
+- Joined members get a compact **My contributions** dropdown below the connection strip. It summarizes only the current browser account's RSVP and dish signups, with links to existing sections and individual dishes. It uses already-loaded data, updates after edits/removals, labels a retained RSVP after read failure, and clears on disconnect. It adds no new identity or cross-device recovery behavior.
+- **Add to calendar** downloads a static all-day Thanksgiving event for November 26, 2026, in Arabi, Louisiana. Its end is November 27 (exclusive), and it includes no dinner time, reminder, invitation code or private address. The ICS file preserves CRLF and folded lines for calendar clients.
+- Mobile action targets are at least 44px and form inputs use at least 16px text. The mobile navigation can scroll on short screens. The countdown uses Central calendar dates, says “1 day” at the singular, and updates every minute while visible and when returning to the page. The photo instructions recognize joined members, and the house FAQ accurately refers to photos.
+- Photo uploads show progress and a final saved/failed count, temporarily disable file selection, and explain the 20-photo batch limit before writing an oversized selection. A decoding failure leaves file selection usable for another attempt. Pending upload UI clears on disconnect without submitting further photo records as a different account.
+
+The organizer requested no changes to the 30-minute photo refresh interval, game/photo-link duplicate-submit behavior or disconnect identity behavior. Group-chat preview metadata was excluded. The existing sound remains a surprise with no new visible sound controls or description.
+
 
 ## Reloading after a release
 

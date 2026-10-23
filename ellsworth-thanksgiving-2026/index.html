@@ -44,7 +44,7 @@
     .family-scroll-indicator.is-scrolling{opacity:1}body:has(.modal-backdrop.show) .family-scroll-indicator,body:has(#tvSlideshow:not([hidden])) .family-scroll-indicator,body:has(.nav-links.open) .family-scroll-indicator{opacity:0}
     @media(pointer:coarse){html.has-family-scroll-indicator{scrollbar-width:none}html.has-family-scroll-indicator::-webkit-scrollbar{display:none}}
   </style>
-  <link rel="stylesheet" href="assets/family-features.css?v=3f415928653d">
+  <link rel="stylesheet" href="assets/family-features.css?v=0ef5c40eb936">
 </head>
 <body>
   <div class="topline">THE ELLSWORTH FAMILY <span><span class="leaf-mark" aria-hidden="true"></span></span> THANKSGIVING 2026</div>
@@ -59,6 +59,7 @@
       <div><div class="eyebrow">The Ellsworth Family · Thanksgiving 2026</div><h1>Good food.<br>Full hearts.<br><em>Ellsworths.</em></h1><p>The Ellsworth Family is coming together in New Orleans for good food, nonstop laughs, old traditions, and a few new stories we’ll never let anyone forget.</p>
       <div class="hero-actions"><a class="btn light" href="#menu">Bring something to the table <span aria-hidden="true">↗</span></a><a class="btn secondary" href="#stay">Explore our stay</a></div>
       <div class="hero-bottom"><div class="hero-stat"><strong>Nov 26</strong><span>Thanksgiving Thursday</span></div><div class="hero-stat"><strong>Arabi, LA</strong><span>New Orleans area</span></div><div class="hero-stat"><strong id="daysLeft">—</strong><span id="countdownLabel">until Thanksgiving</span></div></div>
+      <div class="hero-calendar"><a class="calendar-link" href="assets/ellsworth-thanksgiving-2026.ics" download="Ellsworth-Thanksgiving-2026.ics">Add to calendar</a></div>
       </div>
       <div class="hero-media"><span class="hero-leaf" aria-hidden="true"><span class="leaf-mark" aria-hidden="true"></span></span><div class="hero-main"><img src="https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/be6bdd9c-c350-4f04-9f27-8736cf82b2f1.jpeg?im_w=1200" alt="Exterior of Friscoville Mansion — the Ellsworth holiday home" fetchpriority="high"><div class="hero-image-label">The Ellsworth holiday home · Friscoville Mansion</div></div><div class="photo-stamp">Gather.<br>Give thanks.<br>Repeat.</div></div>
     </div></section>
@@ -71,6 +72,7 @@
       </div>
     </section>
     <div class="member-strip" id="memberStrip" hidden><div class="shell member-strip-inner"><span><span class="leaf-mark" aria-hidden="true"></span> You’re connected to the Ellsworth Family board. Changes are saved for everyone.</span><button type="button" class="member-leave" id="leaveFamilyBtn">Disconnect this device</button></div></div>
+    <aside class="my-contributions" id="myContributions" hidden aria-labelledby="myContributionsTitle"><div class="shell"><details id="myContributionsDetails"><summary id="myContributionsTitle">My contributions <span>Your RSVP and dishes</span></summary><div id="myContributionsBody" class="contributions-body"></div></details></div></aside>
     <section class="section-pad" id="stay"><div class="shell stay-grid">
       <div class="stay-copy"><div class="eyebrow">01 / Where we're staying</div><h2 class="h2">The Ellsworth holiday home, <em>all together.</em></h2><p class="section-lead stay-blurb">Meet <strong>Friscoville Mansion</strong>, a restored Greek Revival home in Arabi, Louisiana. The Airbnb listing describes a private upstairs unit with a balcony, updated kitchen and room to relax together.</p><div class="amenity-list"><div class="amenity"><b>⌂</b> 3 bedrooms</div><div class="amenity"><b>◷</b> 2 bathrooms</div><div class="amenity"><b>✦</b> Full kitchen</div><div class="amenity"><b>↗</b> Private balcony</div></div></div>
       <div class="stay-photos"><div class="property-mosaic" aria-label="Exterior and main living-area photographs">
@@ -96,13 +98,13 @@
       <div class="menu-board"><div class="board-head"><div><h3>The Ellsworth Family potluck</h3><p>Choose something to cook, bring, or contribute.</p></div><div class="board-actions"><span id="menuProgress" class="progress-chip">0 dishes claimed</span><button id="addDishBtn" class="btn small">+ Add a dish</button></div></div><div id="dishBoard" aria-live="polite"></div><div class="menu-foot"><span id="menuFootnote">Join the family board to see dish sign-ups and choose what to bring.</span><button class="btn ghost small" id="refreshMenuBtn">↻ Refresh</button></div></div>
     </div></section>
     <section class="section-pad memory-bg" id="memories"><div class="shell memory-layout">
-      <div><div class="eyebrow">03 / Our favorite people</div><h2 class="h2">The best part is <em>who's here.</em></h2><p class="section-lead">From old family albums to this year’s memories, share your favorite Ellsworth photos and let the slideshow play while we catch up.</p><div class="polaroid-illustration" aria-hidden="true"><span class="leaf-mark" aria-hidden="true"></span></div><div class="memory-tools"><label class="btn small file-picker" for="photoUpload" tabindex="0" role="button">+ Add family photos</label><input class="hidden-input" type="file" id="photoUpload" accept="image/*" multiple><button class="btn secondary small" id="addPhotoUrlBtn">+ Photo link</button></div><p class="helper">Join the family board to upload photos to the shared family album.</p></div>
+      <div><div class="eyebrow">03 / Our favorite people</div><h2 class="h2">The best part is <em>who's here.</em></h2><p class="section-lead">From old family albums to this year’s memories, share your favorite Ellsworth photos and let the slideshow play while we catch up.</p><div class="polaroid-illustration" aria-hidden="true"><span class="leaf-mark" aria-hidden="true"></span></div><div class="memory-tools"><label class="btn small file-picker" for="photoUpload" tabindex="0" role="button">+ Add family photos</label><input class="hidden-input" type="file" id="photoUpload" accept="image/*" multiple><button class="btn secondary small" id="addPhotoUrlBtn">+ Photo link</button></div><p class="helper" id="photoUploadHelp">Join the family board to upload photos to the shared family album.</p><p id="photoUploadStatus" class="photo-upload-status" role="status" aria-live="polite" hidden></p></div>
       <div class="memory-gallery"><div class="memory-frame" id="memoryFrame"><div class="memory-empty" id="memoryEmpty"><div class="empty-symbol"><span class="leaf-mark" aria-hidden="true"></span></div><h3>The Ellsworth family album.</h3><p>No photos yet. Add a few family favorites to create an automatic slideshow here.</p><label class="btn small file-picker" for="photoUpload" tabindex="0" role="button">Choose photos <span aria-hidden="true">↗</span></label></div><div class="carousel-bottom" id="memoryControls" style="display:none"><span class="slide-count" id="slideCount">1 / 1</span><div class="controls"><button class="icon-btn" id="photoPrev" aria-label="Previous family photo">←</button><button class="icon-btn" id="photoPause" aria-label="Pause slideshow">Ⅱ</button><button class="icon-btn" id="photoNext" aria-label="Next family photo">→</button></div></div></div><div class="photo-caption" id="photoCaption"></div></div>
     </div></section>
     <section class="section-pad games-bg" id="games"><div class="shell"><div class="eyebrow">04 / After we eat</div><h2 class="h2">Let the <em>games begin.</em></h2><p class="section-lead">Vote for the games you’d love to play. Choose as many favorites as you like; tap a game’s vote button again to remove your vote.</p><label class="game-sort-label" for="gameSort">Show games <select id="gameSort"><option value="popular">Most popular first</option><option value="original">Original order</option></select></label><p id="gameVoteStatus" class="helper" role="status"></p><div class="games-grid" id="gamesGrid"></div><div class="game-add"><button class="btn light small" id="addGameBtn">+ Suggest a game</button><span style="font-size:12px;color:#f0d9c3">Games are suggestions until the family confirms the lineup.</span></div></div></section>
     <section class="section-pad" id="tiktoks"><div class="shell tiktok-layout"><div><div class="eyebrow">05 / Send it to the group chat</div><h2 class="h2">TikTok made <em>us do it.</em></h2><p class="section-lead">The funniest clip in the Ellsworth group chat? A recipe or family challenge? Add TikToks here to bring them to the whole family.</p><form id="tikForm" class="small-form"><input id="tikUrl" type="url" placeholder="Paste a full TikTok video URL" aria-label="TikTok video URL" required><button class="btn" type="submit">Add video ↗</button></form><p class="helper">Use a full link containing <strong>/video/</strong> and a video number. TikTok’s player needs an internet connection and may be blocked by browser privacy settings. Videos play only when you choose Play. Use Next to skip to another clip at any time.</p></div><div id="tiktokGrid" class="tiktok-cards" aria-live="polite"></div></div></section>
     <section class="section-pad faq-bg" id="faq" aria-labelledby="faqTitle"><div class="shell"><div class="eyebrow">A few helpful answers</div><h2 class="h2" id="faqTitle">Before you <em>head over.</em></h2><p class="section-lead">A few essentials for the gathering. The family group chat is the place for confirmed travel details and questions.</p><div class="faq-list">
-      <details><summary>Where are we staying?</summary><p>Friscoville Mansion in Arabi, Louisiana, in the New Orleans area. See <a href="#stay">the house section</a> for photos and the Airbnb listing. Ask in the family group chat for the address and directions.</p></details>
+      <details><summary>Where are we staying?</summary><p>Friscoville Mansion in Arabi, Louisiana, in the New Orleans area. See <a href="#stay">the house section</a> for photos. Ask in the family group chat for the address and directions.</p></details>
       <details><summary>What about check-in, check-out, and parking?</summary><p>Ask in the family group chat for confirmed check-in and check-out times, parking instructions, and arrival details. Add your own arrival and departure details to <a href="#rsvp">your RSVP</a>. All times on this site are Central.</p></details>
       <details><summary>What should I bring?</summary><p>Visit <a href="#menu">the menu</a> to see what’s covered and sign up for a dish or supplies. Ask in the family group chat about anything else to pack.</p></details>
       <details><summary>How do I share food allergies or dietary needs?</summary><p>Add them in the optional field on <a href="#rsvp">your household’s RSVP</a>. Joined family members can see these details to help plan the meal.</p></details>
@@ -117,7 +119,7 @@
   <div id="lightboxBackdrop" class="modal-backdrop" role="presentation"><div class="modal lightbox" role="dialog" aria-modal="true" aria-label="Airbnb photo viewer"><button class="close-modal" id="lightboxClose" aria-label="Close photo">×</button><img id="lightboxImage" alt="Full-size Airbnb listing photograph"><div class="lightbox-toolbar"><button class="icon-btn" id="housePrev" aria-label="Previous property photo">←</button><span class="lightbox-caption" id="housePhotoCaption" role="status"></span><button class="icon-btn" id="houseNext" aria-label="Next property photo">→</button></div></div></div>
   <div id="tvSlideshow" class="tv-slideshow" role="dialog" aria-modal="true" aria-label="Family photo slideshow" hidden><div class="tv-toolbar"><span id="tvCount"></span><button type="button" id="tvExit" class="btn light small">Exit slideshow ×</button></div><img id="tvImage" alt=""><div class="tv-caption"><h2 id="tvCaption"></h2></div><div class="tv-controls"><button class="btn light small" id="tvPrev" aria-label="Previous slideshow photo">← Previous</button><button class="btn light small" id="tvPause">Pause slideshow</button><button class="btn light small" id="tvNext" aria-label="Next slideshow photo">Next →</button></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
-<script src="assets/family-features.js?v=5ac26e49acaa"></script>
+<script src="assets/family-features.js?v=ba3497206e9d"></script>
 <script id="familySoundScript" src="assets/family-sound.js?v=63b6a219789e" data-sound-src="assets/i-love-it.mp3?v=7869193c2450"></script>
 <script>
 'use strict';
@@ -341,6 +343,8 @@ function familyAccessUI(){
   $('#memberStrip').hidden=!isShared;
   // Let the access guard run before URL validation for visitors who have not joined.
   $('#tikForm').noValidate=configured&&!isShared;
+  $('#photoUploadHelp').textContent=!configured||isShared?'Add photos from your device or use a direct photo link. Choose up to 20 photos per upload.':'Join the family board to upload photos to the shared family album.';
+  if(configured&&!isShared){$('#photoUploadStatus').hidden=true;$('#photoUploadStatus').textContent='';}
   familyFeatures?.accessChanged();
 }
 async function loadFamilyShared(){
@@ -392,7 +396,14 @@ $('#modalBackdrop').addEventListener('click',e=>{if(e.target===$('#modalBackdrop
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeLightbox();}});
 $('#menuToggle').addEventListener('click',()=>{let open=$('#navLinks').classList.toggle('open');$('#menuToggle').setAttribute('aria-expanded',String(open));$('#menuToggle').textContent=open?'×':'☰';});
 document.querySelectorAll('.nav-link').forEach(a=>a.addEventListener('click',()=>{$('#navLinks').classList.remove('open');$('#menuToggle').textContent='☰';$('#menuToggle').setAttribute('aria-expanded','false');}));
-(function setCountdown(){let today=new Date(),holiday=new Date(2026,10,26,0,0,0),days=Math.ceil((holiday-today)/(1000*60*60*24));$('#daysLeft').textContent=days>0?`${days} days`:days===0?'Today!':'2026';$('#countdownLabel').textContent=days>0?'until Thanksgiving':days===0?'Happy Thanksgiving':'Thanksgiving memories';})();
+function setCountdown(now=new Date()){
+  const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now).map(part=>[part.type,part.value]));
+  const today=Date.UTC(Number(parts.year),Number(parts.month)-1,Number(parts.day)),days=(Date.UTC(2026,10,26)-today)/86400000;
+  $('#daysLeft').textContent=days>0?`${days} ${days===1?'day':'days'}`:days===0?'Today!':'2026';
+  $('#countdownLabel').textContent=days>0?'until Thanksgiving':days===0?'Happy Thanksgiving':'Thanksgiving memories';
+}
+setCountdown();setInterval(()=>{if(!document.hidden)setCountdown();},60000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)setCountdown();});
 /* ── Property gallery: lightbox, keyboard and touch navigation ── */
 let houseIndex=0,houseTrigger=null,houseTouchStart=null;
 function showHousePhoto(index){
@@ -465,11 +476,12 @@ function renderMenu(){
     for(const d of items){
       const signups=dishSignups(d),own=ownSignup(d),full=signups.length>=3;
       const unavailable=(configured&&(!isShared||!menuReady))||(full&&!own);
-      html+=`<div class="dish-row"><div><div class="dish-name">${esc(d.label)}</div><span class="dish-capacity">${signups.length}/3 assigned · ${full?'Full':'Open'}</span>${d.note?`<div class="dish-note">${esc(d.note)}</div>`:''}</div><div class="dish-person ${signups.length?'':'pending'}">${signups.length?`<ul>${signups.map(s=>`<li><strong>${esc(s.assignee)}</strong>${s.user_id===(isShared?memberUserId:previewUserId)?' (you)':''}${s.note?`<small>${esc(s.note)}</small>`:''}</li>`).join('')}</ul>`:'Be the first to bring it'}</div><button class="btn small ${own?'ghost':''}" data-dish-id="${esc(d.id)}" aria-label="${esc(own?'Edit your sign-up for ':full?'Full: ':'Sign up for ')}${esc(d.label)}" ${unavailable?'disabled':''}>${own?'Edit my sign-up':full?'Full':'I’ll bring it'}</button></div>`;
+      html+=`<div class="dish-row" id="dish-${esc(d.id)}"><div><div class="dish-name">${esc(d.label)}</div><span class="dish-capacity">${signups.length}/3 assigned · ${full?'Full':'Open'}</span>${d.note?`<div class="dish-note">${esc(d.note)}</div>`:''}</div><div class="dish-person ${signups.length?'':'pending'}">${signups.length?`<ul>${signups.map(s=>`<li><strong>${esc(s.assignee)}</strong>${s.user_id===(isShared?memberUserId:previewUserId)?' (you)':''}${s.note?`<small>${esc(s.note)}</small>`:''}</li>`).join('')}</ul>`:'Be the first to bring it'}</div><button class="btn small ${own?'ghost':''}" data-dish-id="${esc(d.id)}" aria-label="${esc(own?'Edit your sign-up for ':full?'Full: ':'Sign up for ')}${esc(d.label)}" ${unavailable?'disabled':''}>${own?'Edit my sign-up':full?'Full':'I’ll bring it'}</button></div>`;
     }
     html+='</div>';
   }
   $('#dishBoard').innerHTML=html;
+  familyFeatures?.renderContributions();
 }
 function menuSaveLocal(d){
   const next=menuItems.filter(x=>x.id!==d.id).concat(d);
@@ -599,33 +611,51 @@ async function refreshPhotos(){
   }catch(error){console.error(error);notify('Could not load the shared family slideshow.');}
 }
 document.querySelectorAll('label[for="photoUpload"]').forEach(label=>label.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();$('#photoUpload').click();}}));
-$('#photoUpload').addEventListener('click',event=>{if(!assertFamilyAccess())event.preventDefault();});
+let photoUploadBusy=false;
+function setPhotoUploadBusy(busy){
+  photoUploadBusy=busy;$('#photoUpload').disabled=busy;
+  document.querySelectorAll('label[for="photoUpload"]').forEach(label=>label.setAttribute('aria-disabled',String(busy)));
+  $('.memory-tools').setAttribute('aria-busy',String(busy));
+}
+$('#photoUpload').addEventListener('click',event=>{if(photoUploadBusy||!assertFamilyAccess())event.preventDefault();});
 $('#photoUpload').addEventListener('change',async event=>{
+  if(photoUploadBusy)return;
   if(!assertFamilyAccess()){event.target.value='';return;}
-  const selected=[...event.target.files].slice(0,20);if(!selected.length)return;
-  const soundUser=memberUserId;
-  let added=0;
-  for(const file of selected){if(!file.type.startsWith('image/'))continue;
-    try{
-      const encoded=await compressPhoto(file);
-      const caption=file.name.replace(/\.[^.]+$/,'').replace(/[_-]/g,' ');
-      if(isShared){
-        const blob=await (await fetch(encoded)).blob();
-        const path=`2026/${uid()}.jpg`;
-        const {error:upError}=await sb.storage.from(FAMILY_CONFIG.photoBucket).upload(path,blob,{contentType:'image/jpeg',upsert:false});
-        if(upError)throw upError;
-        const {error:rowError}=await sb.from('thanksgiving_photos').insert({event_id:FAMILY_CONFIG.eventId,path,caption});
-        if(rowError)throw rowError;
-      }else{
-        const item={id:uid(),url:encoded,caption};await storePhoto(item);photos.push(item);
-      }
-      added++;
-    }catch(error){console.error(error);notify('One photo could not be uploaded. Try a smaller JPEG or PNG.');}
+  const selected=[...event.target.files],status=$('#photoUploadStatus');if(!selected.length)return;
+  status.hidden=false;
+  if(selected.length>20){status.textContent=`Please choose 20 photos or fewer. You selected ${selected.length}.`;event.target.value='';return;}
+  const shared=isShared,soundUser=memberUserId,current=()=>!configured||(isShared&&memberUserId===soundUser);
+  let added=0,failed=0;setPhotoUploadBusy(true);
+  try{
+    for(const [index,file] of selected.entries()){
+      if(!current())break;
+      status.textContent=`Uploading photo ${index+1} of ${selected.length}…`;
+      try{
+        if(!file.type.startsWith('image/'))throw new Error('Choose an image file');
+        const encoded=await compressPhoto(file);if(!current())break;
+        const caption=file.name.replace(/\.[^.]+$/,'').replace(/[_-]/g,' ');
+        if(shared){
+          const blob=await (await fetch(encoded)).blob(),path=`2026/${uid()}.jpg`;
+          const {error:upError}=await sb.storage.from(FAMILY_CONFIG.photoBucket).upload(path,blob,{contentType:'image/jpeg',upsert:false});
+          if(upError)throw upError;if(!current())break;
+          const {error:rowError}=await sb.from('thanksgiving_photos').insert({event_id:FAMILY_CONFIG.eventId,path,caption});
+          if(rowError)throw rowError;
+        }else{
+          const item={id:uid(),url:encoded,caption};await storePhoto(item);photos.push(item);
+        }
+        added++;
+      }catch(error){console.error(error);failed++;}
+    }
+    if(!current())return;
+    if(added)playSavedSound(soundUser);
+    if(shared)await refreshPhotos();else{slideIndex=Math.max(0,photos.length-added);renderPhotos();resetSlideTimer();}
+    if(!current())return;
+    status.textContent=failed?`${added} of ${selected.length} photo${selected.length===1?'':'s'} saved. ${failed} could not be uploaded. Try JPEG or PNG files.`:`${added} photo${added===1?'':'s'} saved ${shared?'for everyone':'in this browser'}.`;
+    notify(status.textContent);
+  }finally{
+    $('#photoUpload').value='';setPhotoUploadBusy(false);
+    if(!current()){status.textContent='';status.hidden=true;}
   }
-  $('#photoUpload').value='';
-  if(added)playSavedSound(soundUser);
-  if(isShared)await refreshPhotos();else{slideIndex=Math.max(0,photos.length-added);renderPhotos();resetSlideTimer();}
-  if(added)notify(`${added} Ellsworth family photo${added===1?'':'s'} saved ${isShared?'for everyone':'in this browser'}.`);
 });
 $('#addPhotoUrlBtn').addEventListener('click',()=>{
   if(!assertFamilyAccess())return;

@@ -54,3 +54,20 @@
 .credit-turkey:last-child{animation-delay:-1.7s}
 @keyframes credit-gold-shimmer{0%,100%{color:#e4b57f;text-shadow:0 0 0 transparent}50%{color:#fff0bd;text-shadow:0 0 10px #e4b57f60}}
 @keyframes credit-turkey-sway{0%,100%{transform:rotate(-6deg) translateY(0)}50%{transform:rotate(6deg) translateY(-2px)}}
+
+.hero-calendar{margin-top:8px;text-align:center}.calendar-link{display:inline-flex;align-items:center;min-height:44px;padding:8px;color:#fff7e9;font-size:13px;font-weight:700;text-underline-offset:4px}
+.my-contributions[hidden],.photo-upload-status[hidden]{display:none!important}
+.my-contributions{padding-block:16px;background:var(--cream)}
+.my-contributions details{border:1px solid var(--line);border-radius:12px;background:var(--paper);overflow:hidden}
+.my-contributions summary{position:relative;display:flex;align-items:center;flex-wrap:wrap;gap:6px 18px;list-style:none;padding:16px 48px 16px 18px;color:var(--primary);font-weight:700;cursor:pointer}
+.my-contributions summary::-webkit-details-marker{display:none}.my-contributions summary:after{content:'+';position:absolute;right:18px;font-size:24px;font-weight:400}.my-contributions details[open]>summary:after{content:'−'}
+.my-contributions summary>span{font-size:12px;font-weight:400;color:var(--muted)}.contributions-body{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:0 18px 18px}.contributions-body>div{min-width:0}.contributions-body h3{font:500 22px var(--serif);margin:8px 0}.contributions-body p{font-size:13px;color:var(--muted);margin:8px 0 12px}
+.contribution-dishes{list-style:none;padding:0;margin:0}.contribution-dishes a{display:inline-flex;align-items:center;min-height:44px;padding:6px 0;color:var(--primary);font-size:14px;font-weight:700;text-underline-offset:4px}.dish-row{scroll-margin-top:92px}
+.photo-upload-status{font-size:13px;color:var(--primary);text-align:center;margin:10px 0 0}.file-picker[aria-disabled=true]{opacity:.6;cursor:progress}
+@media(max-width:900px),(pointer:coarse){
+  button,.btn,[role=button]{min-height:44px;min-width:44px}
+  .family-join-form input,.form-field input,.form-field textarea,.form-field select,.small-form input,.game-sort-label select{font-size:16px;min-height:44px}
+  .modal h3{padding-right:36px}
+  .nav-links{max-height:calc(100dvh - 100px);overflow-y:auto}.nav-link{display:flex;align-items:center;min-height:44px}
+}
+@media(max-width:490px){.contributions-body{grid-template-columns:1fr;gap:12px}}
