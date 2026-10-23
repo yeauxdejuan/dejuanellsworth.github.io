@@ -1,4 +1,12 @@
-# Heads Up and Jambalaya · current validation
+# Ellsworth scroll indicator · current validation
+
+Validated October 23, 2026. A 12px-wide indicator spells Ellsworth with vertically stacked letters, moves with page scroll progress and fades after an 850ms pause. It stays inside the existing mobile gutter with no width animation, content shift, horizontal overflow or interception of taps. Its range follows the visible viewport below the sticky header. It hides during text entry, pinch zoom and open navigation/form/photo/TV overlays. Touch devices hide the root scrollbar only after the custom indicator initializes; native desktop scrollbar dragging remains available.
+
+**511 Chromium checks passed**, including **108 focused scroll-indicator checks** at 320, 375, 430, 768 and 1440px. The checks exercise initial/idle visibility, real scroll progress, fixed geometry, all nine letters fitting within the thumb, gutter clearance, visible bounds, tap-through behavior, stable content width, touch scrollbar styling, a photo overlay and text-entry focus. Existing RSVP/menu/vote/photo/audio regressions also pass. Mobile and desktop previews were visually reviewed. Inline/browser JavaScript syntax, existing asset-version checks and `git diff --check` passed.
+
+Supabase and external media are mocked; this verification uses Chromium rather than physical Safari/Android devices. No database, authentication or sound changes are included, so the database suite was not repeated. This update awaits PR merge and Pages deployment.
+
+# Prior Heads Up and Jambalaya
 
 Validated October 23, 2026. Heads Up replaces Spades with a fresh vote key. Jambalaya replaces Rice / dirty rice and Mashed potatoes / gravy with a fresh dish ID. Cached previews gain the new starter while retaining custom suggestions and other votes. Previously saved retired dishes/games remain hidden; their records are preserved without transferring votes or reservations to replacements.
 

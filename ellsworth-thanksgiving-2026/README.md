@@ -21,6 +21,8 @@ Whenever `assets/family-features.js`, `assets/family-features.css`, `assets/fami
 
 ## Shared family features
 
+A slim scroll indicator spells “Ellsworth” vertically while scrolling and fades out after an 850ms pause. Its fixed 12px width stays within the outer page gutter without taking taps, widening or shifting content. It tracks the visible viewport and is hidden during text entry, pinch zoom, open navigation and photo/form/TV overlays. Touch devices use the word in place of the root scrollbar; native desktop scrollbar dragging remains available.
+
 The hero headline is centered and its introduction says “in New Orleans.” The date, location and countdown stay in a single three-column row. Section padding is 56px on desktop and 36px on mobile, with compact blank status areas and footer spacing.
 
 - Confirmed shared saves play the organizer-selected “I love it” clip: new menu items, dish reservations/edits, RSVP saves/edits, photo uploads/links, captions, game suggestions, TikToks, votes and reactions. A photo batch plays once. First-time code entry uses the existing welcome preference and plays alongside the confetti. Refreshes, restored sessions, repeat joins, removals, failed saves and device-only preview writes are silent. Sound follows confirmed writes even if the following refresh fails.

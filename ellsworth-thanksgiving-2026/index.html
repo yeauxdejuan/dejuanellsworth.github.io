@@ -39,6 +39,10 @@
     .modal-backdrop{background:#392318bd}.modal.lightbox{background:#453026}.helper{font-size:12px}.section-lead,.helper,.modal p{color:#706057}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:3px}.toast{max-width:min(340px,calc(100vw - 32px));right:16px}.small-form>*{max-width:100%}
     @media(max-width:760px){.property-mosaic{grid-template-rows:repeat(4,100px)}}
     @media(max-width:490px){.dish-row{grid-template-columns:minmax(0,1fr) auto}.property-mosaic{grid-template-rows:repeat(4,85px)}.tik-card iframe{height:530px}.hero-leaf{left:0}.hero h1{font-size:clamp(45px,13vw,54px)}}
+    .family-scroll-indicator{position:fixed;top:0;right:2px;z-index:45;width:12px;height:98px;padding:4px 1px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font:700 9px/9px var(--sans);color:var(--primary);background:var(--cream);border-radius:8px;pointer-events:none;user-select:none;opacity:0;transition:opacity .18s ease;contain:layout paint}
+    .family-scroll-indicator span{display:block;flex:none;height:9px;line-height:9px}
+    .family-scroll-indicator.is-scrolling{opacity:1}body:has(.modal-backdrop.show) .family-scroll-indicator,body:has(#tvSlideshow:not([hidden])) .family-scroll-indicator,body:has(.nav-links.open) .family-scroll-indicator{opacity:0}
+    @media(pointer:coarse){html.has-family-scroll-indicator{scrollbar-width:none}html.has-family-scroll-indicator::-webkit-scrollbar{display:none}}
   </style>
   <link rel="stylesheet" href="assets/family-features.css?v=3f415928653d">
 </head>
@@ -728,6 +732,41 @@ $('#tikForm').addEventListener('submit',async event=>{
 });
 renderTiktoks();
 familyFeatures=initFamilyFeatures();
+/* A text thumb stays inside the existing 18px mobile gutter and never receives taps. */
+(()=>{
+  const root=document.documentElement,indicator=document.createElement('div');
+  indicator.className='family-scroll-indicator';indicator.setAttribute('aria-hidden','true');
+  for(const letter of 'Ellsworth'){const span=document.createElement('span');span.textContent=letter;indicator.append(span);}
+  document.body.append(indicator);root.classList.add('has-family-scroll-indicator');
+  let frame=0,hideTimer,scrolled=false;
+  const hide=()=>{clearTimeout(hideTimer);indicator.classList.remove('is-scrolling');};
+  function update(){
+    frame=0;
+    const viewport=window.visualViewport,height=viewport?.height||innerHeight,offset=viewport?.offsetTop||0;
+    const headerBottom=document.querySelector('.site-header').getBoundingClientRect().bottom;
+    const start=Math.max(offset+12,headerBottom+12),end=offset+height-20-indicator.offsetHeight;
+    const distance=root.scrollHeight-root.clientHeight;
+    const blocked=distance<=0||end<=start||(viewport&&viewport.scale!==1)||document.activeElement?.matches('input,textarea,select,[contenteditable="true"]');
+    if(blocked){hide();scrolled=false;return;}
+    const progress=Math.max(0,Math.min(1,scrollY/distance));
+    indicator.style.transform=`translateY(${start+(end-start)*progress}px)`;
+    if(scrolled){
+      indicator.classList.add('is-scrolling');clearTimeout(hideTimer);
+      hideTimer=setTimeout(hide,850);
+    }
+    scrolled=false;
+  }
+  function schedule(show=false){scrolled=scrolled||show;if(!frame)frame=requestAnimationFrame(update);}
+  window.addEventListener('scroll',()=>schedule(true),{passive:true});
+  window.addEventListener('resize',()=>schedule(),{passive:true});
+  window.visualViewport?.addEventListener('resize',()=>schedule(),{passive:true});
+  window.visualViewport?.addEventListener('scroll',()=>schedule(),{passive:true});
+  document.addEventListener('focusin',hide);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)hide();});
+  window.addEventListener('pagehide',hide);
+  new ResizeObserver(()=>schedule()).observe(document.body);
+  schedule();
+})();
 </script>
 </body>
 </html>
