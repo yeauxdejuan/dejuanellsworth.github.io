@@ -444,7 +444,8 @@ function combinedMenu(){
   const merged=new Map(STARTER_DISHES.map(d=>[d.id,{...d,signups:[],note:''}]));
   menuItems.forEach(d=>merged.set(d.id,{...merged.get(d.id),...d,signups:dishSignups(d)}));
   // Retired dishes stay stored with their signups; never reuse their IDs for a new dish.
-  return [...merged.values()].filter(d=>!['rice','potatoes'].includes(d.id));
+  return [...merged.values()].filter(d=>!['rice','potatoes'].includes(d.id))
+    .map(d=>d.id==='jambalaya'?{...d,category:'The sides'}:d);
 }
 function renderMenu(){
   const all=combinedMenu(),claimed=all.filter(d=>dishSignups(d).length).length;
