@@ -1,4 +1,14 @@
-# Gold signature and centered hero · current validation
+# Heads Up and Jambalaya · current validation
+
+Validated October 23, 2026. Heads Up replaces Spades with a fresh vote key. Jambalaya replaces Rice / dirty rice and Mashed potatoes / gravy with a fresh dish ID. Cached previews gain the new starter while retaining custom suggestions and other votes. Previously saved retired dishes/games remain hidden; their records are preserved without transferring votes or reservations to replacements.
+
+**403 Chromium checks passed**, including shared and preview reservations/votes across reloads, retired cached/shared entries, independent member votes, unchanged stable keys, invitation routing, and the existing photo/RSVP/audio/layout regressions at 375, 430, 768, 1024 and 1440px. External services and media are mocked; physical mobile browsers remain outside these checks.
+
+**160 PostgreSQL checks passed** against a disposable PostgreSQL 17.10 database. The new migration enables Heads Up votes while preserving existing votes, membership checks, own-account requirements, one-vote limits and removal ownership. It rejects nonmembers, spoofed users, arbitrary keys and wrong events. Both existing installations and the fresh migration sequence pass, and Jambalaya accepts reservations through the unchanged signup RPC. Inline/feature/test JavaScript syntax, content-versioned feature URL and `git diff --check` passed.
+
+The configured project's current INSERT policy was inspected read-only and still needs the new key. **The live migration was not applied:** automatic approval review rejected the deployment pending explicit user approval for the persistent policy change. The migration must be applied once before merging/publishing the frontend; `tests/verify-shared-features.sql` now checks for its presence. No production family records were read or written. The earlier security-advisor findings concern the existing anonymous-member RPC design and intentionally policy-free private membership tables; this migration adds no functions, grants or tables. See the [Supabase RLS guidance](https://supabase.com/docs/guides/database/postgres/row-level-security).
+
+# Prior gold signature and centered hero
 
 Validated October 23, 2026. The hero headline is centered, and its introduction says “in New Orleans.” The selected footer style uses a larger Built by credit, a softly shimmering gold linked name, decorative swaying turkeys on both sides, and a separate Family Developer / Engineer line. The signature wraps at narrow phone widths. Motion-preference exceptions were removed throughout the site as requested: leaves, first-time confetti, footer animations, transitions and the slideshow’s playing default now behave consistently across device settings.
 

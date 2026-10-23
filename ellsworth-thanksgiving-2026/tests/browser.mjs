@@ -210,8 +210,8 @@ async function checkRequestedLayout(p){
  check(await p.locator('#nfl-games .football').count()===3,'Only the three Thursday games are shown');
  check(await p.locator('#weekend, #scheduleList, #addScheduleBtn, a[href="#weekend"]').count()===0,'Family Plans section, actions and navigation are removed');
  check(!(await p.locator('#nfl-games').innerText()).match(/Packers|Broncos|Saints|Friday|Sunday/),'Non-Thursday games excluded');
- check(JSON.stringify(await p.locator('#gamesGrid .game-card').evaluateAll(cards=>cards.map(c=>c.dataset.gameKey)))===JSON.stringify(['builtin-spades','builtin-uno','builtin-name-that-tune']),'Remaining game IDs retain their original vote keys');
- check(!(await p.locator('#gamesGrid').innerText()).match(/Charades|Family Feud|Dominoes/),'Removed games are absent from the lineup');
+ check(JSON.stringify(await p.locator('#gamesGrid .game-card').evaluateAll(cards=>cards.map(c=>c.dataset.gameKey)))===JSON.stringify(['builtin-heads-up','builtin-uno','builtin-name-that-tune']),'Heads Up has a fresh vote key while UNO and Name That Tune retain theirs');
+ check(!(await p.locator('#gamesGrid').innerText()).match(/Spades|Charades|Family Feud|Dominoes/),'Removed games are absent from the lineup');
  check(await p.evaluate(()=>AIRBNB_PHOTOS.length===26&&new Set(AIRBNB_PHOTOS).size===26),'All 26 distinct listing photo URLs are available');
  check(await p.locator('.hero-main>img').getAttribute('src')==='https://a0.muscache.com/im/pictures/hosting/Hosting-961414748638377724/original/be6bdd9c-c350-4f04-9f27-8736cf82b2f1.jpeg?im_w=1200','Holiday Home feature image uses the exterior photo');
  check(await p.locator('.property-mosaic [data-house-photo]').count()===5,'Five-photo house preview remains compact');
@@ -246,7 +246,7 @@ async function checkInvitationRouting(p){
  check(pickers===0,'Logged-out photo actions never open the file picker');p.off('filechooser',onPicker);
  await p.click('#addPhotoUrlBtn');await expectCode('Photo link');
  await p.click('#addGameBtn');await expectCode('Game suggestion');
- for(const [selector,label] of [['#editRsvpBtn','RSVP'],['[data-vote="builtin-spades"]','Game vote']]){await p.click(selector);await expectCode(label);}
+ for(const [selector,label] of [['#editRsvpBtn','RSVP'],['[data-vote="builtin-heads-up"]','Game vote']]){await p.click(selector);await expectCode(label);}
  for(const value of ['', 'not-a-url', 'https://www.tiktok.com/@test/video/1234567890123456789']){
   await p.fill('#tikUrl',value);await p.locator('#tikForm button').click();await expectCode(`TikTok button with ${value?'entered':'empty'} URL`);
  }
@@ -257,7 +257,7 @@ async function checkMissingSetupRecovery(p){
  for(const table of ['thanksgiving_rsvps','thanksgiving_game_votes','thanksgiving_photo_details','thanksgiving_photo_reactions'])unavailableTables.add(table);
  await p.click('#refreshRsvpsBtn');await p.waitForFunction(()=>document.querySelector('#rsvpStatus').textContent.includes('Could not load')&&document.querySelector('#photoExtras .helper').textContent.includes('Could not load'));
  check(await p.locator('#editRsvpBtn').isDisabled(),'Missing RSVP table prevents false local saves');check(await p.locator('#editPhotoDetails').isDisabled(),'Missing caption table disables caption editing');check(await p.locator('[data-react="heart"]').isDisabled(),'Missing reactions table disables emoji buttons');
- unavailableTables.clear();await p.click('#refreshRsvpsBtn');await p.waitForFunction(()=>!document.querySelector('#editRsvpBtn').disabled&&!document.querySelector('#editPhotoDetails').disabled&&!document.querySelector('[data-react="heart"]').disabled&&!document.querySelector('[data-vote="builtin-spades"]').disabled);
+ unavailableTables.clear();await p.click('#refreshRsvpsBtn');await p.waitForFunction(()=>!document.querySelector('#editRsvpBtn').disabled&&!document.querySelector('#editPhotoDetails').disabled&&!document.querySelector('[data-react="heart"]').disabled&&!document.querySelector('[data-vote="builtin-heads-up"]').disabled);
  check(await p.locator('#rsvpStatus').innerText()===''&&await p.locator('#photoExtras .helper').innerText()==='','Installing missing tables and refreshing restores feature controls');
 }
 async function checkFamilyPlanning(a,b){
@@ -275,10 +275,10 @@ async function checkFamilyPlanning(a,b){
  await a.click('#editRsvpBtn');await a.selectOption('#rsvpResponse','declined');await a.locator('#rsvpForm button[type=submit]').click();await a.locator('#modalBackdrop').waitFor({state:'hidden'});check(tables.thanksgiving_rsvps.find(r=>r.household_name.endsWith('A')).adults===0,'Declined RSVP contributes no guests');check(await a.locator('#rsvpSavedStatus').evaluate(el=>Boolean(el.closest('[data-own-rsvp]'))),'Declined RSVP retains its confirmation inside the household card');check(await a.locator('[data-own-rsvp] .rsvp-departure').count()===0,'A declined RSVP does not invent travel details to position its confirmation');
  await a.click('#editRsvpBtn');await a.click('#removeRsvp');await a.locator('#modalBackdrop').waitFor({state:'hidden'});check(tables.thanksgiving_rsvps.length===1,'Own RSVP can be removed');check(await a.locator('#rsvpSavedStatus').isHidden(),'Removing an RSVP clears its saved confirmation');
  check(await a.locator('#nfl-games .schedule-entry').count()===3,'Final NFL section shows Thursday games');check((await a.locator('[data-plan-id="nfl-chiefs-bills"]').innerText()).includes('7:20 PM CT'),'NFL kickoff stays in Central');
- const vote='[data-vote="builtin-spades"]';await a.locator(vote).click();await a.waitForFunction(()=>document.querySelector('[data-vote="builtin-spades"]').getAttribute('aria-pressed')==='true');
- await b.locator(vote).click();await b.waitForFunction(()=>document.querySelector('[data-vote="builtin-spades"]').getAttribute('aria-pressed')==='true');await a.click('#refreshRsvpsBtn');await a.waitForFunction(()=>document.querySelector('[data-game-key="builtin-spades"]').textContent.includes('2 votes'));check(tables.thanksgiving_game_votes.length===2,'Two members vote independently for a game');
- await a.locator('[data-vote="builtin-uno"]').click();await a.waitForFunction(()=>document.querySelector('[data-vote="builtin-uno"]').getAttribute('aria-pressed')==='true');check(await a.locator('#gamesGrid .game-card').first().getAttribute('data-game-key')==='builtin-spades','Most popular games sort first');
- await a.locator(vote).click();await a.waitForFunction(()=>document.querySelector('[data-vote="builtin-spades"]').getAttribute('aria-pressed')==='false');check(tables.thanksgiving_game_votes.filter(v=>v.game_key==='builtin-spades').length===1,'Removing vote preserves another member’s vote');
+ const vote='[data-vote="builtin-heads-up"]';await a.locator(vote).click();await a.waitForFunction(()=>document.querySelector('[data-vote="builtin-heads-up"]').getAttribute('aria-pressed')==='true');
+ await b.locator(vote).click();await b.waitForFunction(()=>document.querySelector('[data-vote="builtin-heads-up"]').getAttribute('aria-pressed')==='true');await a.click('#refreshRsvpsBtn');await a.waitForFunction(()=>document.querySelector('[data-game-key="builtin-heads-up"]').textContent.includes('2 votes'));check(tables.thanksgiving_game_votes.length===2,'Two members vote independently for a game');
+ await a.locator('[data-vote="builtin-uno"]').click();await a.waitForFunction(()=>document.querySelector('[data-vote="builtin-uno"]').getAttribute('aria-pressed')==='true');check(await a.locator('#gamesGrid .game-card').first().getAttribute('data-game-key')==='builtin-heads-up','Most popular games sort first');
+ await a.locator(vote).click();await a.waitForFunction(()=>document.querySelector('[data-vote="builtin-heads-up"]').getAttribute('aria-pressed')==='false');check(tables.thanksgiving_game_votes.filter(v=>v.game_key==='builtin-heads-up').length===1,'Removing vote preserves another member’s vote');
  failWriteTable='thanksgiving_game_votes';await a.locator('[data-vote="builtin-name-that-tune"]').click();await a.waitForFunction(()=>document.querySelector('#toast').textContent.includes('Could not change'));check(await a.locator('[data-vote="builtin-name-that-tune"]').getAttribute('aria-pressed')==='false','Failed vote not shown as saved');
  const photoId=await a.evaluate(()=>photos[slideIndex].id);await a.click('#editPhotoDetails');
  check(await a.locator('#photoDetailsForm input').count()===1&&await a.locator('#photoPeople, #photoDate').count()===0,'Photo editor has only a caption field');
@@ -313,13 +313,50 @@ async function checkRsvpSaveReadFailure(p){
  tables.thanksgiving_rsvps.find(r=>r.household_name==='Read failure household').updated_at=null;await p.click('#refreshRsvpsBtn');await p.waitForFunction(()=>!document.querySelector('#rsvpSavedStatus').textContent.includes('Last updated'));check((await p.locator('#rsvpSavedStatus').innerText()).includes('Your RSVP is saved.'),'Legacy RSVP without a historical timestamp confirms saving without inventing a date');
  await p.click('#editRsvpBtn');failReadTable='thanksgiving_rsvps';await p.click('#removeRsvp');await p.locator('#modalBackdrop').waitFor({state:'hidden'});check(await p.locator('#rsvpSavedStatus').isHidden()&&!(await p.locator('#rsvpList').innerText()).includes('Read failure household'),'Successful removal clears cached RSVP even if the following refresh fails');await p.click('#refreshRsvpsBtn');await p.waitForFunction(()=>!document.querySelector('#editRsvpBtn').disabled);
 }
+async function checkUpdatedLineups(){
+ const event_id='ellsworth-thanksgiving-2026';
+ const retiredDishes=[{event_id,id:'rice',label:'Rice / dirty rice',category:'The sides',signups:[{slot:1,user_id:'legacy-cook',assignee:'Old rice cook',note:'Retain this signup'}]},{event_id,id:'potatoes',label:'Mashed potatoes / gravy',category:'The sides',signups:[{slot:1,user_id:'legacy-cook',assignee:'Old potato cook',note:''}]}];
+ const retiredGame={event_id,id:'old-spades-suggestion',name:' Spades ',description:'Previously shared suggestion'};
+ const retiredVote={event_id,game_key:'builtin-spades',user_id:'legacy-voter'};
+ const before=JSON.stringify({retiredDishes,retiredGame,retiredVote});
+ tables.thanksgiving_dishes.push(...retiredDishes);tables.thanksgiving_games.push(retiredGame);tables.thanksgiving_game_votes.push(retiredVote);
+ const p=await newPage(375);await join(p);await p.waitForFunction(()=>!document.querySelector('[data-vote="builtin-heads-up"]').disabled);
+ check(await p.locator('[data-game-key="builtin-spades"], [data-game-key="old-spades-suggestion"]').count()===0,'Shared Spades suggestions and built-in are hidden');
+ check(await p.locator('[data-dish-id="rice"], [data-dish-id="potatoes"]').count()===0,'Retired shared dishes stay hidden despite saved signups');
+ check(await p.locator('[data-vote="builtin-heads-up"]').getAttribute('aria-pressed')==='false'&&(await p.locator('[data-game-key="builtin-heads-up"]').innerText()).includes('0 votes'),'Heads Up does not inherit a stored Spades vote');
+ check((await p.locator('[data-dish-id="jambalaya"]').locator('..').innerText()).includes('0/3 assigned'),'Shared Jambalaya does not inherit old dish signups');
+ await signup(p,'Jambalaya cook','jambalaya');await p.locator('[data-vote="builtin-heads-up"]').click();await p.waitForFunction(()=>document.querySelector('[data-vote="builtin-heads-up"]').getAttribute('aria-pressed')==='true');
+ await p.reload();await p.waitForFunction(()=>isShared&&menuReady&&document.querySelector('[data-vote="builtin-heads-up"]').getAttribute('aria-pressed')==='true');
+ check((await p.locator('[data-dish-id="jambalaya"]').locator('..').innerText()).includes('Jambalaya cook'),'Jambalaya shared reservation persists after refresh');
+ check(tables.thanksgiving_game_votes.some(v=>v.game_key==='builtin-heads-up'&&v.user_id!==retiredVote.user_id),'Heads Up saves votes under its own new key');
+ check(JSON.stringify({retiredDishes,retiredGame,retiredVote})===before&&tables.thanksgiving_dishes.includes(retiredDishes[0])&&tables.thanksgiving_game_votes.includes(retiredVote),'Retired shared records remain intact');
+ await p.context().close();
+ tables.thanksgiving_dishes=[];tables.thanksgiving_games=[];tables.thanksgiving_game_votes=[];
+}
 async function checkLocalPlanning(){
- const p=await newPage(430,{localPreview:true});await p.evaluate(()=>localStorage.setItem('thanksgiving26_games',JSON.stringify([...games,{name:'Charades'},{name:'Family Feud'},{name:'Dominoes'}])));await p.reload();check(!(await p.locator('#gamesGrid').innerText()).match(/Charades|Family Feud|Dominoes/),'Returning local previews hide removed games');check(await p.locator('[data-vote="builtin-name-that-tune"]').count()===1,'Legacy preview keeps Name That Tune vote key');await p.click('#editRsvpBtn');await p.fill('#rsvpName','Local preview household');await p.fill('#rsvpDietary','Vegetarian');await p.locator('#rsvpForm button[type=submit]').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});
- await p.locator('[data-vote="builtin-uno"]').click();await p.waitForFunction(()=>document.querySelector('[data-vote="builtin-uno"]').getAttribute('aria-pressed')==='true');await p.reload();
+ const p=await newPage(430,{localPreview:true});
+ await p.evaluate(()=>{
+  localStorage.setItem('thanksgiving26_games',JSON.stringify([{id:'builtin-spades',name:'Spades'},...games.filter(g=>g.name!=='Heads Up'),{id:'cached-custom',name:'Taboo'},{name:'Charades'},{name:'Family Feud'},{name:'Dominoes'}]));
+  localStorage.setItem('thanksgiving26_menu',JSON.stringify([{id:'rice',label:'Rice / dirty rice',category:'The sides',assignee:'Legacy cook'},{id:'potatoes',label:'Mashed potatoes / gravy',category:'The sides',assignee:'Legacy cook'}]));
+  localStorage.setItem('thanksgiving26_planning_votes',JSON.stringify([{game_key:'builtin-spades',user_id:'preview-device'},{game_key:'builtin-uno',user_id:'preview-device'}]));
+ });
+ await p.reload();
+ check(!(await p.locator('#gamesGrid').innerText()).match(/Spades|Charades|Family Feud|Dominoes/),'Returning local previews hide removed games');
+ check(await p.locator('[data-vote="builtin-name-that-tune"]').count()===1,'Legacy preview keeps Name That Tune vote key');
+ check(await p.locator('[data-vote="builtin-heads-up"]').count()===1&&await p.locator('[data-vote="builtin-heads-up"]').getAttribute('aria-pressed')==='false','Old previews gain Heads Up without inheriting Spades votes');
+ check(await p.locator('[data-game-key="cached-custom"]').count()===1&&await p.locator('[data-vote="builtin-uno"]').getAttribute('aria-pressed')==='true','Updating cached starters preserves custom games and existing UNO votes');
+ check(await p.locator('[data-dish-id="rice"], [data-dish-id="potatoes"]').count()===0,'Retired cached dishes do not return');
+ check((await p.locator('[data-dish-id="jambalaya"]').locator('..').innerText()).includes('0/3 assigned'),'Local Jambalaya starts without retired reservations');
+ await signup(p,'Local Jambalaya cook','jambalaya');await p.reload();
+ check((await p.locator('[data-dish-id="jambalaya"]').locator('..').innerText()).includes('Local Jambalaya cook'),'Local Jambalaya reservation persists after reload');
+ check(await p.evaluate(()=>load('menu',[]).filter(d=>['rice','potatoes'].includes(d.id)).length===2&&load('planning_votes',[]).some(v=>v.game_key==='builtin-spades')),'Updating preview lineups retains retired records');
+ await p.click('#editRsvpBtn');await p.fill('#rsvpName','Local preview household');await p.fill('#rsvpDietary','Vegetarian');await p.locator('#rsvpForm button[type=submit]').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});
+ await p.locator('[data-vote="builtin-heads-up"]').click();await p.waitForFunction(()=>document.querySelector('[data-vote="builtin-heads-up"]').getAttribute('aria-pressed')==='true');await p.reload();
  check((await p.locator('#rsvpList').innerText()).includes('Local preview household'),'Local preview RSVP persists');check((await p.locator('#rsvpList').innerText()).includes('Vegetarian')&&(await p.locator('#rsvpSavedStatus').innerText()).includes('saved on this device'),'Local dietary needs and clearly labeled save time persist');check(await p.locator('[data-vote="builtin-uno"]').getAttribute('aria-pressed')==='true','Local preview vote persists');check((await p.locator('#rsvpStatus').innerText()).includes('Preview'),'Local data is labeled as device-only');await p.context().close();
 }
 try{
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+ await checkUpdatedLineups();
  await checkFamilyWelcome();
  await checkRsvpRefreshWithCachedAssets(375);await checkRsvpRefreshWithCachedAssets(1440);
  const mobile=await newPage(375,{isMobile:true,hasTouch:true});await checkInvitationRouting(mobile);await mobile.context().close();

@@ -113,7 +113,7 @@
   <div id="lightboxBackdrop" class="modal-backdrop" role="presentation"><div class="modal lightbox" role="dialog" aria-modal="true" aria-label="Airbnb photo viewer"><button class="close-modal" id="lightboxClose" aria-label="Close photo">×</button><img id="lightboxImage" alt="Full-size Airbnb listing photograph"><div class="lightbox-toolbar"><button class="icon-btn" id="housePrev" aria-label="Previous property photo">←</button><span class="lightbox-caption" id="housePhotoCaption" role="status"></span><button class="icon-btn" id="houseNext" aria-label="Next property photo">→</button></div></div></div>
   <div id="tvSlideshow" class="tv-slideshow" role="dialog" aria-modal="true" aria-label="Family photo slideshow" hidden><div class="tv-toolbar"><span id="tvCount"></span><button type="button" id="tvExit" class="btn light small">Exit slideshow ×</button></div><img id="tvImage" alt=""><div class="tv-caption"><h2 id="tvCaption"></h2></div><div class="tv-controls"><button class="btn light small" id="tvPrev" aria-label="Previous slideshow photo">← Previous</button><button class="btn light small" id="tvPause">Pause slideshow</button><button class="btn light small" id="tvNext" aria-label="Next slideshow photo">Next →</button></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
-<script src="assets/family-features.js?v=f2fc90ef9935"></script>
+<script src="assets/family-features.js?v=5ac26e49acaa"></script>
 <script id="familySoundScript" src="assets/family-sound.js?v=63b6a219789e" data-sound-src="assets/i-love-it.mp3?v=7869193c2450"></script>
 <script>
 'use strict';
@@ -275,12 +275,11 @@ const DEFAULT_TIKTOKS = [
 const STARTER_DISHES = [
   {id:'turkey',label:'Turkey',category:'The main table'},
   {id:'ham',label:'Glazed ham',category:'The main table'},
+  {id:'jambalaya',label:'Jambalaya',category:'The main table'},
   {id:'dressing',label:'Cornbread dressing',category:'The sides'},
   {id:'mac',label:'Baked mac & cheese',category:'The sides'},
   {id:'greens',label:'Collard / mustard greens',category:'The sides'},
   {id:'yams',label:'Candied yams',category:'The sides'},
-  {id:'rice',label:'Rice / dirty rice',category:'The sides'},
-  {id:'potatoes',label:'Mashed potatoes / gravy',category:'The sides'},
   {id:'rolls',label:'Dinner rolls / cornbread',category:'The sides'},
   {id:'pie',label:'Sweet potato pie',category:'Something sweet'},
   {id:'cake',label:'Cake / another dessert',category:'Something sweet'},
@@ -288,11 +287,12 @@ const STARTER_DISHES = [
   {id:'plates',label:'Plates, cups & utensils',category:'Drinks & extras'}
 ];
 const STARTER_GAMES = [
- {id:'builtin-spades',name:'Spades',desc:'Partners, trash talk, and bragging rights.',icon:'♠'},
+ {id:'builtin-heads-up',name:'Heads Up',desc:'Hold up your phone and guess from the family’s clues.',icon:'✦'},
  {id:'builtin-uno',name:'UNO',desc:'Friendships will be tested. Draw four.',icon:'◈'},
  {id:'builtin-name-that-tune',name:'Name That Tune',desc:'From old-school soul to modern hits.',icon:'♫'}
 ];
-function gameInLineup(game){return !['charades','family feud','family fued','dominoes'].includes(String(game.name||'').trim().toLowerCase().replace(/\s+/g,' '));}
+function gameInLineup(game){return game.id!=='builtin-spades'&&!['spades','charades','family feud','family fued','dominoes'].includes(String(game.name||'').trim().toLowerCase().replace(/\s+/g,' '));}
+function gamesWithStarters(saved){return [...STARTER_GAMES,...saved.filter(game=>!STARTER_GAMES.some(starter=>starter.id===game.id||(!game.id&&starter.name===game.name)))].filter(gameInLineup);}
 const $=selector=>document.querySelector(selector);
 const safeParse=(s,fallback)=>{try{let value=JSON.parse(s);return value??fallback;}catch{return fallback;}};
 const load=(key,fallback)=>{try{return safeParse(localStorage.getItem('thanksgiving26_'+key),fallback);}catch{return fallback;}};
@@ -303,7 +303,7 @@ const configured=Boolean(FAMILY_CONFIG.url.trim()&&FAMILY_CONFIG.publishableKey.
 const sb=configured && window.supabase?.createClient ? window.supabase.createClient(FAMILY_CONFIG.url.trim(),FAMILY_CONFIG.publishableKey.trim()) : null;
 let isShared=false, memberUserId=null;
 let familyFeatures=null;
-let menuItems=load('menu',[]),games=load('games',STARTER_GAMES).filter(gameInLineup),tiktoks=load('tiktoks',DEFAULT_TIKTOKS);
+let menuItems=load('menu',[]),games=gamesWithStarters(load('games',[])),tiktoks=load('tiktoks',DEFAULT_TIKTOKS);
 let photos=[...SHARED_FAMILY_PHOTOS],slideIndex=0,playing=true,slideTimer=null;
 if(configured){menuItems=[];games=[...STARTER_GAMES];tiktoks=[...DEFAULT_TIKTOKS];}
 const toast=$('#toast');let toastTimer;
@@ -443,7 +443,8 @@ function ownSignup(d){return dishSignups(d).find(s=>s.user_id===(isShared?member
 function combinedMenu(){
   const merged=new Map(STARTER_DISHES.map(d=>[d.id,{...d,signups:[],note:''}]));
   menuItems.forEach(d=>merged.set(d.id,{...merged.get(d.id),...d,signups:dishSignups(d)}));
-  return [...merged.values()];
+  // Retired dishes stay stored with their signups; never reuse their IDs for a new dish.
+  return [...merged.values()].filter(d=>!['rice','potatoes'].includes(d.id));
 }
 function renderMenu(){
   const all=combinedMenu(),claimed=all.filter(d=>dishSignups(d).length).length;
@@ -643,7 +644,7 @@ $('#addPhotoUrlBtn').addEventListener('click',()=>{
 function renderGames(){if(familyFeatures){familyFeatures.renderGames();return;}$('#gamesGrid').innerHTML=games.map((g,i)=>`<article class="game-card" data-num="${String(i+1).padStart(2,'0')}"><span class="game-icon" aria-hidden="true">${esc(g.icon||'✦')}</span><h3>${esc(g.name)}</h3><p>${esc(g.desc)}</p></article>`).join('');}
 async function refreshGames(){if(!isShared)return;const requestedUser=memberUserId;try{
   const {data,error}=await sb.from('thanksgiving_games').select('id,name,description,icon').eq('event_id',FAMILY_CONFIG.eventId).order('created_at',{ascending:true});
-  if(error)throw error;if(!isShared||requestedUser!==memberUserId)return;games=[...STARTER_GAMES,...data.map(g=>({id:g.id,name:g.name,desc:g.description,icon:g.icon||'✦'}))].filter(gameInLineup);renderGames();
+  if(error)throw error;if(!isShared||requestedUser!==memberUserId)return;games=gamesWithStarters(data.map(g=>({id:g.id,name:g.name,desc:g.description,icon:g.icon||'✦'})));renderGames();
 }catch(error){console.error(error);notify('Could not refresh the family games.');}}
 $('#addGameBtn').addEventListener('click',()=>{
   if(!assertFamilyAccess())return;

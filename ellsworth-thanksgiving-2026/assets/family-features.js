@@ -2,7 +2,7 @@
 // Classic script: initialized after the existing board has defined its shared state.
 function initFamilyFeatures(){
   const eventId=FAMILY_CONFIG.eventId,localUser='preview-device';
-  const builtinKeys={Spades:'builtin-spades',UNO:'builtin-uno','Name That Tune':'builtin-name-that-tune'};
+  const builtinKeys={'Heads Up':'builtin-heads-up',UNO:'builtin-uno','Name That Tune':'builtin-name-that-tune'};
   // Verified 2026-10-21 against NFL.com. Stored Central wall times, not viewer-local times.
   const nflSource='https://www.nfl.com/news/thanksgiving-2026-nfl-schedule-release';
   const football=[
