@@ -23,3 +23,5 @@
 @keyframes family-confetti-fall{0%{transform:translate(-50%,-20px) rotate(0);opacity:0}8%{opacity:1}85%{opacity:1}100%{transform:translate(calc(-50% + var(--drift)),calc(100dvh + 140px)) rotate(var(--spin));opacity:0}}
 @keyframes family-welcome-greeting{0%,100%{opacity:0}10%,80%{opacity:1}}
 @media(prefers-reduced-motion:reduce){.family-confetti{display:none}.family-welcome-greeting{animation:none}}
+
+.memory-gallery{min-width:0}
