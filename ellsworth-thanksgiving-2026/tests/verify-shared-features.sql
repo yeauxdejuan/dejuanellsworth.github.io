@@ -28,3 +28,9 @@ select exists(select 1 from information_schema.columns where table_schema='publi
          and table_name='thanksgiving_rsvps' and column_name='updated_at') as save_time_installed,
        exists(select 1 from pg_trigger where tgrelid=to_regclass('public.thanksgiving_rsvps')
          and tgname='thanksgiving_rsvps_updated_at' and tgenabled='O' and not tgisinternal) as server_timestamp_trigger;
+
+-- Heads Up voting must be enabled before publishing the new game lineup.
+select exists(select 1 from pg_policies where schemaname='public'
+         and tablename='thanksgiving_game_votes' and policyname='Members vote for existing games'
+         and cmd='INSERT' and 'authenticated'=any(roles)
+         and position('builtin-heads-up' in with_check)>0) as heads_up_voting_enabled;

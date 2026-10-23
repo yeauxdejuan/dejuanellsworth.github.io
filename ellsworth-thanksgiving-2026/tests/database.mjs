@@ -17,6 +17,8 @@ const planningName=(await readdir(new URL('migrations/',root))).find(n=>n.endsWi
 const planningMigration=await readFile(new URL(`migrations/${planningName}`,root),'utf8');
 const rolloutName=(await readdir(new URL('migrations/',root))).find(n=>n.endsWith('_rsvp_dietary_and_updated_at.sql'));
 const rolloutMigration=await readFile(new URL(`migrations/${rolloutName}`,root),'utf8');
+const headsUpName=(await readdir(new URL('migrations/',root))).find(n=>n.endsWith('_heads_up_voting.sql'));
+const headsUpMigration=await readFile(new URL(`migrations/${headsUpName}`,root),'utf8');
 const event='ellsworth-thanksgiving-2026';
 const ids=Array.from({length:7},(_,i)=>`00000000-0000-4000-8000-${String(i+1).padStart(12,'0')}`);
 let admin,checks=0;
@@ -130,10 +132,26 @@ try{
   await assert.rejects(()=>admin.query(migration),/already installed/);await admin.query('rollback');checks++;
   await checkPlanningDatabase({admin,asUser,denied,check,ids,event,migration:planningMigration});
   await checkRolloutDatabase({admin,asUser,denied,check,ids,event,migration:rolloutMigration});
+  const voteSql='insert into public.thanksgiving_game_votes(event_id,game_key,user_id) values ($1,$2,$3)';
+  await denied(ids[0],voteSql,[event,'builtin-heads-up',ids[0]]);
+  const oldVotes=(await admin.query('select * from public.thanksgiving_game_votes order by game_key,user_id')).rows;
+  await admin.query(headsUpMigration);
+  check(JSON.stringify(oldVotes)===JSON.stringify((await admin.query('select * from public.thanksgiving_game_votes order by game_key,user_id')).rows),'Heads Up migration preserves all prior votes');
+  check((await asUser(ids[0],voteSql,[event,'builtin-heads-up',ids[0]])).rowCount===1,'Heads Up can receive its own member vote');
+  await denied(ids[0],voteSql,[event,'builtin-heads-up',ids[0]],'23505');
+  await denied(ids[1],voteSql,[event,'builtin-heads-up',ids[0]]);
+  await denied(ids[6],voteSql,[event,'builtin-heads-up',ids[6]]);
+  await denied(null,voteSql,[event,'builtin-heads-up',ids[1]]);
+  await denied(ids[0],voteSql,[event,'imaginary-game',ids[0]]);
+  await denied(ids[0],voteSql,['another-event','builtin-heads-up',ids[0]],'23514');
+  check((await asUser(ids[1],voteSql,[event,'builtin-heads-up',ids[1]])).rowCount===1,'Another member can independently vote for Heads Up');
+  check((await asUser(ids[1],'delete from public.thanksgiving_game_votes where user_id=$1 and game_key=$2',[ids[0],'builtin-heads-up'])).rowCount===0,'Members cannot remove another Heads Up vote');
+  check((await asUser(ids[0],'delete from public.thanksgiving_game_votes where user_id=$1 and game_key=$2',[ids[0],'builtin-heads-up'])).rowCount===1,'Members can remove their own Heads Up vote');
+  check((await claim(ids[0],'jambalaya'))==='claimed','Jambalaya accepts reservations with the existing RPC');
   // Fresh installation follows the same baseline + migration path, without fixtures.
   await admin.query('create database ellsworth_fresh');const fresh=client('ellsworth_fresh');await fresh.connect();
   const freshBootstrap=bootstrap.replace('create role anon nologin; create role authenticated nologin;','');
-  try{await fresh.query(freshBootstrap);await fresh.query(baseline);await fresh.query(migration);await fresh.query(planningMigration);await fresh.query(rolloutMigration);check((await fresh.query('select count(*)::int as n from public.thanksgiving_dish_signups')).rows[0].n===0,'Fresh install');check((await fresh.query('select count(*)::int as n from public.thanksgiving_schedule')).rows[0].n===2,'Fresh install includes editable family-plan placeholders');check((await fresh.query("select count(*)::int as n from information_schema.columns where table_name='thanksgiving_rsvps' and column_name in ('dietary_needs','updated_at')")).rows[0].n===2,'Fresh install includes rollout RSVP fields');}
+  try{await fresh.query(freshBootstrap);await fresh.query(baseline);await fresh.query(migration);await fresh.query(planningMigration);await fresh.query(rolloutMigration);await fresh.query(headsUpMigration);check((await fresh.query('select count(*)::int as n from public.thanksgiving_dish_signups')).rows[0].n===0,'Fresh install');check((await fresh.query('select count(*)::int as n from public.thanksgiving_schedule')).rows[0].n===2,'Fresh install includes editable family-plan placeholders');check((await fresh.query("select count(*)::int as n from information_schema.columns where table_name='thanksgiving_rsvps' and column_name in ('dietary_needs','updated_at')")).rows[0].n===2,'Fresh install includes rollout RSVP fields');check((await fresh.query("select with_check from pg_policies where schemaname='public' and tablename='thanksgiving_game_votes' and policyname='Members vote for existing games'")).rows[0].with_check.includes('builtin-heads-up'),'Fresh install allows Heads Up votes');}
   finally{await fresh.end();}
   console.log(`PASS: ${checks} database checks on PostgreSQL ${(await admin.query('show server_version')).rows[0].server_version}; legacy preservation, capacity, ownership, RLS, grants, concurrency, fresh install.`);
 }finally{
