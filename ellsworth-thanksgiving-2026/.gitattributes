@@ -1,0 +1,2 @@
+# Calendar clients expect CRLF; preserve the published file's line endings.
+assets/*.ics -text whitespace=cr-at-eol
