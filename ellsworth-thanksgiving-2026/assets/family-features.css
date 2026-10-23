@@ -22,7 +22,6 @@
 .family-confetti-name:nth-child(4n){color:#a66c14}
 @keyframes family-confetti-fall{0%{transform:translate(-50%,-20px) rotate(0);opacity:0}8%{opacity:1}85%{opacity:1}100%{transform:translate(calc(-50% + var(--drift)),calc(100dvh + 140px)) rotate(var(--spin));opacity:0}}
 @keyframes family-welcome-greeting{0%,100%{opacity:0}10%,80%{opacity:1}}
-@media(prefers-reduced-motion:reduce){.family-confetti{display:none}.family-welcome-greeting{animation:none}}
 
 .memory-gallery{min-width:0}
 .memory-layout .polaroid-illustration{margin-inline:auto}
@@ -45,3 +44,13 @@
 #rsvpStatus:empty,#gameVoteStatus:empty,.photo-extra>.helper:empty,.rsvp-summary:empty{display:none}
 .footer{padding-top:36px}.footer-grid{padding-bottom:28px}
 @media(max-width:760px){.section-pad{padding-block:36px}.hero-stat strong{font-size:clamp(18px,5vw,22px)}.hero-stat span{font-size:10px}}
+
+.hero h1{text-align:center}
+
+.footer .developer-credit{display:flex;align-items:center;justify-content:center;gap:10px;max-width:600px;margin:24px auto 0;font-size:16px;color:#fff7e9}
+.credit-signature{min-width:0}.credit-name{font:600 clamp(18px,2vw,21px) var(--serif);color:#e4b57f;white-space:nowrap;animation:credit-gold-shimmer 5s ease-in-out infinite}
+.credit-role{display:block;margin-top:4px;font-size:12px;letter-spacing:.025em;color:#ead0b9}
+.credit-turkey{flex-shrink:0;font-size:clamp(24px,4vw,30px);line-height:1.2;transform-origin:50% 80%;pointer-events:none;animation:credit-turkey-sway 3.4s ease-in-out infinite}
+.credit-turkey:last-child{animation-delay:-1.7s}
+@keyframes credit-gold-shimmer{0%,100%{color:#e4b57f;text-shadow:0 0 0 transparent}50%{color:#fff0bd;text-shadow:0 0 10px #e4b57f60}}
+@keyframes credit-turkey-sway{0%,100%{transform:rotate(-6deg) translateY(0)}50%{transform:rotate(6deg) translateY(-2px)}}
