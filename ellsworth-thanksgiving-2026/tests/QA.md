@@ -1,4 +1,12 @@
-# Centered photo and mobile action groups · current validation
+# Compact hero, property gallery and RSVP cards · current validation
+
+Validated October 22, 2026. The hero facts occupy one three-column row. Removed the property listing/photo links, moved the categorized gallery immediately below the preview in the same photo column, and removed its separate heading/instructions. All 26 photos and category lazy loading remain available. The existing saved-confirmation node now belongs only to the member’s own RSVP card, directly after departure details (after the household name for declined RSVPs). No save/query, ownership, timestamp or sound behavior changed.
+
+Section padding is now 56px on desktop and 36px on mobile, with a smaller footer, compact property spacing and no blank status-row gaps. **388 Chromium checks passed**, including own-card confirmation after reload, independent members, declined RSVPs, removal/disconnect, failed-save/read recovery, and the relocated nested gallery. **31 focused layout checks passed** across 320, 375, 430, 768, 1024 and 1440px for hero alignment, immediate gallery placement, own-card confirmation, spacing and overflow. Phone/desktop previews were visually reviewed using synthetic data/images.
+
+Inline/feature/browser JavaScript syntax, content-versioned CSS/JS URLs and `git diff --check` passed. Persistence queries and schema are unchanged, so the database suite was not repeated. Supabase and external media are mocked; physical Safari/Android remain outside these checks. The update awaits PR merge and Pages deployment.
+
+# Prior centered photo and mobile action groups
 
 Validated October 22, 2026. Centered the photo illustration, upload buttons/helper, caption, emoji reactions and Edit caption/TV slideshow actions within their columns. The layout review also identified and centered mobile RSVP buttons, menu header/footer action groups, game filter/suggestion controls and the stacked footer. These additional rules apply at widths up to 760px. No JavaScript, persistence or sound behavior changed.
 
