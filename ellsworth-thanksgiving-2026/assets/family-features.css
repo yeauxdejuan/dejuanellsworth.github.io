@@ -25,3 +25,12 @@
 @media(prefers-reduced-motion:reduce){.family-confetti{display:none}.family-welcome-greeting{animation:none}}
 
 .memory-gallery{min-width:0}
+.memory-layout .polaroid-illustration{margin-inline:auto}
+.memory-tools,.photo-reactions,.photo-extra-actions{justify-content:center}
+.memory-tools+.helper,.memory-gallery .photo-caption,.photo-extra{text-align:center}
+@media(max-width:760px){
+  #rsvp .feature-actions,#menu .board-actions{width:100%;justify-content:center}
+  #menu .menu-foot{justify-content:center;text-align:center}
+  .game-sort-label{justify-content:center}.game-add{flex-direction:column;text-align:center}
+  .footer-grid,.footer-bottom{flex-direction:column;align-items:center;text-align:center}
+}
