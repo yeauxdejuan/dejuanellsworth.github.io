@@ -19,10 +19,11 @@ export async function installDiscordHttpForTest(admin,migration){
   await admin.query(migration.replace('create extension if not exists http with schema extensions;',()=>adapter));
 }
 
-export async function checkDiscordHttpDatabase({admin,asUser,denied,check,ids,event,migration}){
+export async function checkDiscordHttpDatabase({admin,asUser,denied,check,ids,event,migration,noLinkMigration}){
   await admin.query(`grant usage on schema net to public;grant all on all tables in schema net to public;
     grant execute on all functions in schema net to public;truncate net.http_request_queue,net._http_response;`);
   await installDiscordHttpForTest(admin,migration);
+  await admin.query(noLinkMigration);
   check((await admin.query("select has_table_privilege('authenticated','net.http_request_queue','select') as allowed")).rows[0].allowed,'Final transport is tested with the actual hosted shared-queue access model');
   await denied(ids[0],"select * from ellsworth_private.post_discord_message('Unauthorized')");
   check(!(await admin.query("select has_function_privilege('anon','ellsworth_private.post_discord_message(text)','execute') as allowed")).rows[0].allowed,'Anonymous callers cannot invoke the private transport');
@@ -33,6 +34,8 @@ export async function checkDiscordHttpDatabase({admin,asUser,denied,check,ids,ev
   await activity('Synchronous background test');await send();
   check((await admin.query('select bool_and(delivered_at is not null) as delivered from ellsworth_private.discord_outbox')).rows[0].delivered,'A background response confirms the batch in the same dispatch');
   check((await admin.query('select count(*)::int as n from net.http_request_queue')).rows[0].n===0,'Webhook URL and content never enter the shared HTTP queue');
+  const digest=(await admin.query('select body from ellsworth_private.http_test_requests order by id desc limit 1')).rows[0].body;
+  check(/^🦃 Ellsworth updates\n• [^\n]+ suggested a game: Synchronous background test$/.test(digest.content),'Activity digest keeps the header and event summary without an appended link');
   const requestCount=(await admin.query('select count(*)::int as n from ellsworth_private.http_test_requests')).rows[0].n;
   await send();check((await admin.query('select count(*)::int as n from ellsworth_private.http_test_requests')).rows[0].n===requestCount,'Confirmed batches are not repeated');
   await activity('Rate limited background test');
