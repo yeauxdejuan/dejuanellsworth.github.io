@@ -41,7 +41,7 @@ About once a minute, one short digest covers up to 100 pending events:
 - Photo reactions added or changed, grouped when several occur together. Reaction removals are silent.
 - Game suggestions, added game votes, TikToks and photo caption updates. Vote removals are silent.
 
-Single events can include a short name/dish description; multiple events of the same type become a count. Caption text, allergy/dietary information, notes, travel details, invitation codes, auth identifiers, and private photo URLs are excluded. The message links to the family board rather than attaching photos. Mentions are disabled, including `@everyone`, and link previews are suppressed.
+Single events can include a short name/dish description; multiple events of the same type become a count. Caption text, allergy/dietary information, notes, travel details, invitation codes, auth identifiers, and private photo URLs are excluded. Messages contain the activity summary without a website link or photo attachments. Mentions are disabled, including `@everyone`, and link previews are suppressed.
 
 Successful responses mark the selected batch delivered before the worker returns. An advisory lock prevents overlapping dispatchers. Rate limits honor Retry-After with a minimum two-minute delay. Transport failures and server errors are retried, up to five attempts per event. As with other webhook systems, an ambiguous timeout can cause a duplicate if Discord accepted a message but its response was lost. A 401/403/404 response pauses capture/delivery until the owner repairs the webhook and re-enables alerts. Notification queue failures never prevent the original family save.
 

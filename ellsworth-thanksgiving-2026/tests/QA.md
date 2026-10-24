@@ -1,4 +1,10 @@
-# Discord private transport · deployed validation
+# Discord notifications without website links
+
+Validated and deployed October 24, 2026. Additive migration `20261024171437_discord_notifications_without_link.sql` was applied as `20261024171552_discord_notifications_without_link`. It removes the appended website URL and its blank separator from activity digests. Headers, event summaries, grouping, retries, privacy controls and delivery settings are preserved. Website links elsewhere are unchanged.
+
+**225 disposable PostgreSQL checks passed**, including exact notification content without a link, delivery/retry regressions, owner-only access and fresh installation. Live readback confirmed the dispatcher contains no URL, alerts and the cron job remain enabled, and member execution remains denied. No production family records were created or read, and no extra connection test was sent. `git diff --check` passed. No frontend files changed, so browser tests were not repeated.
+
+# Prior Discord private transport · deployed validation
 
 Validated and deployed October 24, 2026. The merged bootstrap was applied as `20261024162724_discord_activity_alerts`, initially disabled. Live checks found platform-owned pg_net PUBLIC grants could not be restricted by the ordinary project role as the local adapter had assumed. No webhook was sent through that queue. The additive `20261024163805_discord_private_http_transport` correction now sends directly from the separate scheduled owner worker using the HTTP extension. Source saves only enqueue; they never wait for the network. A two-second connection/five-second total limit, generic redacted errors and owner-only execution keep the URL private and failures isolated.
 

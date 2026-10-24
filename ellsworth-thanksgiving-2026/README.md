@@ -9,9 +9,11 @@ GitHub Pages serves the static page; Supabase supplies family authentication, sh
 
 ## Private Discord alerts
 
-The organizer can receive a private Discord activity summary about once a minute for RSVPs, new menu items, dish signups, photos, reactions, game suggestions/votes, TikToks and caption updates. Photos and repeated activity are grouped. This uses the existing database and Discord’s built-in incoming webhook, without a paid notification provider, extra server, or changes to the family website. Setup, activation, privacy details, retries and pause/status commands are in **[DISCORD.md](DISCORD.md)**.
+The organizer can receive a private Discord activity summary about once a minute for RSVPs, new menu items, dish signups, photos, reactions, game suggestions/votes, TikToks and caption updates. Photos and repeated activity are grouped. Notifications contain the activity summary without an appended website link. This uses the existing database and Discord’s built-in incoming webhook, without a paid notification provider, extra server, or changes to the family website. Setup, activation, privacy details, retries and pause/status commands are in **[DISCORD.md](DISCORD.md)**.
 
 **Installed and enabled October 24, 2026:** the bootstrap `20261024161008_discord_activity_alerts.sql` and additive `20261024163338_discord_private_http_transport.sql` correction are applied. Do not replay either. Discord confirmed the connection test with HTTP 200, the minute job is active, and scheduled runs have succeeded and delivered activity. Hosted Supabase grants broader access to its platform-owned pg_net queue than the local adapter, so final delivery uses a direct owner-only HTTP call from the scheduled worker and keeps the webhook out of shared transport tables. Keep the webhook in Vault as `ellsworth_discord_webhook_url`; no secret is in client code or GitHub. The unused pg_net extension remains installed after automatic review declined optional removal; it is not used by the final transport.
+
+The additive `20261024171437_discord_notifications_without_link.sql` migration was applied and verified on October 24, 2026 (live version `20261024171552`). It removes only the appended board link from Discord messages. Do not replay it.
 
 ## Heads Up and Jambalaya release
 
