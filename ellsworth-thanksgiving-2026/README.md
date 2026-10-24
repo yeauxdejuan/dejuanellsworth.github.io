@@ -16,7 +16,7 @@ Heads Up replaces Spades, and Jambalaya replaces Rice / dirty rice and Mashed po
 ## Final family rollout polish
 
 - Joined members get a compact **My contributions** dropdown below the connection strip. It summarizes only the current browser account's RSVP and dish signups, with links to existing sections and individual dishes. It uses already-loaded data, updates after edits/removals, labels a retained RSVP after read failure, and clears on disconnect. It adds no new identity or cross-device recovery behavior.
-- **Add to calendar** downloads a static all-day Thanksgiving event for November 26, 2026, in Arabi, Louisiana. Its end is November 27 (exclusive), and it includes no dinner time, reminder, invitation code or private address. The ICS file preserves CRLF and folded lines for calendar clients.
+- **Add to calendar** downloads Thanksgiving on November 26, 2026, at **12pm Central** in Arabi, Louisiana, matching the hero’s “Nov 26, 12pm” label. The calendar uses 18:00 UTC on that date so calendar apps convert correctly to the viewer’s time zone. No end time, reminder, invitation code or private address is included. The stable event UID and incremented sequence identify the updated event; its versioned download URL bypasses the earlier all-day file. The ICS file preserves CRLF and folded lines for calendar clients.
 - Mobile action targets are at least 44px and form inputs use at least 16px text. The mobile navigation can scroll on short screens. The countdown uses Central calendar dates, says “1 day” at the singular, and updates every minute while visible and when returning to the page. The photo instructions recognize joined members, and the house FAQ accurately refers to photos.
 - Photo uploads show progress and a final saved/failed count, temporarily disable file selection, and explain the 20-photo batch limit before writing an oversized selection. A decoding failure leaves file selection usable for another attempt. Pending upload UI clears on disconnect without submitting further photo records as a different account.
 
@@ -27,7 +27,7 @@ The organizer requested no changes to the 30-minute photo refresh interval, game
 
 The page requests its feature script and stylesheet with content-versioned URLs. GitHub Pages caches these assets for ten minutes; using an unversioned URL allowed the latest HTML to run the previous script, which referenced the removed Family Plans controls and stopped initialization before rendering RSVPs. Versioned URLs bypass that stale response without clearing browser storage or changing a family account.
 
-Whenever `assets/family-features.js`, `assets/family-features.css`, `assets/family-sound.js`, or `assets/i-love-it.mp3` changes, update its `?v=` value in `index.html` to the first 12 characters of the file's SHA-256 hash. The browser suite checks those values and exercises saved RSVPs across repeated reloads with the old unversioned script cached.
+Whenever `assets/family-features.js`, `assets/family-features.css`, `assets/family-sound.js`, `assets/i-love-it.mp3`, or `assets/ellsworth-thanksgiving-2026.ics` changes, update its `?v=` value in `index.html` to the first 12 characters of the file's SHA-256 hash. The browser suite checks those values and exercises saved RSVPs across repeated reloads with the old unversioned script cached.
 
 ## Shared family features
 

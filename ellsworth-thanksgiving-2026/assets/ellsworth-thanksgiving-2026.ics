@@ -5,13 +5,13 @@ CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VEVENT
 UID:ellsworth-thanksgiving-2026@yeauxdejuan.github.io
-DTSTAMP:20261023T201429Z
-DTSTART;VALUE=DATE:20261126
-DTEND;VALUE=DATE:20261127
+DTSTAMP:20261024T152227Z
+SEQUENCE:1
+DTSTART:20261126T180000Z
 SUMMARY:Ellsworth Family Thanksgiving 2026
 LOCATION:Arabi\, Louisiana
-DESCRIPTION:Thanksgiving with the Ellsworth family. Confirm dinner time and
-  travel details in the family group chat.
+DESCRIPTION:Thanksgiving with the Ellsworth family. Starts at 12pm Central.
+  Travel details are in the family group chat.
 URL:https://yeauxdejuan.github.io/dejuanellsworth.github.io/ellsworth-thank
  sgiving-2026/
 END:VEVENT

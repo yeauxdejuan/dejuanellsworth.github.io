@@ -173,7 +173,7 @@ async function checkFamilyWelcome(){
 }
 async function signup(p,name,dish='mac'){await p.locator(`[data-dish-id="${dish}"]`).click();await p.fill('#claimName',name);await p.fill('#claimNote','Synthetic test note');await p.locator('#claimForm button[type=submit]').click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});}
 async function checkFeatureAssetVersions(p){
- for(const [path,selector,attribute] of [['assets/family-features.js','script[src*="family-features.js"]','src'],['assets/family-features.css','link[href*="family-features.css"]','href'],['assets/family-sound.js','script[src*="family-sound.js"]','src'],['assets/i-love-it.mp3','#familySoundScript','data-sound-src']]){
+ for(const [path,selector,attribute] of [['assets/family-features.js','script[src*="family-features.js"]','src'],['assets/family-features.css','link[href*="family-features.css"]','href'],['assets/family-sound.js','script[src*="family-sound.js"]','src'],['assets/i-love-it.mp3','#familySoundScript','data-sound-src'],['assets/ellsworth-thanksgiving-2026.ics','.calendar-link','href']]){
   const hash=createHash('sha256').update(await readFile(new URL(path,root))).digest('hex').slice(0,12);
   const assetUrl=new URL(await p.locator(selector).getAttribute(attribute),url);
   check(assetUrl.searchParams.get('v')===hash,`${path} URL matches its content so releases bypass stale cached assets`);
@@ -323,9 +323,9 @@ async function checkRolloutPolish(){
  const [download]=await Promise.all([p.waitForEvent('download'),p.locator('.calendar-link').click()]);
  const calendar=await readFile(await download.path(),'utf8'),unfolded=calendar.replace(/\r\n /g,'');
  check(download.suggestedFilename()==='Ellsworth-Thanksgiving-2026.ics','Calendar download has a recognizable family filename');
- check(unfolded.includes('DTSTART;VALUE=DATE:20261126\r\n')&&unfolded.includes('DTEND;VALUE=DATE:20261127\r\n'),'Calendar is an all-day Thanksgiving event with an exclusive next-day end');
+ check(unfolded.includes('DTSTART:20261126T180000Z\r\n')&&!/^DTEND[;:]/m.test(unfolded),'Calendar starts at noon Central without an invented end time');
  check(!calendar.replaceAll('\r\n','').includes('\n')&&calendar.split('\r\n').every(line=>Buffer.byteLength(line)<=75),'Calendar uses CRLF and correctly folded lines');
- check(unfolded.includes('LOCATION:Arabi\\, Louisiana')&&unfolded.includes('Confirm dinner time')&&!unfolded.includes('TRIGGER:')&&!unfolded.includes('p_code'),'Calendar uses public location and confirmed date without invented times or private code');
+ check(unfolded.includes('LOCATION:Arabi\\, Louisiana')&&unfolded.includes('Starts at 12pm Central')&&!unfolded.includes('TRIGGER:')&&!unfolded.includes('p_code'),'Calendar uses public location and the confirmed start without private code');
  for(const timezoneId of ['America/Chicago','America/Los_Angeles','Asia/Tokyo']){
   const clockPage=await newPage(375,{timezoneId});
   for(const [date,expected] of [['2026-11-24T18:00:00Z','2 days'],['2026-11-26T05:30:00Z','1 day'],['2026-11-26T06:30:00Z','Today!'],['2026-11-27T06:30:00Z','2026']]){
