@@ -1,4 +1,16 @@
-# Discord activity alerts · current validation
+# Discord private transport · deployed validation
+
+Validated and deployed October 24, 2026. The merged bootstrap was applied as `20261024162724_discord_activity_alerts`, initially disabled. Live checks found platform-owned pg_net PUBLIC grants could not be restricted by the ordinary project role as the local adapter had assumed. No webhook was sent through that queue. The additive `20261024163805_discord_private_http_transport` correction now sends directly from the separate scheduled owner worker using the HTTP extension. Source saves only enqueue; they never wait for the network. A two-second connection/five-second total limit, generic redacted errors and owner-only execution keep the URL private and failures isolated.
+
+**224 disposable PostgreSQL checks passed**, including the original 210 and final-transport cases reproducing the hosted shared-queue grants. These verify owner-only sender/test access, confirmed status, immediate delivered-state recording, no duplicate successful batches, rate-limit delays, exception/retry bounds, rejected webhook pause, pause-during-request safety, unchanged mention suppression and no Discord URL/content ever entering the shared queue. Fresh installations follow both migrations. HTTP/Vault/cron adapters are synthetic; no test-suite request leaves the disposable database.
+
+Live validation confirmed the private sender, test control, outbox and Vault are inaccessible to website roles; no Discord URL is in the shared request queue. A fixed connection test returned **HTTP 200**. Alerts were then explicitly enabled; the minute job runs as postgres, has succeeded, and the private status reports delivered activity. No production family records were read or manufactured for testing. The webhook was never printed or committed.
+
+Optional cleanup of the unused pg_net extension was rejected by automatic review as a potentially disruptive production extension removal. It was left installed and the proposed cleanup migration was removed from the final change. The [extension-in-public advisor](https://supabase.com/docs/guides/database/database-linter?lint=0014_extension_in_public) therefore remains for that unused extension. The final sender never uses it or stores credentials in its tables. The two new private tables intentionally have RLS and no client policies, alongside existing membership/auth advisories; no private notification SECURITY DEFINER function is callable by site members.
+
+No frontend behavior changed, so the browser suite was not repeated. JavaScript syntax and staged/unstaged `git diff --check` passed. Owner setup, status and pause commands are in [DISCORD.md](../DISCORD.md). The backend is already active; the follow-up PR records the tested correction and deployment notes.
+
+# Prior Discord activity alerts preparation
 
 Prepared October 24, 2026. The Discord integration adds private configuration/outbox tables, nine activity triggers and an owner-only minute dispatcher. It installs disabled and does not backfill old records. The browser application, existing contribution handlers, authentication and sound are unchanged.
 
