@@ -71,3 +71,5 @@
   .nav-links{max-height:calc(100dvh - 100px);overflow-y:auto}.nav-link{display:flex;align-items:center;min-height:44px}
 }
 @media(max-width:490px){.contributions-body{grid-template-columns:1fr;gap:12px}}
+
+@media(max-width:760px){.hero-bottom{grid-template-columns:minmax(0,1.4fr) repeat(2,minmax(0,1fr))}}
