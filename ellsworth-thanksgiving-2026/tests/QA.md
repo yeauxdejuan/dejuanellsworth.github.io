@@ -1,4 +1,12 @@
-# Noon Thanksgiving start · current validation
+# Discord activity alerts · current validation
+
+Prepared October 24, 2026. The Discord integration adds private configuration/outbox tables, nine activity triggers and an owner-only minute dispatcher. It installs disabled and does not backfill old records. The browser application, existing contribution handlers, authentication and sound are unchanged.
+
+**209 disposable PostgreSQL checks passed**, including 49 Discord checks plus all previous database regressions and fresh installation. These exercise disabled startup, member-denied access to settings/queue/functions/network APIs, missing/invalid destinations, nine event categories, built-in first-claim deduplication, no-op RSVP upserts, private-data exclusion, grouped photos, disabled mentions/previews, confirmed responses, no repeated in-flight/delivered sends, rate-limit delay, missing transport responses, bounded retries, rejected webhook pause, safe re-enable, retention/disable cleanup, rollback, Unicode message bounds and saves surviving a broken notification queue. The actual SQL runs; only Vault, pg_net transport and cron extension adapters are synthetic and no external messages are sent by tests.
+
+Deployment is initially paused pending real extension/grant checks and the fixed connection test. The webhook secret is already saved in Vault; only its existence and current access restrictions were inspected, without printing it. The browser regression suite was not repeated because no frontend files changed. JavaScript syntax and `git diff --check` passed. See [DISCORD.md](../DISCORD.md) for the owner-only setup, status and pause commands and official documentation.
+
+# Prior noon Thanksgiving start
 
 Validated October 24, 2026. The hero fact now reads “Nov 26, 12pm.” The calendar download now starts at 18:00 UTC on November 26, equivalent to 12pm America/Chicago. It preserves the existing event UID, increments the sequence to 1, updates its timestamp and uses a content-versioned URL to bypass the earlier all-day file. No end time was supplied, so the calendar omits it.
 

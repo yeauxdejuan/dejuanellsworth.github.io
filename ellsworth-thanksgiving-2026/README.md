@@ -7,6 +7,12 @@ GitHub Pages serves the static page; Supabase supplies family authentication, sh
 
 **Family rollout message reminder:** Include “Make sure your phone’s sound is on and your media volume is turned up.” Keep the sound effect itself a surprise; the organizer will send the family message.
 
+## Private Discord alerts
+
+The organizer can receive a private Discord activity summary about once a minute for RSVPs, new menu items, dish signups, photos, reactions, game suggestions/votes, TikToks and caption updates. Photos and repeated activity are grouped. This uses the existing database and Discord’s built-in incoming webhook, without a paid notification provider, extra server, or changes to the family website. Setup, activation, privacy details, retries and pause/status commands are in **[DISCORD.md](DISCORD.md)**.
+
+The additive `20261024161008_discord_activity_alerts.sql` migration installs disabled with a paused job and no historical backfill. It requires `pg_net`, `pg_cron` and Vault. Keep the webhook in Vault as `ellsworth_discord_webhook_url`. No secret is stored in GitHub or client code. Verify installation and a fixed connection test before enabling alerts. Do not replay previous migrations.
+
 ## Heads Up and Jambalaya release
 
 Heads Up replaces Spades, and Jambalaya replaces Rice / dirty rice and Mashed potatoes / gravy. Returning previews receive the new built-in game without losing other suggestions or existing UNO/Name That Tune votes. Removed dishes and games stay hidden even when saved previously; their stored reservations and votes are retained and never reassigned to the replacements.
