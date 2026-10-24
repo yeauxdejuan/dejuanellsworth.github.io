@@ -11,9 +11,11 @@ These alerts use the existing Supabase database, Vault, pg_net and pg_cron, plus
 
 ## Install and activate
 
-The additive migration is `migrations/20261024161008_discord_activity_alerts.sql`. It must follow the existing menu and family-feature migrations. It creates private configuration/outbox tables, nine activity triggers and one paused minute job. It installs **disabled**, with no backfill or outgoing request. Existing family records, application ownership rules and public grants are not modified.
+The additive migration is `migrations/20261024161008_discord_activity_alerts.sql`. It must follow the existing menu and family-feature migrations. It creates private configuration/outbox tables, nine activity triggers and one paused minute job. It installs **disabled**, with no backfill or outgoing request. A preflight guard refuses to run if the net/cron extensions or schemas already exist, so permission changes cannot affect a pre-existing integration. The configured project currently has neither installed. Existing family records, application ownership rules and public grants are not modified.
 
 The only SECURITY DEFINER function is the private row-trigger handler; it writes a minimal activity summary after a successful source write. Direct execution is revoked from all website roles. The other functions run as the project owner through SQL Editor or the owner’s cron job. The transient pg_net request/response tables and net/cron APIs are also inaccessible to site users; the webhook URL is only read from Vault inside owner-only delivery code.
+
+**Deployment status:** The migration is prepared and tested but not installed. Automatic approval review blocked the production deployment pending explicit approval for its triggers, extensions, job and permission changes. The webhook secret is already saved; no connection test or activity message has been sent.
 
 After installation and saving the secret, the project owner can send a fixed connection test:
 
