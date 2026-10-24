@@ -1,6 +1,6 @@
 # Private Discord activity alerts
 
-These alerts use the existing Supabase database, Vault, pg_net and pg_cron, plus a Discord incoming webhook. They require no Nitro, Telegram bot, Twilio account, paid notification provider, Edge Function or additional server. Existing database resource limits still apply; no subscription upgrade or paid resource is created.
+These alerts use the existing Supabase database, Vault, pg_cron and the HTTP extension, plus a Discord incoming webhook. They require no Nitro, Telegram bot, Twilio account, paid notification provider, Edge Function or additional server. Existing database resource limits still apply; no subscription upgrade or paid resource is created.
 
 ## Destination setup
 
@@ -11,32 +11,25 @@ These alerts use the existing Supabase database, Vault, pg_net and pg_cron, plus
 
 ## Install and activate
 
-The additive migration is `migrations/20261024161008_discord_activity_alerts.sql`. It must follow the existing menu and family-feature migrations. It creates private configuration/outbox tables, nine activity triggers and one paused minute job. It installs **disabled**, with no backfill or outgoing request. A preflight guard refuses to run if the net/cron extensions or schemas already exist, so permission changes cannot affect a pre-existing integration. The configured project currently has neither installed. Existing family records, application ownership rules and public grants are not modified.
+Apply `migrations/20261024161008_discord_activity_alerts.sql`, then **`migrations/20261024163338_discord_private_http_transport.sql`** before testing or enabling delivery. The first migration is already installed in the configured project, with alerts and its minute job paused; never replay it. The second corrects a hosted permission difference found before any webhook was sent.
 
-The only SECURITY DEFINER function is the private row-trigger handler; it writes a minimal activity summary after a successful source write. Direct execution is revoked from all website roles. The other functions run as the project owner through SQL Editor or the owner’s cron job. The transient pg_net request/response tables and net/cron APIs are also inaccessible to site users; the webhook URL is only read from Vault inside owner-only delivery code.
+The private outbox and activity triggers capture only new committed activity while enabled. Cron processes it in the background. The final transport reads the webhook from Vault directly into an owner-only HTTP call, with a two-second connection limit and five-second total limit. It does **not** place the secret URL or message in pg_net’s platform-managed shared queue. The synchronous network wait occurs only in the separate scheduled worker, never in a family RSVP/photo/menu save.
 
-**Deployment status:** The migration is prepared and tested but not installed. Automatic approval review blocked the production deployment pending explicit approval for its triggers, extensions, job and permission changes. The webhook secret is already saved; no connection test or activity message has been sent.
+The bootstrap’s permission revocations do not override all platform-owned pg_net grants on hosted Supabase. Treat that queue and its APIs as shared; the corrected transport deliberately does not use them. Do not enable the old queued transport. The only SECURITY DEFINER notification function is the private capture trigger, with direct execution revoked from website roles. Dispatch, setup, status and test controls are owner-only. No secret is in client code or GitHub.
 
-After installation and saving the secret, the project owner can send a fixed connection test:
-
-```sql
-select ellsworth_private.test_discord_notifications() as request_id;
-```
-
-Check only the resulting status, without printing response content or URLs:
+After both migrations and saving the secret, the project owner can send a fixed connection test:
 
 ```sql
-select id, status_code, timed_out, error_msg is not null as transport_error
-from net._http_response where id = YOUR_REQUEST_ID;
+select ellsworth_private.test_discord_notifications() as http_status;
 ```
 
-A successful request returns HTTP 200 with `wait=true`. After confirming delivery, enable future-activity alerts:
+The final test returns **HTTP 200** after Discord confirms the message. A null result indicates a caught transport/configuration failure; it deliberately does not expose secret-bearing errors. After confirming delivery, enable future-activity alerts:
 
 ```sql
 select ellsworth_private.enable_discord_notifications();
 ```
 
-Enabling requires a correctly formatted Discord webhook in Vault and starts the existing minute job. Re-enabling after a pause discards an old undelivered backlog. Only activity after activation is captured; old RSVPs/photos do not generate messages.
+Enabling requires a correctly formatted Discord webhook and starts the existing minute job. Re-enabling after a pause discards an old undelivered backlog. Old RSVPs/photos do not generate messages.
 
 ## What arrives
 
@@ -50,9 +43,9 @@ About once a minute, one short digest covers up to 100 pending events:
 
 Single events can include a short name/dish description; multiple events of the same type become a count. Caption text, allergy/dietary information, notes, travel details, invitation codes, auth identifiers, and private photo URLs are excluded. The message links to the family board rather than attaching photos. Mentions are disabled, including `@everyone`, and link previews are suppressed.
 
-Successful responses are recorded before a batch is considered delivered. A pending request is not immediately duplicated. Rate limits honor Retry-After with a minimum two-minute delay. Transport failures, server errors and lost requests are retried, up to five attempts per event. As with other webhook systems, an ambiguous timeout can cause a duplicate if Discord accepted a message but its response was lost. A 401/403/404 response pauses capture/delivery until the owner repairs the webhook and re-enables alerts. Notification queue failures never prevent the original family save.
+Successful responses mark the selected batch delivered before the worker returns. An advisory lock prevents overlapping dispatchers. Rate limits honor Retry-After with a minimum two-minute delay. Transport failures and server errors are retried, up to five attempts per event. As with other webhook systems, an ambiguous timeout can cause a duplicate if Discord accepted a message but its response was lost. A 401/403/404 response pauses capture/delivery until the owner repairs the webhook and re-enables alerts. Notification queue failures never prevent the original family save.
 
-Stored activity summaries are purged after seven days while the dispatcher runs. Disabling explicitly clears the private summary queue. Discord retains messages according to its own behavior and the organizer’s channel management. pg_net retains transient response metadata for its default six hours.
+Stored activity summaries are purged after seven days while the dispatcher runs. Disabling explicitly clears the private summary queue. Discord retains messages according to its own behavior and the organizer’s channel management. The final transport does not persist Discord response bodies or the secret request URL in shared transport tables.
 
 ## Owner status and pause
 
@@ -73,10 +66,10 @@ To pause notifications without affecting the family app:
 select ellsworth_private.disable_discord_notifications();
 ```
 
-A request already handed to the network may still complete. Disable first when rotating or removing a webhook. Update the existing Vault secret instead of creating a second secret with the same name, then test and enable again. Do not drop existing family tables, modify membership policies, or replay earlier migrations.
+A worker request already in progress may still complete; completing it cannot accidentally re-enable a paused integration. Disable first when rotating or removing a webhook. Update the existing Vault secret instead of creating a second secret with the same name, then test and enable again. Do not drop existing family tables, modify membership policies, or replay earlier migrations.
 
 ## Verification
 
-`npm run test:db` runs the actual trigger, queue, control and dispatcher SQL in disposable PostgreSQL. Only the transport/Vault/cron extension adapters are synthetic, so the tests send no external messages. Deployment additionally checks real extension/function signatures, permissions, the paused job and the fixed connection test. No frontend change or browser notification permission is required.
+`npm run test:db` runs the actual trigger, queue, control and dispatcher SQL in disposable PostgreSQL. Only the transport/Vault/cron extension adapters are synthetic, so the tests send no external messages. The final transport tests explicitly reproduce hosted pg_net PUBLIC grants and verify no webhook request enters that queue. Deployment additionally checks real extension/function signatures, permissions, the paused job and the fixed connection test. No frontend change or browser notification permission is required.
 
-Sources: [Supabase Vault](https://supabase.com/docs/guides/database/vault), [pg_net](https://supabase.com/docs/guides/database/extensions/pg_net), [Supabase Cron](https://supabase.com/docs/guides/cron/install), [Discord webhook API](https://docs.discord.com/developers/resources/webhook).
+Sources: [Supabase Vault](https://supabase.com/docs/guides/database/vault), [HTTP extension](https://supabase.com/docs/guides/database/extensions/http), [Supabase Cron](https://supabase.com/docs/guides/cron/install), [Discord webhook API](https://docs.discord.com/developers/resources/webhook).
