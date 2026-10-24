@@ -1,4 +1,10 @@
-# Approved family rollout polish · current validation
+# Noon Thanksgiving start · current validation
+
+Validated October 24, 2026. The hero fact now reads “Nov 26, 12pm.” The calendar download now starts at 18:00 UTC on November 26, equivalent to 12pm America/Chicago. It preserves the existing event UID, increments the sequence to 1, updates its timestamp and uses a content-versioned URL to bypass the earlier all-day file. No end time was supplied, so the calendar omits it.
+
+**26 focused Chromium checks passed**, including the actual calendar download, conversion to noon Central, stable event identity/sequence, CRLF and line folding, asset versions, exact hero wording and column clearance/no overflow at 320, 375, 430, 768 and 1440px. A slightly wider mobile date column keeps the full date/time on one line at 320px while the three facts stay side by side. The mobile hero facts were visually reviewed. Browser/inline JavaScript syntax and `git diff --check` passed. Existing calendar regression assertions now expect the timed event. The broader 567-check suite from the previous release was not repeated for this date/calendar change. No database changes or production family writes are included. The update awaits PR merge and Pages deployment.
+
+# Prior approved family rollout polish
 
 Validated October 23, 2026. The organizer approved enabling Heads Up voting and the mobile/copy/upload polish, My contributions and Add to calendar. The 30-minute photo refresh interval, game/photo-link submission handlers, and disconnect identity handler remain unchanged. No group-chat preview metadata or sound controls/description were added.
 
