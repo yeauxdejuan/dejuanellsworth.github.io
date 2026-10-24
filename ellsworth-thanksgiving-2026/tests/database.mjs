@@ -25,8 +25,6 @@ const discordName=(await readdir(new URL('migrations/',root))).find(n=>n.endsWit
 const discordMigration=await readFile(new URL(`migrations/${discordName}`,root),'utf8');
 const discordHttpName=(await readdir(new URL('migrations/',root))).find(n=>n.endsWith('_discord_private_http_transport.sql'));
 const discordHttpMigration=await readFile(new URL(`migrations/${discordHttpName}`,root),'utf8');
-const discordCleanupName=(await readdir(new URL('migrations/',root))).find(n=>n.endsWith('_discord_remove_unused_net.sql'));
-const discordCleanup=await readFile(new URL(`migrations/${discordCleanupName}`,root),'utf8');
 const event='ellsworth-thanksgiving-2026';
 const ids=Array.from({length:7},(_,i)=>`00000000-0000-4000-8000-${String(i+1).padStart(12,'0')}`);
 let admin,checks=0;
@@ -157,13 +155,11 @@ try{
   check((await asUser(ids[0],'delete from public.thanksgiving_game_votes where user_id=$1 and game_key=$2',[ids[0],'builtin-heads-up'])).rowCount===1,'Members can remove their own Heads Up vote');
   check((await claim(ids[0],'jambalaya'))==='claimed','Jambalaya accepts reservations with the existing RPC');
   await checkDiscordDatabase({admin,asUser,denied,check,ids,event,migration:discordMigration});
-  await assert.rejects(()=>admin.query(discordCleanup),/Install the private HTTP transport/);await admin.query('rollback');checks++;
   await checkDiscordHttpDatabase({admin,asUser,denied,check,ids,event,migration:discordHttpMigration});
-  await admin.query(discordCleanup);check((await admin.query('select enabled from ellsworth_private.discord_settings')).rows[0].enabled===false,'Unused queue cleanup preserves the paused notification setting');
   // Fresh installation follows the same baseline + migration path, without fixtures.
   await admin.query('create database ellsworth_fresh');const fresh=client('ellsworth_fresh');await fresh.connect();
   const freshBootstrap=bootstrap.replace('create role anon nologin; create role authenticated nologin;','');
-  try{await fresh.query(freshBootstrap);await fresh.query(baseline);await fresh.query(migration);await fresh.query(planningMigration);await fresh.query(rolloutMigration);await fresh.query(headsUpMigration);await installDiscordForTest(fresh,discordMigration);await installDiscordHttpForTest(fresh,discordHttpMigration);await fresh.query(discordCleanup);check(!(await fresh.query('select enabled from ellsworth_private.discord_settings')).rows[0].enabled,'Fresh install keeps notifications off');check((await fresh.query('select count(*)::int as n from public.thanksgiving_dish_signups')).rows[0].n===0,'Fresh install');check((await fresh.query('select count(*)::int as n from public.thanksgiving_schedule')).rows[0].n===2,'Fresh install includes editable family-plan placeholders');check((await fresh.query("select count(*)::int as n from information_schema.columns where table_name='thanksgiving_rsvps' and column_name in ('dietary_needs','updated_at')")).rows[0].n===2,'Fresh install includes rollout RSVP fields');check((await fresh.query("select with_check from pg_policies where schemaname='public' and tablename='thanksgiving_game_votes' and policyname='Members vote for existing games'")).rows[0].with_check.includes('builtin-heads-up'),'Fresh install allows Heads Up votes');}
+  try{await fresh.query(freshBootstrap);await fresh.query(baseline);await fresh.query(migration);await fresh.query(planningMigration);await fresh.query(rolloutMigration);await fresh.query(headsUpMigration);await installDiscordForTest(fresh,discordMigration);await installDiscordHttpForTest(fresh,discordHttpMigration);check(!(await fresh.query('select enabled from ellsworth_private.discord_settings')).rows[0].enabled,'Fresh install keeps notifications off');check((await fresh.query('select count(*)::int as n from public.thanksgiving_dish_signups')).rows[0].n===0,'Fresh install');check((await fresh.query('select count(*)::int as n from public.thanksgiving_schedule')).rows[0].n===2,'Fresh install includes editable family-plan placeholders');check((await fresh.query("select count(*)::int as n from information_schema.columns where table_name='thanksgiving_rsvps' and column_name in ('dietary_needs','updated_at')")).rows[0].n===2,'Fresh install includes rollout RSVP fields');check((await fresh.query("select with_check from pg_policies where schemaname='public' and tablename='thanksgiving_game_votes' and policyname='Members vote for existing games'")).rows[0].with_check.includes('builtin-heads-up'),'Fresh install allows Heads Up votes');}
   finally{await fresh.end();}
   console.log(`PASS: ${checks} database checks on PostgreSQL ${(await admin.query('show server_version')).rows[0].server_version}; legacy preservation, capacity, ownership, RLS, grants, concurrency, fresh install.`);
 }finally{
