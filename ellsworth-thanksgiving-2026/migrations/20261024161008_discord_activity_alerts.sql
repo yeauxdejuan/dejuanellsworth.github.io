@@ -2,6 +2,14 @@
 -- Store only the incoming webhook URL in Vault as ellsworth_discord_webhook_url.
 begin;
 set local lock_timeout = '5s';
+-- Stop before changing permissions if these shared namespaces already serve anything.
+-- The configured project was inspected and has neither extension/schema installed.
+do $$ begin
+  if exists(select 1 from pg_extension where extname in ('pg_net','pg_cron'))
+    or to_regnamespace('net') is not null or to_regnamespace('cron') is not null then
+    raise exception 'Discord setup requires first-time pg_net/pg_cron installation; review existing integrations before adapting this migration';
+  end if;
+end $$;
 create extension if not exists pg_net;
 create extension if not exists pg_cron with schema pg_catalog;
 create extension if not exists supabase_vault with schema vault;

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 // Real trigger/queue/dispatcher SQL with synthetic transport, Vault and cron adapters.
 // No network is used. Actual extension availability/grants are checked on deployment.
 export async function installDiscordForTest(admin,migration){
-  await admin.query(`
+  const adapters=`
     create schema net; create schema cron; create schema vault;
     revoke all on schema net,cron,vault from public,anon,authenticated;
     create table vault.secrets(name text primary key,decrypted_secret text);
@@ -17,15 +17,17 @@ export async function installDiscordForTest(admin,migration){
       insert into cron.job(jobname,schedule,command) values ($1,$2,$3) returning jobid$$;
     create function cron.alter_job(job_id bigint,active boolean) returns void language sql as $$
       update cron.job set active=$2 where jobid=$1$$;
-  `);
+  `;
   let stripped=0;
-  const sql=migration.replace(/^create extension if not exists (pg_net|pg_cron with schema pg_catalog|supabase_vault with schema vault);$/gm,()=>{stripped++;return '-- Extension adapter is provided by the test bootstrap.';});
+  const sql=migration.replace(/^create extension if not exists (pg_net|pg_cron with schema pg_catalog|supabase_vault with schema vault);$/gm,()=>{stripped++;return stripped===1?adapters:'-- Extension adapter is provided by the test bootstrap.';});
   assert.equal(stripped,3,'Only deployment extension statements are replaced by adapters');
   await admin.query(sql);return stripped;
 }
 export async function checkDiscordDatabase({admin,asUser,denied,check,ids,event,migration}){
   const originalMenu=(await admin.query('select * from public.thanksgiving_dishes order by id')).rows;
   check(await installDiscordForTest(admin,migration)===3,'Real Discord SQL is installed over three synthetic extension adapters');
+  await assert.rejects(()=>admin.query(migration),/first-time pg_net\/pg_cron/);await admin.query('rollback');
+  check(true,'Installation refuses an existing network/cron setup before changing shared permissions');
   check(JSON.stringify(originalMenu)===JSON.stringify((await admin.query('select * from public.thanksgiving_dishes order by id')).rows),'Discord installation does not alter existing family records');
   check(!(await admin.query('select enabled from ellsworth_private.discord_settings')).rows[0].enabled,'Alerts install disabled');
   check(!(await admin.query("select active from cron.job where jobname='ellsworth-discord-alerts'")).rows[0].active,'The minute job installs paused');
