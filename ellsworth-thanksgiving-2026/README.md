@@ -24,7 +24,7 @@ Heads Up replaces Spades, and Jambalaya replaces Rice / dirty rice and Mashed po
 ## Final family rollout polish
 
 - Joined members get a compact **My contributions** dropdown below the connection strip. It summarizes only the current browser account's RSVP and dish signups, with links to existing sections and individual dishes. It uses already-loaded data, updates after edits/removals, labels a retained RSVP after read failure, and clears on disconnect. It adds no new identity or cross-device recovery behavior.
-- **Add to calendar** downloads Thanksgiving on November 26, 2026, at **12pm Central** in Arabi, Louisiana, matching the hero’s “Nov 26, 12pm” label. The calendar uses 18:00 UTC on that date so calendar apps convert correctly to the viewer’s time zone. No end time, reminder, invitation code or private address is included. The stable event UID and incremented sequence identify the updated event; its versioned download URL bypasses the earlier all-day file. The ICS file preserves CRLF and folded lines for calendar clients.
+- **Add to calendar** downloads Thanksgiving on November 26, 2026, at **12pm Central**, matching the hero’s “Nov 26, 12pm” label. The calendar uses 18:00 UTC on that date so calendar apps convert correctly to the viewer’s time zone. No end time, reminder, invitation code or private address is included. The stable event UID and incremented sequence identify the updated event; its versioned download URL bypasses the earlier all-day file. The ICS file preserves CRLF and folded lines for calendar clients.
 - Mobile action targets are at least 44px and form inputs use at least 16px text. The mobile navigation can scroll on short screens. The countdown uses Central calendar dates, says “1 day” at the singular, and updates every minute while visible and when returning to the page. The photo instructions recognize joined members, and the house FAQ accurately refers to photos.
 - Photo uploads show progress and a final saved/failed count, temporarily disable file selection, and explain the 20-photo batch limit before writing an oversized selection. A decoding failure leaves file selection usable for another attempt. Pending upload UI clears on disconnect without submitting further photo records as a different account.
 
@@ -169,7 +169,7 @@ TikTok privacy settings, deleted clips, browser restrictions and availability re
 
 ## Property photographs
 
-The **Ellsworth Holiday Home feature image uses the exterior photo** of Friscoville Mansion. The five-photo house preview is followed immediately by one dropdown for the **remaining 21 listing photos**, in the same photo column. The redundant listing/photo links and separate gallery heading/description are removed. All 26 listing URLs have one gallery button and are available in the shared larger-image viewer.
+The **Ellsworth Holiday Home feature image uses the exterior photo** of the rental house. The five-photo house preview is followed immediately by one dropdown for the **remaining 21 listing photos**, in the same photo column. The redundant listing/photo links and separate gallery heading/description are removed. All 26 listing URLs have one gallery button and are available in the shared larger-image viewer.
 
 **Explore house photos** starts collapsed directly beneath the preview. Opening it reveals these seven category dropdowns; each category stays collapsed until selected:
 
@@ -183,9 +183,9 @@ The **Ellsworth Holiday Home feature image uses the exterior photo** of Friscovi
 | Laundry | 1 |
 | Hallways & landing | 2 |
 
-Photo IDs and public source room labels come from the original [Airbnb listing](https://www.airbnb.com/rooms/961414748638377724), extracted October 21, 2026. Photos labeled generically as “Additional photos” in the source were visually checked and given descriptive room categories/captions. Category counts refer to photos, not numbers of rooms. All 26 thumbnail and full-size URLs plus the exterior feature image returned HTTP 200 on October 22, 2026.
+Photo IDs and public source room labels come from the original rental listing, extracted October 21, 2026. Photos labeled generically as “Additional photos” in the source were visually checked and given descriptive room categories/captions. Category counts refer to photos, not numbers of rooms. All 26 thumbnail and full-size URLs plus the exterior feature image returned HTTP 200 on October 22, 2026.
 
-Category thumbnails are requested on first expansion; closed categories do not fetch their images. Native disclosure controls support pointer and keyboard use, and the viewer retains keyboard arrows, touch/swipe navigation, wraparound, focus containment and Escape. Thumbnails have alt text and visible captions. Images remain on Airbnb’s CDN; no property binaries, booking details or family photos are committed. No database migration is needed for this presentation update.
+Category thumbnails are requested on first expansion; closed categories do not fetch their images. Native disclosure controls support pointer and keyboard use, and the viewer retains keyboard arrows, touch/swipe navigation, wraparound, focus containment and Escape. Thumbnails have alt text and visible captions. Images remain on the listing site’s CDN; no property binaries, booking details or family photos are committed. No database migration is needed for this presentation update.
 
 ## Testing and troubleshooting
 
