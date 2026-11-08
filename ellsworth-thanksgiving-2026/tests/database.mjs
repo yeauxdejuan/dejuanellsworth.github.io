@@ -9,6 +9,7 @@ import {checkPlanningDatabase} from './planning-db-cases.mjs';
 import {checkRolloutDatabase} from './rollout-db-cases.mjs';
 import {checkDiscordDatabase,installDiscordForTest} from './discord-db-cases.mjs';
 import {checkDiscordHttpDatabase,installDiscordHttpForTest} from './discord-http-db-cases.mjs';
+import {checkApiHealthDatabase,installApiHealthForTest} from './api-health-db-cases.mjs';
 const directory=await mkdtemp(join(tmpdir(),'ellsworth-v2-'));
 const instance=new EmbeddedPostgres({databaseDir:join(directory,'db'),user:'postgres',password:'local-test-only',port:55432,persistent:false,onLog:()=>{},onError:()=>{}});
 const root=new URL('../',import.meta.url);
@@ -27,6 +28,8 @@ const discordHttpName=(await readdir(new URL('migrations/',root))).find(n=>n.end
 const discordHttpMigration=await readFile(new URL(`migrations/${discordHttpName}`,root),'utf8');
 const discordNoLinkName=(await readdir(new URL('migrations/',root))).find(n=>n.endsWith('_discord_notifications_without_link.sql'));
 const discordNoLinkMigration=await readFile(new URL(`migrations/${discordNoLinkName}`,root),'utf8');
+const apiHealthName=(await readdir(new URL('migrations/',root))).find(n=>n.endsWith('_api_health_alerts.sql'));
+const apiHealthMigration=await readFile(new URL(`migrations/${apiHealthName}`,root),'utf8');
 const event='ellsworth-thanksgiving-2026';
 const ids=Array.from({length:7},(_,i)=>`00000000-0000-4000-8000-${String(i+1).padStart(12,'0')}`);
 let admin,checks=0;
@@ -158,10 +161,11 @@ try{
   check((await claim(ids[0],'jambalaya'))==='claimed','Jambalaya accepts reservations with the existing RPC');
   await checkDiscordDatabase({admin,asUser,denied,check,ids,event,migration:discordMigration});
   await checkDiscordHttpDatabase({admin,asUser,denied,check,ids,event,migration:discordHttpMigration,noLinkMigration:discordNoLinkMigration});
+  await checkApiHealthDatabase({admin,asUser,denied,check,ids,migration:apiHealthMigration});
   // Fresh installation follows the same baseline + migration path, without fixtures.
   await admin.query('create database ellsworth_fresh');const fresh=client('ellsworth_fresh');await fresh.connect();
   const freshBootstrap=bootstrap.replace('create role anon nologin; create role authenticated nologin;','');
-  try{await fresh.query(freshBootstrap);await fresh.query(baseline);await fresh.query(migration);await fresh.query(planningMigration);await fresh.query(rolloutMigration);await fresh.query(headsUpMigration);await installDiscordForTest(fresh,discordMigration);await installDiscordHttpForTest(fresh,discordHttpMigration);await fresh.query(discordNoLinkMigration);check(!(await fresh.query('select enabled from ellsworth_private.discord_settings')).rows[0].enabled,'Fresh install keeps notifications off');check((await fresh.query('select count(*)::int as n from public.thanksgiving_dish_signups')).rows[0].n===0,'Fresh install');check((await fresh.query('select count(*)::int as n from public.thanksgiving_schedule')).rows[0].n===2,'Fresh install includes editable family-plan placeholders');check((await fresh.query("select count(*)::int as n from information_schema.columns where table_name='thanksgiving_rsvps' and column_name in ('dietary_needs','updated_at')")).rows[0].n===2,'Fresh install includes rollout RSVP fields');check((await fresh.query("select with_check from pg_policies where schemaname='public' and tablename='thanksgiving_game_votes' and policyname='Members vote for existing games'")).rows[0].with_check.includes('builtin-heads-up'),'Fresh install allows Heads Up votes');}
+  try{await fresh.query(freshBootstrap);await fresh.query(baseline);await fresh.query(migration);await fresh.query(planningMigration);await fresh.query(rolloutMigration);await fresh.query(headsUpMigration);await installDiscordForTest(fresh,discordMigration);await installDiscordHttpForTest(fresh,discordHttpMigration);await fresh.query(discordNoLinkMigration);check(!(await fresh.query('select enabled from ellsworth_private.discord_settings')).rows[0].enabled,'Fresh install keeps notifications off');await installApiHealthForTest(fresh,apiHealthMigration);check((await fresh.query('select count(*)::int as n from ellsworth_private.api_health_state')).rows[0].n===1,'Fresh install includes the API health check');check((await fresh.query('select count(*)::int as n from public.thanksgiving_dish_signups')).rows[0].n===0,'Fresh install');check((await fresh.query('select count(*)::int as n from public.thanksgiving_schedule')).rows[0].n===2,'Fresh install includes editable family-plan placeholders');check((await fresh.query("select count(*)::int as n from information_schema.columns where table_name='thanksgiving_rsvps' and column_name in ('dietary_needs','updated_at')")).rows[0].n===2,'Fresh install includes rollout RSVP fields');check((await fresh.query("select with_check from pg_policies where schemaname='public' and tablename='thanksgiving_game_votes' and policyname='Members vote for existing games'")).rows[0].with_check.includes('builtin-heads-up'),'Fresh install allows Heads Up votes');}
   finally{await fresh.end();}
   console.log(`PASS: ${checks} database checks on PostgreSQL ${(await admin.query('show server_version')).rows[0].server_version}; legacy preservation, capacity, ownership, RLS, grants, concurrency, fresh install.`);
 }finally{
