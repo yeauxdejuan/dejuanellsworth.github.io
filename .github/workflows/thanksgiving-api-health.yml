@@ -1,0 +1,72 @@
+name: Thanksgiving API health
+# External check of the family board API (ellsworth-thanksgiving-2026). The database has its own
+# 5-minute check (migrations/*_api_health_alerts.sql); this one also covers a full database outage.
+# Discord: optional repo secret DISCORD_HEALTH_WEBHOOK_URL. Without it, a failed run still sends
+# GitHub's own failure e-mail. Alerts only on a change (down / recovered), using the previous run's result.
+'on':
+  schedule:
+    - cron: '7,22,37,52 * * * *'
+  workflow_dispatch:
+permissions:
+  actions: read
+concurrency:
+  group: thanksgiving-api-health
+  cancel-in-progress: false
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      # Public values only: the same URL and publishable key as index.html.
+      PROBE_URL: https://czlepxbftytqryhdduhm.supabase.co/rest/v1/rpc/api_health
+      PROBE_KEY: sb_publishable_l-QXOLYaH4kbqqDnC9Pwww_MBbxnLNV
+    steps:
+      - name: Probe the API (3 tries, 20s apart)
+        id: probe
+        shell: bash
+        run: |
+          set -uo pipefail
+          status=000
+          for i in 1 2 3; do
+            status=$(curl -s -o /dev/null -m 10 -w '%{http_code}' -X POST "$PROBE_URL" \
+              -H "apikey: $PROBE_KEY" -H 'Content-Type: application/json' -d '{}') || true
+            echo "try $i: HTTP $status"
+            [ "$status" = 200 ] && break
+            [ "$i" -lt 3 ] && sleep 20
+          done
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+      - name: Previous run result
+        id: prev
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          prev=$(gh run list -R "$GITHUB_REPOSITORY" --workflow thanksgiving-api-health.yml --status completed \
+            --limit 1 --json conclusion -q '.[0].conclusion' 2>/dev/null || true)
+          echo "previous run: ${prev:-none}"
+          echo "conclusion=${prev:-none}" >> "$GITHUB_OUTPUT"
+      - name: Discord alert on change
+        shell: bash
+        env:
+          WEBHOOK: ${{ secrets.DISCORD_HEALTH_WEBHOOK_URL }}
+          STATUS: ${{ steps.probe.outputs.status }}
+          PREV: ${{ steps.prev.outputs.conclusion }}
+        run: |
+          set -euo pipefail
+          msg=''
+          if [ "$STATUS" != 200 ] && [ "$PREV" != failure ]; then
+            code=$([ "$STATUS" = 000 ] && echo timeout || echo "HTTP $STATUS")
+            msg="⚠️ External check: family board API is not answering ($code). Fix: Supabase Dashboard → Project Settings → General → Restart project."
+          elif [ "$STATUS" = 200 ] && [ "$PREV" = failure ]; then
+            msg="✅ External check: family board API answers again."
+          fi
+          if [ -z "$msg" ]; then echo 'no change, no alert'; exit 0; fi
+          if [ -z "$WEBHOOK" ]; then echo "no DISCORD_HEALTH_WEBHOOK_URL secret; alert only by run result: $msg"; exit 0; fi
+          body=$(jq -n --arg c "$msg" '{content:$c,username:"Ellsworth Family",allowed_mentions:{parse:[]},flags:4}')
+          curl -sf -m 10 -o /dev/null -X POST "$WEBHOOK?wait=true" -H 'Content-Type: application/json' -d "$body" \
+            && echo 'alert sent' || echo '::warning::Discord alert failed'
+      - name: Fail the run when the API is down
+        if: steps.probe.outputs.status != '200'
+        run: |
+          echo "::error::Family board API returned ${{ steps.probe.outputs.status }}"
+          exit 1

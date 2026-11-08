@@ -73,3 +73,20 @@ A worker request already in progress may still complete; completing it cannot ac
 `npm run test:db` runs the actual trigger, queue, control and dispatcher SQL in disposable PostgreSQL. Only the transport/Vault/cron extension adapters are synthetic, so the tests send no external messages. The final transport tests explicitly reproduce hosted pg_net PUBLIC grants and verify no webhook request enters that queue. Deployment additionally checks real extension/function signatures, permissions, the paused job and the fixed connection test. No frontend change or browser notification permission is required.
 
 Sources: [Supabase Vault](https://supabase.com/docs/guides/database/vault), [HTTP extension](https://supabase.com/docs/guides/database/extensions/http), [Supabase Cron](https://supabase.com/docs/guides/cron/install), [Discord webhook API](https://docs.discord.com/developers/resources/webhook).
+
+## API health alerts
+
+Added 2026-11-08 after a three-day outage (Nov 4-8): the public API (PostgREST) stopped taking pool connections (`PGRST003`, HTTP 504) while Postgres stayed healthy. Joining with the family code failed, which looked like a wrong code. A Dashboard **Project Settings → General → Restart project** fixed it.
+
+Two checks now cover this:
+
+- **Database check** (`migrations/20261108170000_api_health_alerts.sql`, cron `ellsworth-api-health`, every 5 minutes). It calls the site's own public API (`rpc/api_health`, publishable key, 5-second limit), like a family browser. After 2 failures in a row it posts ⚠️ to the same private Discord channel, then a ⏰ reminder every 6 hours while down, and ✅ on recovery. It uses the existing Vault webhook transport. It cannot alert when the whole database is down.
+- **External check** (`.github/workflows/thanksgiving-api-health.yml`, every 15 minutes, free on a public repo). It probes the same endpoint 3 times. A failed run sends GitHub's own failure e-mail. For Discord, add the repository secret `DISCORD_HEALTH_WEBHOOK_URL` (the same webhook URL; never commit it). It alerts only on a change, using the previous run's result. GitHub disables scheduled workflows after 60 days without repository activity.
+
+Both checks also keep the free-tier project active.
+
+```sql
+select enabled,consecutive_failures,alerted,down_since,last_status,last_checked_at from ellsworth_private.api_health_state;
+update ellsworth_private.api_health_state set enabled=false;  -- pause; true to resume
+select ellsworth_private.check_api_health();                   -- one manual check (returns the HTTP status)
+```

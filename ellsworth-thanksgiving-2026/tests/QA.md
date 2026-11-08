@@ -269,3 +269,7 @@ Browser checks exercise confirmation before success, disabled duplicate submissi
 - View the actual listing photos to improve numbered alt descriptions where possible and verify external CDN availability. No unrelated property images should be introduced.
 
 No live authentication, live Storage, real TikTok playback or physical mobile-browser validation is claimed by these results.
+
+## API health alerts (2026-11-08)
+
+Validated November 8, 2026. `npm run test:db`: 246 checks (21 new: grants, threshold, single alert, 6-hour reminder, recovery once, undelivered alerts retried, pause). Mutation check: threshold 1 instead of 2 fails "One failure alone does not alert". Run the tests with a UTF-8 locale (`LANG=en_US.UTF-8`); under the C locale the embedded database is SQL_ASCII and the emoji-length cases fail. Applied to production as `api_health_alerts`; live probe HTTP 200, Discord test message HTTP 200. The workflow is YAML-checked only until its first run on main.
