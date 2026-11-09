@@ -12,13 +12,13 @@ const tables={thanksgiving_dishes:[],thanksgiving_games:[],thanksgiving_tiktoks:
  {id:'00000000-2026-4000-8000-000000000002',event_id:'ellsworth-thanksgiving-2026',title:'Family game night',day:'2026-11-26',kind:'games',is_seed:true,start_time:null}
 ],thanksgiving_game_votes:[],thanksgiving_photo_details:[],thanksgiving_photo_reactions:[]};
 const unavailableTables=new Set(),requestedTables=new Set();
-let failClaim=false,holdClaim=null,holdUpload=null,failWriteTable=null,failReadTable=null,failReadUser=null,uploads=0,checks=0,rsvpWrites=0;
+let failSelfClaim=false,failClaim=false,holdClaim=null,holdUpload=null,failWriteTable=null,failReadTable=null,failReadUser=null,uploads=0,checks=0,rsvpWrites=0;
 const check=(v,m)=>{assert.ok(v,m);checks++;};
 const stub=`window.supabase={createClient(){
 const session=()=>JSON.parse(localStorage.getItem('testSession')||'null');
 const request=async(body)=>{try{return await (await fetch('/__test',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...body,user:session()?.user.id})})).json();}catch{return {data:null,error:{message:'Network error'}};}};
 return {auth:{async getSession(){return {data:{session:session()},error:null};},async signInAnonymously(){const s={user:{id:crypto.randomUUID()}};localStorage.setItem('testSession',JSON.stringify(s));return {data:{session:s},error:null};},async signOut(){localStorage.removeItem('testSession');localStorage.removeItem('testMember');return {error:null};}},
-async rpc(name,args){if(name==='is_ellsworth_member')return {data:localStorage.getItem('testMember')==='yes',error:null};if(name==='join_ellsworth_family'){if(args.p_code==='synthetic-rejected-code-2026')return {data:false,error:null};if(args.p_code==='synthetic-network-error-2026')return {data:null,error:{message:'Synthetic connection error'}};localStorage.setItem('testMember','yes');return {data:true,error:null};}return request({operation:'rpc',args});},
+async rpc(name,args){if(name==='is_ellsworth_member')return {data:localStorage.getItem('testMember')==='yes',error:null};if(name==='join_ellsworth_family'){if(args.p_code==='synthetic-rejected-code-2026')return {data:false,error:null};if(args.p_code==='synthetic-network-error-2026')return {data:null,error:{message:'Synthetic connection error'}};localStorage.setItem('testMember','yes');return {data:true,error:null};}return request({operation:'rpc',name,args});},
 from(table){let operation='select',value=null,filters=[],conflict=null;const q={select(){return q;},eq(k,v){filters.push([k,v]);return q;},order(){return q;},insert(v){operation='insert';value=v;return q;},upsert(v,options){operation='upsert';value=v;conflict=options?.onConflict;return q;},update(v){operation='update';value=v;return q;},delete(){operation='delete';return q;},then(ok,bad){return request({operation,table,value,filters,conflict}).then(ok,bad);}};return q;},
 storage:{from(){return {async upload(){return request({operation:'upload'});},async createSignedUrl(){return {data:{signedUrl:${JSON.stringify(image)}},error:null};}};}}};}};`;
 const server=createServer(async(req,res)=>{
@@ -30,7 +30,12 @@ try{
    if(b.operation==='select')failReadTable=null;else failWriteTable=null;
    res.setHeader('Content-Type','application/json');res.end(JSON.stringify({data:null,error:{message:'Synthetic planning failure'}}));return;
   }
-  if(b.operation==='rpc'){
+  if(b.operation==='rpc'&&/^claim/.test(b.name||'')){
+   // Self-claim: households owned by the synthetic lost identity, offered to members without an RSVP.
+   const lostRows=tables.thanksgiving_rsvps.filter(r=>r.user_id==='lost-user');
+   if(b.name==='claimable_households')data=tables.thanksgiving_rsvps.some(r=>r.user_id===b.user)?[]:lostRows.map(r=>({household:r.household_name}));
+   else{const r=lostRows.find(r=>r.household_name===b.args.p_household);if(failSelfClaim||!r){failSelfClaim=false;error={message:'That RSVP cannot be reclaimed here. Ask the organizer.'};}else{r.user_id=b.user;data={household:r.household_name,reassignment_id:1};}}
+  }else if(b.operation==='rpc'){
    if(holdClaim){const wait=holdClaim;holdClaim=null;await wait;}
    if(failClaim){failClaim=false;error={message:'Synthetic failure'};}
    else{const a=b.args;let d=tables.thanksgiving_dishes.find(d=>d.id===a.p_id);
@@ -420,6 +425,25 @@ async function checkUpdatedLineups(){
  await p.context().close();
  tables.thanksgiving_dishes=[];tables.thanksgiving_games=[];tables.thanksgiving_game_votes=[];
 }
+async function checkSelfClaim(){
+ tables.thanksgiving_rsvps.push({event_id:'ellsworth-thanksgiving-2026',user_id:'lost-user',household_name:'Lost household',response:'coming',adults:2,children:0,updated_at:'2026-10-24T15:00:00Z'});
+ const p=await newPage(375,{isMobile:true,hasTouch:true});await join(p);await p.waitForFunction(()=>!document.querySelector('#editRsvpBtn').disabled);
+ await p.click('#editRsvpBtn');await p.locator('[data-claim]').first().waitFor();
+ check((await p.locator('#modalBody').textContent()).includes('Lost household')&&await p.locator('#rsvpForm').count()===0,'A member without an RSVP is offered their idle household first');
+ check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Reclaim choice fits a 375px phone');
+ await p.click('#claimNone');await p.locator('#rsvpForm').waitFor();check(true,'"No, add a new RSVP" opens the normal form');await p.evaluate(()=>closeModal());
+ await p.click('#editRsvpBtn');await p.locator('[data-claim]').first().waitFor();
+ p.once('dialog',d=>d.dismiss());await p.locator('[data-claim]').first().click();
+ check(tables.thanksgiving_rsvps.find(r=>r.household_name==='Lost household').user_id==='lost-user','Cancelling the confirmation claims nothing');
+ failSelfClaim=true;p.once('dialog',d=>d.accept());await p.locator('[data-claim]').first().click();
+ await p.waitForFunction(()=>document.querySelector('#featureFormError')?.textContent.includes('cannot be reclaimed'));
+ check(await p.locator('#modalBackdrop').isVisible()&&await p.locator('[data-claim]').first().isEnabled(),'A refused claim explains why and keeps the choice open');
+ p.once('dialog',d=>d.accept());await p.locator('[data-claim]').first().click();await p.locator('#modalBackdrop').waitFor({state:'hidden'});
+ await p.waitForFunction(()=>document.querySelector('#rsvpList').textContent.includes('Lost household · you')&&document.querySelector('#toast').textContent.includes('Welcome back'));
+ check((await p.locator('#editRsvpBtn').textContent())==='Edit my RSVP','The reclaimed RSVP is the member’s own again');
+ await p.click('#editRsvpBtn');await p.locator('#rsvpForm').waitFor();check(await p.locator('#rsvpName').inputValue()==='Lost household','After reclaiming, the RSVP button opens the form directly');
+ await p.context().close();
+}
 async function checkLocalPlanning(){
  const p=await newPage(430,{localPreview:true});
  await p.evaluate(()=>{
@@ -483,7 +507,7 @@ try{
  await a.evaluate(()=>document.querySelector('#tikPlayer').dataset.retained='yes');await a.evaluate(()=>refreshTiktoks());check(await a.locator('#tikPlayer').getAttribute('data-retained')==='yes','Refresh preserves player');check((await a.locator('#tikStatus').innerText()).includes('unavailable'),'Refresh preserves error feedback');await a.click('#tikNext');check(!(await a.locator('#tikStatus').innerText()).includes('unavailable'),'Skipping clears the previous clip error');
  await a.click('#menuToggle');check(await a.locator('#navLinks').isVisible(),'Mobile nav opens');await a.locator('.nav-link[href="#menu"]').click();check(await a.locator('#navLinks').isHidden(),'Mobile nav closes');
  const reduced=await newPage(430,{reducedMotion:'reduce'});check(await reduced.locator('.falling-leaves').evaluate(el=>getComputedStyle(el).display!=='none'),'Leaves remain visible for all motion settings');check(await reduced.evaluate(()=>playing===true),'Photo slideshow starts playing for all motion settings');check(await reduced.locator('.credit-turkey').evaluateAll(items=>items.length===2&&items.every(el=>el.getAttribute('aria-hidden')==='true'&&getComputedStyle(el).animationName==='credit-turkey-sway')),'Decorative footer turkeys animate on both sides for all motion settings');check(await reduced.locator('.credit-name').evaluate(el=>getComputedStyle(el).animationName==='credit-gold-shimmer'),'Gold credit signature shimmers for all motion settings');
- await checkMissingSetupRecovery(a);await checkFamilyPlanning(a,b);await checkRsvpSaveReadFailure(a);await checkLocalPlanning();
+ await checkMissingSetupRecovery(a);await checkFamilyPlanning(a,b);await checkRsvpSaveReadFailure(a);await checkSelfClaim();await checkLocalPlanning();
  check(!requestedTables.has('thanksgiving_schedule'),'Removed Family Plans never fetches or writes schedule records');
  await a.click('#startTv');await a.evaluate(()=>document.querySelector('#leaveFamilyBtn').click());await a.waitForFunction(()=>!document.querySelector('#familyPortal').hidden);check(await a.locator('#familyPortal').isVisible(),'Disconnect shows family access');check(await a.locator('#tiktokGrid iframe').count()===0,'Disconnect unloads video');check(!(await a.locator('#rsvpList').innerText()).includes('Synthetic household'),'Disconnect clears private RSVPs');check(await a.locator('#rsvpSavedStatus').isHidden(),'Disconnect clears RSVP save status');check(await a.locator('#photoExtras').isHidden(),'Disconnect clears photo activity');check(await a.locator('#tvSlideshow').isHidden(),'Disconnect closes an active TV slideshow');
  await a.fill('#tikUrl','');await a.locator('#tikUrl').press('Enter');check(await a.locator('#familyPortal').evaluate(el=>el===document.activeElement),'Disconnect routes away from text inputs to invitation instructions');

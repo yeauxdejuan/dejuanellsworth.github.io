@@ -277,3 +277,7 @@ Validated November 8, 2026. `npm run test:db`: 246 checks (21 new: grants, thres
 ## Member reassignment (2026-11-09)
 
 Validated November 9, 2026. `LANG=en_US.UTF-8 npm run test:db`: 269 checks (23 new: owner-only grants, overview identifies the lost and new identity with device, refusals for same/unknown/not-joined/no-data/duplicate RSVP with no change, every row moved, no Discord activity with alerts on, RSVP save time kept, triggers restored, new identity can edit, undo + audit, no double undo). Mutation checks: removing the trigger skip fails "no Discord activity" and "keeps its original save time". Production apply pending owner approval.
+
+## Self-claim (2026-11-09)
+
+Validated November 9, 2026. `npm run test:db`: 290 checks (21 new: grants, non-member, idle-only list without IDs, active and ambiguous households refused, case/space-insensitive claim, earlier reaction wins, one Discord notice with undo ID and no move activity, audit note, edit after claim, one claim per device, 5 per hour, organizer undo). `npm run test:browser` (Chrome via CHROMIUM_PATH on macOS): 575 checks incl. 7 new at 375px (offer before form, fits 375px, "No, add a new RSVP", cancel claims nothing, refusal message keeps choice open, reclaimed RSVP is own and opens the form). Known flake, also on unchanged main (2 of 3 runs): checkInvitationRouting scroll-position wait times out on this Mac.
