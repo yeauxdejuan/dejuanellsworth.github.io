@@ -273,3 +273,7 @@ No live authentication, live Storage, real TikTok playback or physical mobile-br
 ## API health alerts (2026-11-08)
 
 Validated November 8, 2026. `npm run test:db`: 246 checks (21 new: grants, threshold, single alert, 6-hour reminder, recovery once, undelivered alerts retried, pause). Mutation check: threshold 1 instead of 2 fails "One failure alone does not alert". Run the tests with a UTF-8 locale (`LANG=en_US.UTF-8`); under the C locale the embedded database is SQL_ASCII and the emoji-length cases fail. Applied to production as `api_health_alerts`; live probe HTTP 200, Discord test message HTTP 200. The workflow is YAML-checked only until its first run on main.
+
+## Member reassignment (2026-11-09)
+
+Validated November 9, 2026. `LANG=en_US.UTF-8 npm run test:db`: 269 checks (23 new: owner-only grants, overview identifies the lost and new identity with device, refusals for same/unknown/not-joined/no-data/duplicate RSVP with no change, every row moved, no Discord activity with alerts on, RSVP save time kept, triggers restored, new identity can edit, undo + audit, no double undo). Mutation checks: removing the trigger skip fails "no Discord activity" and "keeps its original save time". Production apply pending owner approval.

@@ -159,6 +159,19 @@ The invitation hash and membership roster are protected server-side. Only a publ
 
 Photo uploads retain the existing JPEG compression and private bucket, with member-authorized temporary signed URLs. A forwarded signed URL can work until it expires. External photo URLs remain public at their source. Do not add personal photos or exported family records to Git. Keep independent backups and monitor the project's storage/egress usage.
 
+### Lost identity after 7 days (iPhone)
+
+iPhone browsers (Safari and Chrome on iOS) delete a site's stored data after 7 days without a visit. The member's anonymous account is then gone from that browser. On rejoining with the code they get a **new** account and can no longer edit their own RSVP, dish signups, votes or reactions. Their data is still in the database under the old account (first seen 2026-11-08).
+
+Organizer fix (`migrations/20261109160000_member_reassignment.sql`, owner-only, SQL Editor):
+
+1. Ask the member to rejoin with the code on the device they use now.
+2. `select * from ellsworth_private.identity_overview();` The lost account shows their household name, an old `last_active` and `rows_owned` > 0. The new one is near the top: a recent `created_at`, `member` = true, `rows_owned` = 0, same device type.
+3. `select ellsworth_private.reassign_member('<old user_id>', '<new user_id>', 'who / why');` It moves every owned row in one transaction, sends no Discord activity, keeps the RSVP save time, removes the old membership and returns the counts plus a `reassignment_id`. It refuses, and changes nothing, if the new account already has an RSVP, the same dish signup, game vote or photo reaction: remove the duplicate first.
+4. The member refreshes the page.
+
+Undo: `select ellsworth_private.undo_member_reassignment(<reassignment_id>);` (moves everything the new account owns back, including rows added since). History: `ellsworth_private.member_reassignments`. Uploaded photo files keep their original storage owner; storage rules are member-wide, so this has no effect.
+
 ## TikTok playback and limitations
 
 The implementation follows [TikTok's Embed Player documentation](https://developers.tiktok.com/docs/en/embed-player): `/player/v1/{id}`, `autoplay=0`, and `loop=0`. The embedded player is directly available as the section approaches the viewport. Visitors press Play inside the video or use **Next at any time**, including before playback, while paused or when a clip is unavailable. Navigation wraps to the first clip; a one-item playlist offers Reload video. There is no completion gate or separate blocked/unlocked fallback panel.
