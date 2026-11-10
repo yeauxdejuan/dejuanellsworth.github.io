@@ -33,7 +33,9 @@ const discordNoLinkMigration=await readFile(new URL(`migrations/${discordNoLinkN
 const apiHealthName=(await readdir(new URL('migrations/',root))).find(n=>n.endsWith('_api_health_alerts.sql'));
 const apiHealthMigration=await readFile(new URL(`migrations/${apiHealthName}`,root),'utf8');
 const reassignName=(await readdir(new URL('migrations/',root))).find(n=>n.endsWith('_member_reassignment.sql'));
-const reassignMigration=await readFile(new URL(`migrations/${reassignName}`,root),'utf8');
+const reassignName2=(await readdir(new URL('migrations/',root))).find(n=>n.endsWith('_move_without_replica_role.sql'));
+// The move fix replaces move_member_rows; install both, in release order, wherever the reassignment tool is installed.
+const reassignMigration=await readFile(new URL(`migrations/${reassignName}`,root),'utf8')+'\n'+await readFile(new URL(`migrations/${reassignName2}`,root),'utf8');
 const selfClaimName=(await readdir(new URL('migrations/',root))).find(n=>n.endsWith('_self_claim.sql'));
 const selfClaimMigration=await readFile(new URL(`migrations/${selfClaimName}`,root),'utf8');
 const event='ellsworth-thanksgiving-2026';

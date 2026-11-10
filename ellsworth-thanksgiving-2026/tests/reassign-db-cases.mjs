@@ -56,7 +56,9 @@ export async function checkReassignDatabase({admin,asUser,denied,check,event,mig
   check(!(await one('select exists(select 1 from public.ellsworth_members where user_id=$1) as m',[oldId])).m,'The lost identity is no longer a member');
   check(await outbox()===sent,'A move sends no Discord activity, even with alerts on');
   await admin.query('update ellsworth_private.discord_settings set enabled=false');
-  check((await one('select updated_at from public.thanksgiving_rsvps where user_id=$1',[newId])).updated_at?.getTime()===rsvpBefore?.getTime(),'The RSVP keeps its original save time');
+  check((await one('select updated_at from public.thanksgiving_rsvps where user_id=$1',[newId])).updated_at>rsvpBefore,'The moved RSVP is stamped with the move time');
+  // Hosted Supabase denies postgres SET session_replication_role (42501); tests run as superuser, so check the source.
+  check((await one("select prosrc !~ 'session_replication_role' as ok from pg_proc where proname='move_member_rows'")).ok,'The move does not need superuser-only settings');
   check((await one("select current_setting('session_replication_role') as r")).r==='origin','Triggers are active again after the move');
   check((await asUser(newId,"update public.thanksgiving_rsvps set adults=3 where user_id=$1",[newId])).rowCount===1,'The new identity can edit the moved RSVP');
   check((await asUser(newId,'delete from public.thanksgiving_photo_reactions where photo_id=$1 and user_id=$2',[photo,newId])).rowCount===1,'The new identity can remove its moved reaction');
