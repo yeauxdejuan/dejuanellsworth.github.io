@@ -281,3 +281,7 @@ Validated November 9, 2026. `LANG=en_US.UTF-8 npm run test:db`: 269 checks (23 n
 ## Self-claim (2026-11-09)
 
 Validated November 9, 2026. `npm run test:db`: 290 checks (21 new: grants, non-member, idle-only list without IDs, active and ambiguous households refused, case/space-insensitive claim, earlier reaction wins, one Discord notice with undo ID and no move activity, audit note, edit after claim, one claim per device, 5 per hour, organizer undo). `npm run test:browser` (Chrome via CHROMIUM_PATH on macOS): 575 checks incl. 7 new at 375px (offer before form, fits 375px, "No, add a new RSVP", cancel claims nothing, refusal message keeps choice open, reclaimed RSVP is own and opens the form). Known flake, also on unchanged main (2 of 3 runs): checkInvitationRouting scroll-position wait times out on this Mac.
+
+## Move fix without session_replication_role (2026-11-10)
+
+Production check of self-claim (rolled-back transaction as a real member) failed: `42501 permission denied to set parameter "session_replication_role"`. Hosted Supabase does not let `postgres` set it; local tests run as superuser. Fix: `20261110060000_move_without_replica_role.sql` replaces `move_member_rows`; it deletes only the outbox rows its own transaction queued. Moved RSVPs now show the move time as "Last updated". `npm run test:db`: 291 checks (new: installed move has no superuser-only setting). Mutation: without the outbox cleanup, "no Discord activity, even with alerts on" fails.
