@@ -87,7 +87,34 @@ function initFamilyFeatures(){
     if(ownCard)(ownCard.querySelector('.rsvp-departure')||ownCard.querySelector('h3')).after(saved);
     else $('#rsvpList').append(saved);
   }
-  function openRsvp(){
+  // iPhone browsers drop this device's anonymous identity after 7 days away. A member who rejoined
+  // without an RSVP can reclaim their earlier one (server checks: member, idle household, one per device).
+  async function offerClaim(){
+    if(!isShared||state.rsvps.some(r=>r.user_id===who()))return false;
+    let rows=[];
+    try{rows=await checked(sb.rpc('claimable_households',{p_event:eventId}))||[];}catch(error){console.error('Reclaim list failed:',error);return false;}
+    if(!rows.length||!guard('rsvps'))return false;
+    openModal(`<h3 id="modalTitle">RSVP’d before on another phone?</h3><p>Phones can forget this site after a week away. If your household is listed, tap it to bring your RSVP, dishes and reactions back to this device. Only tap your own household.</p><div class="claim-list">${rows.map((r,i)=>`<button class="btn secondary" type="button" data-claim="${i}">${esc(r.household)}</button>`).join('')}</div><p id="featureFormError" class="feature-form-error" role="alert"></p><div class="modal-actions"><button class="btn" type="button" id="claimNone">No, add a new RSVP</button></div>`);
+    $('#claimNone').addEventListener('click',()=>{closeModal();openRsvpForm();});
+    $('#modalBody').querySelectorAll('[data-claim]').forEach(button=>button.addEventListener('click',async()=>{
+      const household=rows[Number(button.dataset.claim)].household,user=who();
+      if(!confirm(`Bring back the RSVP for “${household}”? Only do this for your own household.`))return;
+      const buttons=[...$('#modalBody').querySelectorAll('button')];buttons.forEach(b=>b.disabled=true);formError('');
+      try{
+        await checked(sb.rpc('claim_household',{p_event:eventId,p_household:household}));
+        if(!current(user))return;
+        closeModal();await loadFamilyShared();notify(`Welcome back! The RSVP for ${household} is on this device again.`);
+      }catch(error){console.error('Reclaim failed:',error);if(current(user))formError(error?.message&&!/network|fetch/i.test(error.message)?error.message:'Could not bring that RSVP back. Please try again.');}
+      finally{buttons.forEach(b=>{if(b.isConnected)b.disabled=false;});}
+    }));
+    return true;
+  }
+  async function openRsvp(){
+    if(!guard('rsvps'))return;
+    if(await offerClaim())return;
+    openRsvpForm();
+  }
+  function openRsvpForm(){
     if(!guard('rsvps'))return;
     const own=state.rsvps.find(r=>r.user_id===who()),r=own||{response:'coming',adults:1,children:0};
     openModal(`<h3 id="modalTitle">Your family RSVP</h3><p>Count everyone in your household, including yourself. Arrival and departure times are Central.</p><form id="rsvpForm">${field('rsvpName','Your name or household name','text',r.household_name,'required maxlength="75"')}<div class="form-field"><label for="rsvpResponse">Will you join us?</label><select id="rsvpResponse"><option value="coming">Coming</option><option value="maybe">Maybe</option><option value="declined">Can’t make it</option></select></div><div id="rsvpTravel"><div class="form-grid">${field('rsvpAdults','Adults (including you)','number',r.adults,'min="0" max="50" required')}${field('rsvpChildren','Children','number',r.children,'min="0" max="50" required')}${field('rsvpArrival','Arrival date','date',r.arrival_date)}${field('rsvpArrivalTime','Arrival time (optional, Central)','time',r.arrival_time?.slice(0,5))}${field('rsvpDeparture','Departure date','date',r.departure_date)}${field('rsvpDepartureTime','Departure time (optional, Central)','time',r.departure_time?.slice(0,5))}</div><div class="form-field"><label for="rsvpDietary">Food allergies or dietary needs (optional)</label><textarea id="rsvpDietary" maxlength="250" rows="2" aria-describedby="rsvpDietaryHelp" placeholder="For example, a nut allergy or vegetarian meals">${esc(r.dietary_needs||'')}</textarea><p id="rsvpDietaryHelp" class="helper">Visible to joined family members to help plan the meal.</p></div></div><div class="form-field"><label for="rsvpNote">Anything the family should know? (optional)</label><textarea id="rsvpNote" maxlength="250" rows="2">${esc(r.note||'')}</textarea></div>${formTail}${own?'<button type="button" class="btn ghost small" id="removeRsvp">Remove my RSVP</button>':''}</form>`);

@@ -163,6 +163,8 @@ Photo uploads retain the existing JPEG compression and private bucket, with memb
 
 iPhone browsers (Safari and Chrome on iOS) delete a site's stored data after 7 days without a visit. The member's anonymous account is then gone from that browser. On rejoining with the code they get a **new** account and can no longer edit their own RSVP, dish signups, votes or reactions. Their data is still in the database under the old account (first seen 2026-11-08).
 
+Self-claim (`migrations/20261109190000_self_claim.sql`): when a member without an RSVP taps **+ Add my RSVP**, the site first lists households whose account has had no activity for 7+ days ("RSVP'd before on another phone?"). Tapping their own household (after a confirm) moves their RSVP, dishes, votes and reactions to this device. Limits: family members only, household names only (no IDs), one claim per device, 5 per hour; a duplicate reaction or vote on the new device gives way to the earlier one. The organizer gets a Discord line "<household> reclaimed their RSVP on a new device (undo #N)". A wrong claim: `select ellsworth_private.undo_member_reassignment(N);`.
+
 Organizer fix (`migrations/20261109160000_member_reassignment.sql`, owner-only, SQL Editor):
 
 1. Ask the member to rejoin with the code on the device they use now.
